@@ -1,0 +1,15 @@
+The JSDC Server uses the symbols in Windows 8's Segoe UI fonts, but these fonts
+are not licensed to be distributed. The following fonts should be taken from a
+Windows 8 computer and placed in this folder.
+
+segoeui.ttf
+segoeuib.ttf
+segoeuii.ttf
+segoeuil.ttf
+segoeuisl.ttf
+segoeuiz.ttf
+seguili.ttf
+seguisb.ttf
+seguisbi.ttf
+seguisli.ttf
+seguisym.ttf

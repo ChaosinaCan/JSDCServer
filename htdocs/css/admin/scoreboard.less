@@ -1,0 +1,379 @@
+﻿@import "colors.less";
+
+.view {
+	//opacity: 0;
+	//transition: opacity 0.5s;
+}
+
+.view.current {
+	//opacity: 1;
+}
+
+
+#main {
+	display: flex;
+	flex-flow: row;
+	align-items: stretch;
+
+	#field {
+		flex: 0 0 auto;
+		margin-left: 20px;
+		margin-right: 80px;
+	}
+
+	#teams {
+		flex: 1 1 auto;
+		margin-right: 20px;
+	}
+}
+
+#clock, #teams h2 {
+	display: block;
+	margin-bottom: 20px;
+	text-align: center;
+}
+
+#clock:after {
+	font-size: 42pt;
+	line-height: 1;
+	display: inline-block;
+	width: 0;
+}
+
+#clock.paused:after {
+	font-family: 'Segoe Command';
+	content: ' ';
+}
+
+#clock.text {
+	font-family: 'Segoe';
+	font-size: 42pt;
+	line-height: 1.1429;
+}
+
+table.field {
+	td.admin {
+		color: rgba(0, 0, 0, 0);
+	}
+}
+
+#teams {
+	display: flex;
+	flex-flow: column;
+	align-items: stretch;
+
+	h2 {
+		flex: 0 0 auto;
+		color: @text2;
+	}
+
+	ul {
+		flex: 1 1 auto;
+
+		display: flex;
+		flex-flow: column;
+		align-items: stretch;
+		justify-content: space-around;
+	}
+
+	li {
+		white-space: nowrap;
+
+		.primary {
+			position: relative;
+			overflow: auto;
+
+			font-size: 42pt;
+			font-weight: 200;
+			letter-spacing: 0.01em;
+			line-height: 1.5;
+
+			.team {
+				position: absolute;
+				left: 0;
+				right: 2.5em;
+
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+
+			.score {
+				float: right;
+			}
+		}
+
+		.secondary {
+			font-size: 24pt;
+			font-weight: 300;
+			letter-spacing: 0.01em;
+			line-height: 1.2;
+
+			display: flex;
+			flex-flow: row;
+			justify-content: space-between;
+
+			.territories:before {
+				content: '◻ × ';
+			}
+			.points:before {
+				content: '✦ × ';
+			}
+
+			.battery {
+				margin-left: 20px;
+				font-weight: 600;
+				display: none;
+			}
+
+			.battery.held {
+				display: inline;
+			}
+
+			.territories,
+			.points {
+				flex: 0 1 120px;
+			}
+
+			.batteries {
+				flex: 0 1 100px;
+			}
+
+			.status {
+				flex: 0 1 160px;
+				text-align: right;
+			}
+		}
+
+		&:before {
+			content: ' ';
+			display: block;
+			float: left;
+
+			width: 20px;
+			height: 100px;
+			margin-top: 20px;
+			margin-right: 20px;
+			background: @shade;
+		}
+
+		&.red:before {
+			background: @red;
+		}
+
+		&.green:before {
+			background: @green;
+		}
+
+		&.blue:before {
+			background: @blue;
+		}
+
+		&.yellow:before {
+			background: @yellow;
+		}
+	}
+}
+
+#legend {
+	display: flex;
+	flex-flow: row;
+	justify-content: center;
+
+	margin-top: 20px;
+
+	dt {
+		flex: 0 auto;
+		margin-right: 20px;
+	}
+
+	dt.color {
+		color: @field-border;
+	}
+
+	dd {
+		flex: 1 auto;
+	}
+}
+
+
+
+#view-pregame {
+
+	& > h1 {
+		position: relative;
+		z-index: 100;
+	}
+
+	#teamcards {
+		position: absolute;
+		top: 74px + 32px;
+		left: 0;
+		bottom: 0;
+		right: 0;
+	}
+	
+	#teamcards .teamcard:nth-child(3):last-child {
+		float: none;
+		margin: auto;
+	}
+
+	.teamcard {
+		position: relative;
+		float: left;
+		width: 50%;
+		height: 50%;
+
+		border: 0 solid @background;
+		border-width: 20px 40px;
+
+		overflow: hidden;
+
+		h2 {
+			color: @text;
+		}
+
+		header {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			padding: 0 0 5px 10px;
+
+			border-left: 20px solid @accent;
+			background: fade(@background, 80%);
+
+			.outline(fade(@background, 50%), 2px, 3px);
+		}
+
+		&.red header {
+			border-color: @red;
+		}
+
+		&.yellow header {
+			border-color: @yellow;
+		}
+
+		&.blue header {
+			border-color: @blue;
+		}
+
+		&.green header {
+			border-color: @green;
+		}
+
+		img {
+			width: 100%;
+			height: auto;
+		}
+	}
+}
+
+#view-videos {
+	position: absolute;
+	top: 74px;
+	left: 40px;
+	bottom: 20px;
+	right: 40px;
+
+	transition-property: top left bottom right;
+	transition-duration: 0.3s;
+
+	#video-background {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 74px;
+		transition: bottom 0.3s;
+		
+		background: #000;
+
+		video {
+			display: block;
+			height: 100%;
+			width: auto;
+			max-width: 100%;
+			margin-left: auto;
+			margin-right: auto;
+		}
+	}
+
+	ul {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		height: 74px;
+		padding-top: 10px;
+		transition: bottom 0.3s;
+
+		display: flex;
+		flex-flow: row;
+		justify-content: flex-start;
+		overflow: auto;
+
+		li {
+			flex: 0 1 auto;
+
+			margin-right: 10px;
+			background-color: #000;
+
+			canvas {
+				display: block;
+				opacity: 1;
+				transition: opacity 0.3s;
+			}
+
+			canvas.loading {
+				opacity: 0;
+			}
+		}
+	}
+
+	&.full {
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+
+		#video-background {
+			bottom: 0;
+		}
+
+		ul {
+			height: 0;
+		}
+	}
+}
+
+
+html:fullscreen {
+	#view-pregame {
+		& > h1 {
+			font-size: 32pt;
+			line-height: 1.5;
+		}
+
+		#teamcards {
+			top: 64px;
+		}
+	}
+
+	#view-videos {
+		top: 20px;
+	}
+}
+
+@supports (-o-object-fit: cover) {
+	.teamcard img {
+		height: 100% !important;
+		-o-object-fit: cover;
+	}
+}
+
+@supports (object-fit: cover) {
+	.teamcard img {
+		height: 100% !important;
+		-o-object-fit: cover;
+	}
+}

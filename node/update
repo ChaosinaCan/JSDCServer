@@ -1,0 +1,6 @@
+#!/bin/bash
+npm update
+if [ $1 != "nopause" ]
+then
+	read -p "Updated. Press [Enter] to continue."
+fi

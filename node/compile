@@ -1,0 +1,6 @@
+#!/bin/bash
+node compile.js
+if [ $1 != "nopause" ]
+then
+	read -p "All files compiled. Press [Enter] to continue."
+fi

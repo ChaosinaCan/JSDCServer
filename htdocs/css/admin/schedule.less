@@ -1,0 +1,138 @@
+﻿@import "colors.less";
+
+//@alt: darken(@background, 4);
+@alt: darken(@background, 10);
+@current: @accent;
+@next: @field-border;
+
+/*
+html {
+	// Why does our projector suck so much?
+	background-color: #fff;
+}
+*/
+
+section {
+	margin-bottom: 20px;
+}
+
+section.top {
+	display: flex;
+	flex-flow: row;
+	align-items: flex-start;
+
+	& > div {
+		flex: 1 0 50%;
+		padding-left: 20px;
+	}
+}
+
+#current {
+	.row-indicator(@current);
+}
+
+#next {
+	.row-indicator(@next);
+}
+
+div.match {
+	&.no-match .match-loaded,
+	.no-match {
+		display: none;
+	}
+
+	&.no-match .no-match {
+		display: inline;
+	}
+
+	ul {
+		overflow: auto;
+
+		li {
+			float: left;
+			width: 50%;
+
+			&:before {
+				content: '■ ';
+			}
+
+			&.red:before { color: @red; }
+			&.blue:before { color: @blue; }
+			&.green:before { color: @green; }
+			&.yellow:before { color: @yellow; }
+		}
+
+	}
+}
+
+
+#matches,
+#match-header {
+	width: 100%;
+
+	td.round,
+	td.match {
+		min-width: 2em;
+		text-align: center;
+	}
+
+	td.round {
+		min-width: 1.5em;
+	}
+
+	td.team {
+		width: 25%;
+	}
+}
+
+#match-header {
+	text-align: center;
+	
+
+	td.round {
+		min-width: 3.5em;
+	}
+
+	td.team {
+		color: rgba(0, 0, 0, 0);
+	}
+}
+
+#match-header td.team,
+tr.round-break td.team {
+	&.red { .team-header(@red) }
+	&.blue { .team-header(@blue) }
+	&.green { .team-header(@green) }
+	&.yellow { .team-header(@yellow) }
+}
+
+#matches {
+	tr.old {
+		display: none;
+	}
+
+	tr.round-break td,
+	td.round-break {
+		padding-bottom: 20px;
+	}
+
+	td.current {
+		.row-indicator(@current);
+	}
+
+	td.next {
+		.row-indicator(@next);
+	}
+
+	tr:nth-child(even) td:not(.round) {
+		background-color: @alt;
+	}
+
+	tr:nth-child(even).round-break td.team {
+		&.red { .team-header(@red, 10px, @alt) }
+		&.blue { .team-header(@blue, 10px, @alt) }
+		&.green { .team-header(@green, 10px, @alt) }
+		&.yellow { .team-header(@yellow, 10px, @alt) }
+	}
+}
+

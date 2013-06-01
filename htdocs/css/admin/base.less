@@ -1,0 +1,691 @@
+﻿@import "colors.less";
+@import "font.less";
+@import "reset.less";
+
+
+html {
+	padding: 0 40px 20px;
+
+	font-family: 'Segoe';
+	letter-spacing: 0.02em;
+
+	background: @background;
+	color: @text;
+}
+
+code, pre, samp {
+	font-family: 'Consolas', 'Courier New', monospace;
+}
+
+a {
+	color: @text;
+	text-decoration: none;
+
+	&:hover {
+		color: @link;
+	}
+}
+
+p {
+	margin: 20px 0;
+}
+
+.symbol {
+	font-family: 'Segoe Command';
+	letter-spacing: 0;
+}
+
+h2, h1.x-large {
+	color: @dark-accent;
+}
+
+h1, .xx-large {
+	font-size: 42pt;
+	font-weight: 300;
+	letter-spacing: 0;
+	line-height: 1.1429;
+}
+
+h2, .x-large {
+	font-size: 20pt;
+	font-weight: 200;
+	letter-spacing: 0.01em;
+	line-height: 1.2;
+}
+
+h3, .large {
+	font-size: 11pt;
+	font-weight: 600;
+	line-height: 1.3636;
+}
+
+h4, .medium {
+	font-size: 11pt;
+	font-weight: 400;
+	line-height: 1.3636;
+}
+
+body, h5, .small {
+	font-size: 11pt;
+	font-weight: 300;
+	line-height: 1.3636;
+}
+
+body, button, input, textarea, select, option {
+	letter-spacing: 0.02em;
+}
+
+.light {
+	font-weight: 200 !important;
+}
+
+.semilight {
+	font-weight: 300 !important;
+}
+
+.semibold {
+	font-weight: 500 !important;
+}
+
+.center {
+	text-align: center;
+}
+
+label + label {
+	margin-left: 20px;
+}
+
+label.block {
+	display: block;
+	margin-bottom: 5px;
+}
+
+p.error {
+	color: @error;
+}
+
+// Text input controls
+
+input[type=text], input[type=password], input[type=email], 
+input[type=number], input[type=url], input[type=search], textarea {
+	min-height: 28px;
+	min-width: 64px;
+	margin: 4px 0;
+	padding: 1px 4px;
+	border: 1px solid @border;
+	font-size: 11pt;
+	font-weight: 400;
+	line-height: 1.3636;
+
+	&:focus {
+		border-color: @active;
+	}
+}
+
+input[type=text], input[type=password], input[type=email],
+input[type=url], input[type=search] {
+	width: 276px;
+}
+
+textarea {
+	min-width: 260px;
+	min-height: 50px;
+
+	overflow-y: scroll;
+	word-wrap: break-word;
+	padding: 4px 8px;
+	padding-right: 17px;
+}
+
+
+// buttons
+button, input[type=button], input[type=reset], input[type=submit] {
+	min-height: 32px;
+	min-width: 90px;
+	padding: 4px 8px;
+	border: 2px solid @border;
+	background: @button;
+	background-clip: padding-box;
+	font-size: 11pt;
+	font-weight: 600;
+	line-height: 1.3636;
+
+	&:hover, &:focus {
+		border-color: @active;
+	}
+
+	&.inline {
+		margin: -6px 0;
+		vertical-align: middle;
+	}
+
+	&:disabled {
+		border-color: @border;
+		background: fade(@button, 50%);
+	}
+
+	&.x-large {
+		font-weight: 400;
+		padding: 4px 16px;
+	}
+}
+
+.mejs-button button {
+	min-width: 0;
+	min-height: 0;
+}
+
+// select controls
+
+select {
+	min-height: 32px;
+	min-width: 80px;
+	margin: -6px 0;
+	padding: 4px 8px;
+	font-size: 11pt;
+	font-weight: 400;
+	line-height: 1.3636;
+	vertical-align: middle;
+}
+
+.chzn-container {
+	margin: -6px 0;
+	vertical-align: middle;
+}
+
+// radio buttons and checkboxes
+
+input[type=radio] {
+	width: 23px;
+	height: 23px;
+	margin-top: 0;
+	margin-left: -1px;
+	margin-right: 0;
+	margin-bottom: -2px;
+}
+
+input[type=checkbox].toggle {
+	& + span {
+		display: inline-block;
+		position: relative;
+		width: 50px;
+		height: 19px;
+		padding: 1px;
+		margin-top: 1px;
+		margin-left: 120px;
+		color: rgba(0, 0, 0, 0);
+		border: 2px solid @border;
+		background: @border;
+		box-shadow: inset 0 0 0 1px @background;
+
+		&:before {
+			content: 'Off';
+			display: inline-block;
+			position: relative;
+			left: -123px;
+			bottom: 3px;
+			width: 120px;
+			color: @text;
+			font-weight: 600;
+		}
+
+		&:after {
+			content: ' ';
+			display: block;
+			position: absolute;
+			top: -2px;
+			left: -2px;
+			bottom: -2px;
+			width: 12px;
+			background-color: @text;
+		}
+	}
+
+	&:not(:disabled) + span:hover {
+		background-color: lighten(@border, 5);
+	}
+
+	&:checked + span {
+		background-color: @accent;
+
+		&:before {
+			content: 'On';
+		}
+
+		&:after {
+			left: auto;
+			right: -2px;
+		}
+	}
+
+	&:not(:disabled):checked + span:hover {
+		background-color: lighten(@accent, 5);
+	}
+
+	&:disabled + span {
+		&:before {
+			color: lighten(@text, 25);
+		}
+
+		&:after {
+			background-color: lighten(@text, 15);
+		}
+	}
+
+
+	&.yesno {
+		& + span:before {
+			content: 'No';
+		}
+
+		&:checked + span:before {
+			content: 'Yes';
+		}
+	}
+}
+
+
+
+// Command button styles
+
+button.command {
+	background: none;
+	height: auto; /* height is 88px (label) or 68px (no label) */
+	padding: 12px 0; /* bottom dependent on label/img, 2px margin */
+	margin: 0;
+	border: 2px solid transparent; /* reserve focus rect */
+	min-width: 40px;
+	text-align: center;
+	font-size: 9pt;
+	line-height: 16px;
+	font-weight: normal;
+
+	.commandicon {
+		display: inline-block;
+		margin: 0 28px; /* padding for command buttons, 2px/side for focus */
+		min-width: 0;
+		min-height: 0;
+		padding: 0;
+
+		/* Normal sizing */
+		width: 40px;
+		height: 40px;
+		box-sizing: border-box;
+		cursor: default;
+	}
+	.commandimage {
+		/* Default font for glyphs. */
+		font-family: "Segoe Command";
+		letter-spacing: 0;
+	
+		/* Applications provide their own content, like &#xE0D5;. */
+		vertical-align: middle;
+		font-size: 14pt;
+		margin: -2px;
+		line-height: 40px; /* line-height must match the content box height */    
+		display: inline-block;
+		/* Still 40px */
+		width: 40px;
+		height: 40px;
+	}
+
+	/*
+	Command button "ring".
+	*/
+	.commandring {
+		border-width: 2px;
+		border-style: solid;
+		border-radius: 50%;
+		background-clip: border-box;
+	}
+
+	.label {
+		position: relative;
+		line-height: 16px;
+		display: block;
+		max-width: 88px; /* 100px button, but allow for 2px margins and 4px padding on each side */
+		margin-top: 5px;
+		margin-bottom: -1px;
+		padding-left: 4px;  /* 12px between buttons, 6px per side, minus 2px margins */
+		padding-right: 4px;
+		overflow: hidden;
+		word-wrap: break-word;
+		word-break: keep-all;
+		box-sizing: content-box;
+	}
+	
+	&:hover .commandring {
+		background-color: rgba(0, 0, 0, 0.13);
+	}
+
+}
+
+
+
+// Header styles
+
+header#branding {
+	overflow: hidden;
+
+	h1 {
+		float: left;
+		// hide the left side of the nav bar
+	}
+
+	nav {
+		position: relative;
+		padding-top: 23px;
+		overflow: hidden;
+
+		line-height: 1.5;
+
+		.symbol {
+			display: block;
+			position: absolute;
+			bottom: 2px;
+			padding: 0 2px;
+
+			cursor: default;
+			color: fade(@text, 0%);
+			transition: color 0.2s;
+
+			&:hover {
+				color: @link !important;
+			}
+		}
+
+		&:hover .symbol {
+			color: @text;
+			background: @background;
+		}
+
+		.scroll-left {
+			left: 0;
+			background: @fade-left;
+		}
+
+		.scroll-right {
+			right: 0;
+			background: @fade-right;
+		}
+
+		.scroll-left.disabled, 
+		.scroll-right.disabled {
+			color: rgba(0, 0, 0, 0) !important;
+		}
+	}
+
+
+	ul {
+		position: relative;
+		left: 0;
+		white-space: nowrap;
+		transition: left 0.2s;
+
+		&.no-anim {
+			transition: none;
+		}
+	}
+
+	li:first-child {
+		margin-left: 20px;
+	}
+
+	li {
+		display: inline-block;
+		margin-right: 0.3em;
+	}
+
+	li a {
+		font-weight: 300;
+		color: @text2;
+
+		&:hover {
+			color: @link;
+		}
+	}
+
+	li.current a {
+		color: @accent;
+	}
+	
+}
+
+// Appbar styles
+
+#toolbar {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: 5px;
+	padding-top: 5px;
+
+	&:hover {
+		height: 105px;
+
+		.appbar {
+			bottom: 0;
+		}
+	}
+
+	.appbar {
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: -100px;
+		height: 100px;
+		transition: bottom 0.3s;
+	}
+}
+
+.appbar {
+	background: @toolbar;
+	border-top: 10px solid @toolbar-accent;
+	overflow: auto;
+
+	display: flex;
+	flex-flow: row;
+	justify-content: flex-end;
+
+	hr.split {
+		flex: 1 1 auto;
+		border: none;
+	}
+}
+
+#restore {
+	display: none;
+}
+
+
+
+
+
+#content {
+	margin-top: 10px;
+}
+
+body.columns #content {
+	display: flex;
+	flex-flow: row wrap;
+	align-items: stretch;
+	justify-content: flex-start;
+	
+	margin-right: -40px;
+
+	section.column {
+		flex: 1 1 500px;
+		margin-right: 40px;
+	}
+}
+
+
+
+// Fullscreen Styles
+html:fullscreen {
+
+	header#branding {
+		position: fixed;
+		top: -64px;
+		left: 0;
+		right: 0;
+		z-index: 10000;
+
+		padding-left: 40px;
+		padding-bottom: 5px;
+
+		background: @background;
+		transition: top 0.3s;
+
+		&:hover {
+			top: 0;
+			border-bottom: 10px solid @accent;
+		}
+	}
+
+	#fullscreen {
+		display: none;
+	}
+
+	#restore {
+		display: inherit;
+	}
+
+}
+
+
+
+// Modal dialogs
+.simplemodal-overlay {
+	background-color: #000;
+}
+
+.simplemodal-container {
+	position: fixed;
+	top: 0 !important;
+	bottom: 0 !important;
+	width: 100% !important;
+	height: auto !important;
+	visibility: hidden;
+	display: flex;
+	flex-flow: column;
+	justify-content: space-around;
+
+	.simplemodal-wrap {
+		width: 100% !important;
+		height: auto !important;
+		max-height: 700px;
+		padding: 20px;
+		visibility: visible;
+
+		background: @modal-background;
+		color: @light;
+
+		aside {
+			margin: 0 auto;
+			max-width: 740px;
+			max-height: 660px;
+			overflow: auto !important;
+
+			h1 {
+				color: @light;
+			}
+
+			footer {
+				text-align: right;
+				margin-top: -6px;
+
+				button {
+					margin-left: 20px;
+				}
+			}
+
+			&.x-large footer {
+				margin-top: 0;
+				margin-bottom: 6px;
+			}
+
+			a {
+				color: @light;
+
+				&:hover {
+
+				}
+			}
+
+			button {
+				color: @light;
+				border-color: fade(@light, 50%);
+				background-color: transparent;
+
+				&:hover, &:focus {
+					border-color: @light;
+				}
+			}
+
+			ul {
+				list-style: circle;
+				padding-left: 20px;
+				margin: 20px 0;
+			}
+		}
+
+		aside.error.multiple {
+			h1 {
+				float: left;
+				margin-right: 20px;
+			}
+
+			ul.tabs, ul.messages {
+				list-style: none;
+				padding: 0;
+			}
+
+			ul.tabs {
+				display: flex;
+				flex-flow: row wrap;
+				margin-top: 0;
+
+				li {
+					//margin: 3px 10px -3px 0;
+					margin-right: 10px;
+				}
+
+				button {
+					min-width: 60px;
+				}
+
+				.current button {
+					border-color: @light;
+					background-color: fade(@light, 10%);
+				}
+			}
+
+			ul.messages {
+				li {
+					display: none;
+				}
+
+				li.current {
+					display: block;
+				}
+			}
+		}
+	}
+}
+
+
+div.spinner {
+	height: 40px;
+	margin-left: 50%;
+
+	.spinner-anim {
+		left: 0 !important;
+	}
+}
+
+#clock {
+	font: 64px/1 'Clock';
+	color: lighten(@text, 10%);
+}

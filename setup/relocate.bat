@@ -1,0 +1,1 @@
+python relocate.py %*

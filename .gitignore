@@ -1,0 +1,52 @@
+# XAMPP Files
+/apache
+/cgi-bin
+/contrib
+/install
+/licenses
+/locale
+/mysql
+/perl
+/php
+/phpMyAdmin
+/security
+/tmp
+/apache_start.bat
+/apache_stop.bat
+/mysql_start.bat
+/mysql_stop.bat
+/changes.txt
+/passwords.txt
+/readme_de.txt
+/readme_en.txt
+/setup_xampp.bat
+/test_php.bat
+/xampp-control.ini
+/xampp-control.exe
+/xampp-control.log
+/xampp_start.exe
+/xampp_stop.exe
+
+# Visual Studio Files
+*.suo
+
+# Python
+__pycache__
+
+# node.js
+node_modules
+
+# Uploaded Files
+/htdocs/uploads
+/htdocs/video
+
+# Untracked Files
+_old
+/htdocs/css/admin/*.css
+/htdocs/css/scoring/*.css
+/htdocs/fonts/seg*.ttf
+/htdocs/js/admin/*.js
+/htdocs/js/install/*.js
+/htdocs/js/scoring/*.js
+/node/*.js
+!/node/compile.js

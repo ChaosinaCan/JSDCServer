@@ -1,0 +1,31 @@
+﻿@import "../admin/colors.less";
+
+#tests {
+	width: 100%;
+	margin-top: 20px;
+
+	thead {
+		display: none;
+	}
+
+	tbody {
+		td {
+			padding-bottom: 20px;
+		}
+		
+		tr > td:last-child:before {
+			font-family: 'Segoe Command';
+			content: ' ';
+		}
+
+		tr.passed > td:last-child:before {
+			content: ' ';
+			color: @success;
+		}
+
+		tr.failed > td:last-child:before {
+			content: ' ';
+			color: @error;
+		}
+	}
+}

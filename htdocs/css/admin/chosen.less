@@ -1,0 +1,213 @@
+﻿@import "colors.less";
+
+
+
+.chzn-container {
+	position: relative;
+	display: inline-block;
+
+	font-size: 11pt;
+	font-weight: 400;
+	line-height: 1.3636;
+	min-width: 60px;
+
+	.chzn-drop {
+		position: absolute;
+		top: 32px;
+		left: 0;
+		margin-top: -2px;
+		padding-bottom: 2px;
+		width: auto !important;
+		min-width: 100%;
+
+		background: @input;
+		border: 1px solid #000;
+		border-top: none;
+		border-bottom: none;
+		box-shadow: 0 1px 0 1px #000;
+		
+		z-index: 1010;
+
+		.chzn-search {
+			white-space: nowrap;
+
+			input[type=text] {
+				margin: 0;
+				padding: 0 24px 0 8px;
+				border: none;
+				min-width: 0;
+				width: 100% !important;
+			}
+
+			&:after {
+				font: 16px/1 'Segoe Command';
+				color: lighten(@text, 25%);
+				content: '';
+				position: relative;
+				left: -22px;
+				transform: scaleX(-1);
+			}
+		}
+	}
+
+	.chzn-single {
+		display: block;
+		padding: 5px 8px;
+
+		overflow: hidden;
+		white-space: nowrap;
+		background: @input;
+		color: @text;
+		border: 1px solid @border;
+
+		&.chzn-default {
+			color: lighten(@text, 30%);
+		}
+
+		&:hover {
+			border-color: @active;
+
+			div {
+				background-color: @input-shade;
+				color: @text;
+			}
+		}
+
+		span {
+			margin-right: 15px;
+			display: block;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+		
+		abbr {
+			display: block;
+			position: absolute;
+			top: 0;
+			right: 19px;
+			width: 16px;
+			height: 100%;
+			padding: 5px 0;
+			color: lighten(@text, 25%);
+
+			&:after {
+				font: 13px/1 'Segoe Command';
+				content: '';
+			}
+
+			&:hover {
+				color: @text;
+			}
+		}
+
+		div {
+			display: block;
+			position: absolute;
+			right: 1px;
+			top: 1px;
+			bottom: 1px;
+			width: 18px;
+			color: lighten(@text, 25%);
+
+			b {
+				display: block;
+				padding-left: 1px;
+				padding-top: 2px;
+				
+				&:after {
+					font: 16px/1 'Segoe Command';
+					content: '';
+				}
+			}
+
+		}
+	}
+
+
+	.chzn-single.chzn-single-with-drop {
+		border: 1px solid #000;
+		box-shadow: 0 0 0 1px #000;
+		
+		div {
+			background: none;
+			color: @text;
+		}
+	}
+
+	.chzn-results {
+		max-height: 28px * 8;
+		overflow: auto;
+		-webkit-overflow-scrolling: touch;
+
+		li {
+			display: none;
+			padding: 4px 8px;
+
+			em {
+				color: @active;
+				font-style: normal;
+			}
+		}
+
+		.active-result {
+			cursor: pointer;
+			display: list-item;
+		}
+
+		.highlighted {
+			background-color: @active;
+			color: @light;
+
+			em {
+				color: darken(@light, 15%)
+			}
+		}
+	}
+}
+
+
+.chzn-container-single-nosearch {
+	.chzn-search {
+		input {
+			position: absolute;
+			left: -9999px;
+		}
+
+		&:after {
+			content: none !important;
+		}
+	} 
+}
+
+.chzn-disabled .chzn-single {
+	border-color: @border;
+	background-color: fade(@input, 30%);
+	cursor: default;
+
+	abbr {
+		padding-top: 4px;
+		padding-left: 1px;
+
+		&:hover {
+			color: lighten(@text, 25%);
+		}
+
+		&:after {
+			content: '🔒';
+		}
+	}
+
+	&:hover {
+		border-color: @border;
+
+		div {
+			background-color: transparent;
+			color: lighten(@text, 25%);
+		}
+	}
+}
+
+select.allow-deselect + .chzn-container .chzn-single:not(.chzn-default) span {
+	margin-right: 26px;
+}

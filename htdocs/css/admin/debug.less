@@ -1,0 +1,100 @@
+﻿@import "colors.less";
+
+h2 {
+	margin-bottom: 20px;
+}
+
+#request-type {
+	label {
+		white-space: nowrap;
+	}
+
+	label:nth-child(1) {
+		margin-right: 20px;
+	}
+}
+
+#response {
+	max-width: 700px;
+	overflow: auto;
+}
+
+.autoexpand {
+	position: relative;
+	display: block;
+
+	& > textarea,
+	& > pre {
+		min-height: 70px;
+		margin: 0;
+		padding: 4px 8px;
+		white-space: pre-wrap;
+		word-wrap: break-word;
+	}
+
+	& > textarea {
+		overflow: hidden;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		resize: none;
+	}
+
+	& > pre {
+		border: 1px solid transparent;
+		display: block;
+		visibility: hidden;
+	}
+}
+
+label + label {
+	margin-left: 20px;
+}
+
+output pre {
+	white-space: pre-wrap;
+}
+
+#send {
+	float: right;
+}
+
+h3 + p {
+	margin-top: 0;
+}
+
+.escape {
+	color: @accent;
+}
+
+#doc div, 
+#doc h2,
+#doc h3 {
+	clear: both;
+}
+
+#doc h3 {
+	font-weight: bold;
+}
+
+dt {
+	clear: left;
+	float: left;
+	width: 180px;
+	font-weight: 600;
+}
+
+dd {
+	margin-left: 180px;
+}
+
+dl > dd:last-child {
+	margin-bottom: 20px;
+}
+
+dt.resp, dt.resp + dd {
+	margin-top: 20px;
+}
+

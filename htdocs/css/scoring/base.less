@@ -1,0 +1,78 @@
+﻿@import "../admin/base.less";
+@import "../admin/colors.less";
+
+.back-button {
+	font-family: 'Segoe Command';
+	float: left;
+	margin-left: -40px;
+	padding-left: 40px;
+	padding-right: 20px;
+
+	&:hover {
+		color: @text;
+	}
+}
+
+ul.colorselect {
+	list-style: none !important;
+	margin: 10px 0;
+
+	li {
+		a {
+			padding: 10px 0;
+			display: block;
+			clear: both;
+			line-height: 1.5;
+		}
+
+		a:before {
+			content: ' ';
+			display: block;
+			float: left;
+			width: 40px;
+			height: 40px;
+			margin-right: 10px;
+
+			background: @neutral;
+		}
+
+		a.red:before {
+			background: @red;
+		}
+
+		a.green:before {
+			background: @green;
+		}
+
+		a.yellow:before {
+			background: @yellow;
+		}
+
+		a.blue:before {
+			background: @blue;
+		}
+	}
+}
+
+.simplemodal-container ul.colorselect {
+	a:before {
+		background: #000;
+	}
+
+	a:hover {
+		background: fade(#008a66, 70%);
+	}
+}
+
+#toolbar {
+	height: auto !important;
+
+	.appbar {
+		position: static;
+	}
+}
+
+.simplemodal-container .simplemodal-wrap {
+	margin-top: 50px;
+	padding: 20px 40px;
+}

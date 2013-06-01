@@ -1,0 +1,261 @@
+﻿@import "colors.less";
+
+section.teams {
+	flex: 0.01 1 440px !important;
+
+	display: flex;
+	flex-flow: column;
+
+	h2 {
+		text-align: center;
+		margin-bottom: 20px;
+		max-width: 500px;
+
+		.no-match {
+			display: none;
+		}
+	}
+
+	h2.no-match {
+		.match-loaded {
+			display: none;
+		}
+
+		.no-match {
+			display: inline;
+		}
+	}
+
+	ul {
+		flex: 1 1 auto;
+
+		display: flex;
+		flex-flow: column;
+		align-items: stretch;
+
+		max-width: 500px;
+	}
+
+	li {
+		white-space: nowrap;
+		margin-bottom: 20px;
+
+		.primary {
+			position: relative;
+			overflow: auto;
+
+			font-size: 24pt;
+			font-weight: 200;
+			letter-spacing: 0.01em;
+			line-height: 1.2;
+
+			.team {
+				position: absolute;
+				left: 0;
+				right: 2.5em;
+
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+
+			.score {
+				float: right;
+			}
+		}
+
+		.secondary {
+			font-size: 20pt;
+			font-weight: 200;
+			letter-spacing: 0.01em;
+			line-height: 1.2;
+
+			display: flex;
+			flex-flow: row;
+			justify-content: space-between;
+		}
+
+		&:before {
+			content: ' ';
+			display: block;
+			float: left;
+
+			width: 20px;
+			height: 60px;
+			margin-top: 6px;
+			margin-right: 20px;
+			background: @shade;
+		}
+
+		&.red:before {
+			background: @red;
+		}
+
+		&.green:before {
+			background: @green;
+		}
+
+		&.blue:before {
+			background: @blue;
+		}
+
+		&.yellow:before {
+			background: @yellow;
+		}
+	}
+}
+
+section.controls {
+	flex: 0 1 240px !important;
+
+	#clock {
+		time {
+			display: block;
+			text-align: center;
+		}
+	}
+
+	#controls {
+
+		#start, #pause, #resume {
+			display: none;
+		}
+
+		button {
+			font-size: 20pt;
+			font-weight: 200;
+			letter-spacing: 0.01em;
+			line-height: 1.35;
+
+			min-width: 240px;
+			padding-left: 0;
+			text-align: left;
+		}
+
+		button:before {
+			font-family: 'Segoe Command';
+			color: lighten(@text, 15%);
+		}
+
+		button:disabled:before {
+			color: @border;
+		}
+
+		button:not(:disabled):hover:before {
+			color: @active;
+		}
+
+		#start:before,
+		#resume:before {
+			content: '';
+		}
+
+		#pause:before {
+			content: '';
+		}
+
+		#stop:before {
+			content: '';
+		}
+
+		p {
+			margin: 10px auto;
+		}
+
+		p:first-child {
+			margin-top: 20px;
+		}
+
+		p:last-child {
+			margin-bottom: 20px;
+		}
+	}
+
+	#controls.unstarted #start,
+	#controls.finished #start,
+	#controls.running #pause,
+	#controls.paused #resume {
+		display: block;
+	}
+
+	#controls-2,
+	#display {
+		p {
+			display: flex;
+			flex-flow: row wrap;
+			
+			margin: 10px -10px 10px 0;
+
+			button {
+				flex: 1 1 auto;
+				margin: 0 10px 10px 0;
+			}
+
+		}
+	}
+
+	#connection div {
+		margin-bottom: 20px;
+	}
+}
+
+section.history {
+	flex: 1 1 500px !important;
+
+	h2 {
+		margin-bottom: 20px;
+	}
+
+	#history-wrap {
+		margin-right: -16px;
+		max-height: 32px * 16;
+		overflow: auto;
+	}
+}
+
+
+// match select dialog
+.simplemodal-container .simplemodal-wrap aside.match-select {
+	overflow: hidden !important;
+
+	div.content {
+		max-height: 660px - 32px - 32px;
+		overflow: auto;
+
+		margin-right: -20px;
+		padding-right: 20px;
+
+		columns: 4;
+
+		h2 {
+			break-after: avoid-column;
+			color: fade(@light, 85%);
+		}
+
+		ul {
+			padding-left: 0;
+			margin-top: 0;
+			break-inside: avoid-column;
+			list-style: none;
+
+			
+			li {
+				padding: 0 5px;
+				border: 1px solid transparent;
+				cursor: default;
+			}
+
+			li:not(.current):hover {
+				border-color: @light;
+				background: fade(@light, 25%);
+			}
+
+			li.finished {
+				color: fade(@light, 60%);
+			}
+
+			li.current {
+				color: @dark-accent;
+			}
+		}
+	}
+}

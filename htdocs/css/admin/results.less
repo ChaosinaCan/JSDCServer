@@ -1,0 +1,27 @@
+﻿@import "colors.less";
+
+table {
+	thead td {
+		border-bottom: 1px solid @field-border;
+	}
+
+	tbody tr:nth-child(even) {
+		background: darken(@background, 10);
+	}
+
+	td {
+		padding: 0 10px;
+	}
+
+	tr > td:last-child {
+		text-align: right;
+	}
+
+	tbody tr > td:first-child {
+		color: @dark-accent;
+	}
+}
+
+#highscore-score {
+	margin-left: 40px;
+}
