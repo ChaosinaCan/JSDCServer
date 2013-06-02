@@ -48,5 +48,6 @@ _old
 /htdocs/js/admin/*.js
 /htdocs/js/install/*.js
 /htdocs/js/scoring/*.js
+/htdocs/xampp/.htaccess
 /node/*.js
 !/node/compile.js
