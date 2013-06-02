@@ -87,7 +87,7 @@ class Install extends CI_Controller {
 		$this->load->model('configeditor', 'cfg');
 		$this->cfg->set_db('default.database', 'jsdc');
 		echo '<p>Done.</p>';
-		//echo '<script>window.location.reload()</script>';
+		echo '<script>window.location.reload()</script>';
 		echo $this->load->view('install/footer', null, true);
 	}
 	
@@ -98,7 +98,7 @@ class Install extends CI_Controller {
 		
 		$this->database->design_database();
 		echo '<p>Done.</p>';
-		//echo '<script>window.location.reload()</script>';
+		echo '<script>window.location.reload()</script>';
 		echo $this->load->view('install/footer', null, true);
 	}
 	
