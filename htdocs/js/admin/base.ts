@@ -122,6 +122,19 @@ module jsdc {
 		});
 	}
 
+	export function postFormData(method: string, data: FormData): JQueryPromise {
+		return $.ajax(apiUrl(method), {
+			type: 'POST',
+			contentType: false,
+			processData: false,
+			data: data,
+			dataType: 'json',
+			headers: {
+				'X-API-KEY': apikey
+			}
+		});
+	}
+
 	/* == Individual Datatype Functions == */
 
 	function getError(xhr: JQueryXHR): APIError {
@@ -132,21 +145,21 @@ module jsdc {
 		}
 	}
 
-	function handleResponse(call: JQueryPromise, parser: (response: any[]) => any[], callback: (error: APIError, data: any[]) => any) {
+	export function handleResponse(call: JQueryPromise, parser: (response: any[]) => any[], callback: (error: APIError, data: any[]) => any) {
 		call.then(
 			(res) => callback.call(null, null, parser(res)),
 			(xhr) => callback.call(null, getError(xhr), null)
 		);
 	}
 
-	function handleRawResponse(call: JQueryPromise, callback: (error: APIError, id: number) => any) {
+	export function handleRawResponse(call: JQueryPromise, callback: (error: APIError, id: number) => any) {
 		call.then(
 			(res) => callback.call(null, null, res),
 			(xhr) => callback.call(null, getError(xhr), null)
 		);
 	}
 
-	function handleSingleResponse(call: JQueryPromise, parser: (response: any[]) => any[], callback: (error: APIError, data: any) => any) {
+	export function handleSingleResponse(call: JQueryPromise, parser: (response: any[]) => any[], callback: (error: APIError, data: any) => any) {
 		function toSingle(items: any[]): any {
 			items = parser(items);
 			if (!Array.isArray(items))
@@ -740,14 +753,14 @@ module jsdc {
 	 * @param thumb Use "true" to get the thumbnail version of the image
 	 */
 	export function getTeamImage(name: string, thumb?: bool): string {
-		if (name == null)
+		if (name == null || name == "")
 			return null;
 
 		var parts = name.split('.');
 		var filetype = '.' + parts.pop();
 		name = parts.join('.');
 		var filename = name.substr(0, name.length - filetype.length);
-		return baseUrl + 'uploads/' + name + (thumb ? '_thumb' : '') + filetype;
+		return baseUrl + 'uploads/' + name + (thumb ? '-thumb' : '') + filetype;
 	}
 
 	/** Game status object sent by "game *" and "sync" events */

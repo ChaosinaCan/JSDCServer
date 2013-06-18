@@ -4,6 +4,8 @@
  * JDSC REST API
  */
 
+define('THUMB_SIZE', 180);
+
 // This can be removed if you use __autoload() in config.php OR use Modular Extensions
 require APPPATH.'/libraries/REST_Controller.php';
 
@@ -104,18 +106,22 @@ class API extends REST_Controller {
 			'abbr' => 'abbr',
 			'bio' => 'bio',
 			'university' => 'university',
-			'imageName' => 'imagename',
+			'imagename' => 'imageName',
 		));
 		
 		switch ($method) {
 			case 'create':
 				if (!props_defined($params, array('name', 'university'))) {
 					$this->_resp_bad_request('name and university Required');
-				}
-				else {
+				} else {
 					$id = $this->model->create($params);
-					if ($this->post('imagedata') !== false)
-						$this->_upload_image($this->post('imagedata'), $params['imageName'], $id);
+					
+					if (isset($_FILES['imagedata'])) {
+						$params = array();
+						$params['imageName'] = $this->_upload_image($id);
+						$this->model->update($id, $params);
+					}
+					
 					$this->_resp_created(array( 'teamId' => $id ));
 				}
 				break;
@@ -125,12 +131,12 @@ class API extends REST_Controller {
 				
 				if ($id === false) {
 					$this->_resp_bad_request('id Required');
-				}
-				else {
-					/*$params['imageName'] = str_replace('$id', $id, $params['imageName']);*/
+				} else {
+					if (isset($_FILES['imagedata'])) {
+						$params['imageName'] = $this->_upload_image($id);
+					}
+					
 					$this->model->update($id, $params);
-					if ($this->post('imagedata') !== false)
-						$this->_upload_image($this->post('imagedata'), $params['imageName'], $id);
 					$this->_resp_ok($this->model->get_by_id($id));
 				}
 				break;
@@ -139,8 +145,7 @@ class API extends REST_Controller {
 				$id = $this->post('id');
 				if ($id === false) {
 					$this->_resp_bad_request('id Required');
-				}
-				else {
+				} else {
 					$this->model->delete($id);
 					$this->_resp_deleted();
 				}
@@ -152,26 +157,39 @@ class API extends REST_Controller {
 	}
 	
 	
-	private function _upload_image($datauri, $name, $id) {
-		$data = explode(',', $datauri);
-		$image_data = base64_decode($data[1]);
-		$dir = $_SERVER['DOCUMENT_ROOT']."/uploads";
+	private function _upload_image($id) {
+		$dir = $_SERVER['DOCUMENT_ROOT'] . '/uploads';
+		$name = 'team-' . $id;
 		
-		$name = str_replace('$id', $id, $name);
+		// Upload the image
+		$config = array(
+			'upload_path' => $dir,
+			'allowed_types' => 'gif|jpg|png',
+			'max_size' => 0,
+			'file_name' => $name,
+			'overwrite' => true,
+		);
 		
-		file_put_contents("$dir/$name", $image_data);
+		$this->load->library('upload', $config);
+		$this->upload->do_upload('imagedata');
 		
-		$config['image_library'] = 'gd2';
-		$config['source_image'] = "$dir/$name";
-		$config['maintain_ratio'] = true;
-		$config['create_thumb'] = true;
-		$config['height'] = 160;
-		$config['width'] = 160;
+		// Create a thumbnail
+		$data = $this->upload->data();
+		
+		$config = array(
+			'image_library' => 'gd2',
+			'source_image' => $data['full_path'],
+			'maintain_ratio' => true,
+			'create_thumb' => true,
+			'thumb_marker' => '-thumb',
+			'height' => THUMB_SIZE,
+			'width' => THUMB_SIZE,
+		);
 		
 		$this->load->library('image_lib', $config);
-		$success = $this->image_lib->resize();
+		$this->image_lib->resize();
 		
-		return $success;
+		return $data['file_name'];
 	}
 	
 	// <editor-fold desc="Match handlers">

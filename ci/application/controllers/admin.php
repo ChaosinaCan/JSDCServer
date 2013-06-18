@@ -199,7 +199,7 @@ class Admin extends CI_Controller {
 			'require' => array('socket.io', 'score-listener'),
 		),
 		'teams' => array(
-			'view' => 'columns',
+			'view' => 'full',
 		),
 		'users' => array(
 			'view' => 'full',
