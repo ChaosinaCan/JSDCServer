@@ -374,7 +374,7 @@ abstract class REST_Controller extends CI_Controller
 		}
 
 		// If data is empty but http code provided, keep the output empty
-		else if (empty($data) && is_numeric($http_code))
+		else if (empty($data) && is_numeric($http_code) && $this->response->format != 'json')
 		{
 			$output = NULL;
 		}
