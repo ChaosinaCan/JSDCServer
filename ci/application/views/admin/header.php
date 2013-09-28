@@ -59,7 +59,7 @@
 		
 		$scripts = array_merge(
 				array('jquery.min.js', 'es5-shim.js', 'bigscreen.min.js', 'prefixfree.min.js',
-					'chosen.jquery.js', 'jquery.simplemodal.js', 'jquery.single.js', 'spin.js',
+					'chosen.jquery.js', 'jquery.simplemodal.js', 'jquery.single.js', 'spin.js', 'jquery.spin.js',
 					'admin/base.js', 'admin/navbar.js', 'admin/' . $page . '.js'),
 				$scripts);
 		
