@@ -119,14 +119,14 @@ module scores {
 
 	function deselectFoul(): void {
 		if ($('#action').val() != '0') {
-			$('#foul').val('0').trigger('liszt:updated');
+			$('#foul').val('0').trigger('chosen:update');
 		}
 		validateScoreEntry();
 	}
 
 	function deselectAction(): void {
 		if ($('#foul').val() != '0') {
-			$('#action').val('0').trigger('liszt:updated');
+			$('#action').val('0').trigger('chosen:update');
 		}
 		validateScoreEntry();
 	}
@@ -162,7 +162,7 @@ module scores {
 			)
 		}
 
-		$('#from-team, #on-team').trigger('liszt:updated');	
+		$('#from-team, #on-team').trigger('chosen:update');	
 	}
 
 	function validateScoreEntry(): void {
@@ -184,7 +184,7 @@ module scores {
 	}
 
 	export function resetForm(): void {
-		$('#from-team, #on-team, #action, #foul').val('0').trigger('liszt:updated');
+		$('#from-team, #on-team, #action, #foul').val('0').trigger('chosen:update');
 		$('#disable, #disqualify').prop('checked', false);
 	}
 
@@ -279,7 +279,7 @@ module scores {
 			$('#open').prop('checked', match.open).prop('disabled', false);
 			$('#new-score').find('input, select, button')
 				.prop('disabled', !match.open)
-				.trigger('liszt:updated');
+				.trigger('chosen:update');
 
 			if (match.open && ['none', 'ready'].contains(match.status)) {
 				$('#state-warning').show();
@@ -299,7 +299,7 @@ module scores {
 			$('#open').prop('checked', false).prop('disabled', true);
 			$('#new-score').find('input, select, button')
 				.prop('disabled', true)
-				.trigger('liszt:updated');
+				.trigger('chosen:update');
 		}
 
 		validateScoreEntry();

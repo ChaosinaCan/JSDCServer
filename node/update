@@ -1,5 +1,5 @@
 #!/bin/bash
-npm update
+npm install
 if [ $1 != "nopause" ]
 then
 	read -p "Updated. Press [Enter] to continue."

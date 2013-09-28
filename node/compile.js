@@ -58,7 +58,6 @@ function compileLESS(file, callback) {
 
 }
 
-
 function compileNodeServerTS(callback) {
 	console.log('Compiling Node server TypeScript files.');
 	var files = [];

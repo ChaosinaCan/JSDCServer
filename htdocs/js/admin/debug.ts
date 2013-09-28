@@ -187,11 +187,11 @@ module Debug {
 			if (this.method === 'get') {
 				$('#querybody').text('');
 				$('#post-fields select').prop('disabled', true)
-					.trigger('liszt:updated');
+					.trigger('chosen:update');
 			} else {
 				$('#querybody').text(writeObject(this.getQueryBody(), 99));
 				$('#post-fields select').prop('disabled', false)
-					.trigger('liszt:updated');
+					.trigger('chosen:update');
 			}
 
 			var datatype = $('#datatype').val();

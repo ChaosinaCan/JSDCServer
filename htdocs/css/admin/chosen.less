@@ -2,7 +2,7 @@
 
 
 
-.chzn-container {
+.chosen-container {
 	position: relative;
 	display: inline-block;
 	font-size: 11pt;
@@ -10,7 +10,7 @@
 	line-height: 1.3636;
 	min-width: 60px;
 
-	.chzn-drop {
+	.chosen-drop {
 		position: absolute;
 		top: 32px;
 		left: -9999px;
@@ -25,7 +25,7 @@
 		box-shadow: 0 1px 0 1px #000;
 		z-index: 1010;
 
-		.chzn-search {
+		.chosen-search {
 			white-space: nowrap;
 
 			input[type=text] {
@@ -47,7 +47,7 @@
 		}
 	}
 
-	.chzn-single {
+	.chosen-single {
 		display: block;
 		padding: 5px 8px;
 		overflow: hidden;
@@ -56,7 +56,7 @@
 		color: @text;
 		border: 1px solid @border;
 
-		&.chzn-default {
+		&.chosen-default {
 			color: lighten(@text, 30%);
 		}
 
@@ -120,8 +120,8 @@
 	}
 
 
-	&.chzn-with-drop {
-		.chzn-single {
+	&.chosen-with-drop {
+		.chosen-single {
 			border: 1px solid #000;
 			box-shadow: 0 0 0 1px #000;
 
@@ -131,12 +131,12 @@
 			}
 		}
 
-		.chzn-drop {
+		.chosen-drop {
 			left: 0;
 		}
 	}
 
-	.chzn-results {
+	.chosen-results {
 		max-height: 28px * 8;
 		overflow: auto;
 		-webkit-overflow-scrolling: touch;
@@ -168,8 +168,8 @@
 }
 
 
-.chzn-container-single-nosearch {
-	.chzn-search {
+.chosen-container-single-nosearch {
+	.chosen-search {
 		input {
 			position: absolute;
 			left: -9999px;
@@ -181,7 +181,7 @@
 	} 
 }
 
-.chzn-disabled .chzn-single {
+.chosen-disabled .chosen-single {
 	border-color: @border;
 	background-color: fade(@input, 30%);
 	cursor: default;
@@ -209,6 +209,6 @@
 	}
 }
 
-select.allow-deselect + .chzn-container .chzn-single:not(.chzn-default) span {
+select.allow-deselect + .chosen-container .chosen-single:not(.chosen-default) span {
 	margin-right: 26px;
 }

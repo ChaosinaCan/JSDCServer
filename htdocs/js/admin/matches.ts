@@ -327,7 +327,7 @@ module matches {
 
 		row.data('match', clone(row.data('original')));
 		updateInputs(row);
-		row.find('select').trigger('liszt:updated');
+		row.find('select').trigger('chosen:update');
 		validateRow(row);
 		disableUndo(row);
 	}
@@ -448,7 +448,7 @@ module matches {
 				row.find('button.delete').prop('disabled', false);
 			}
 		}
-		row.find('select').trigger('liszt:updated');
+		row.find('select').trigger('chosen:update');
 	}
 
 

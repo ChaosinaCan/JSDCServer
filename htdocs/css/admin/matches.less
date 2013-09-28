@@ -56,7 +56,7 @@ body {
 			padding: 1px;
 		}
 
-		.chzn-container {
+		.chosen-container {
 			margin: 0;
 			width: 100% !important;
 		}
@@ -89,7 +89,7 @@ body {
 		}
 
 		tr.deleted {
-			.chzn-single {
+			.chosen-single {
 				text-decoration: line-through;
 				color: fade(@text, 50%);
 				border-color: @delete;
@@ -111,7 +111,7 @@ body {
 
 	}
 
-	td.invalid .chzn-single:not(.chzn-single-with-drop) {
+	td.invalid .chosen-single:not(.chosen-single-with-drop) {
 		border-color: @error;
 		box-shadow: 0 0 0 1px @error;
 	}
@@ -122,6 +122,6 @@ body {
 	float: right;
 }
 
-#filter-round + .chzn-container {
+#filter-round + .chosen-container {
 	min-width: 96px;
 }
