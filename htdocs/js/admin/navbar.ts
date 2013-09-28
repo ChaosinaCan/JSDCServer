@@ -35,7 +35,10 @@ module NavBar {
 		}));
 
 		nav.bind('mousewheel', $.single((e) => {
-			shift(-(<any>e).originalEvent.detail);
+			function sign(x) { return x ? x < 0 ? -1 : 1 : 0; }
+
+			var delta = sign((<MouseWheelEvent><any>e.originalEvent).wheelDelta) * 3;
+			shift(delta);
 
 			e.preventDefault();
 			setTimeout(e.complete, 300);
