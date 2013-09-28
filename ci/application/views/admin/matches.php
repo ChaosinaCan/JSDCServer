@@ -24,9 +24,9 @@
 			Filter By Status
 			<select id="filter-status">
 				<option value=""></option>
-				<option value="pending">Unfinished Matches</option>
-				<option value="current">Current Matches</option>
-				<option value="finished">Finished Matches</option>
+				<option value="pending">Pending matches</option>
+				<option value="current">Current matches</option>
+				<option value="finished">Finished matches</option>
 			</select>
 		</label>
 		

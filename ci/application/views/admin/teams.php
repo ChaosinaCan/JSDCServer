@@ -21,6 +21,6 @@
 	</table>
 	
 	<p>
-		<button id="new">Create New Team</button>
+		<button id="new">Create new team</button>
 	</p>
 </section>

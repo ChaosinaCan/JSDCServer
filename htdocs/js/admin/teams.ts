@@ -74,7 +74,7 @@ module teams {
 						.bind('dragover', handleDragOver)
 						.bind('drop', handleFileSelect),
 					$('<img id=team-image>').attr('src', image),
-					$('<button id=team-image-upload>').text('Upload Image')
+					$('<button id=team-image-upload>').text('Upload image')
 				)
 			),
 			$('<div class=fields>').append(

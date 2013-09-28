@@ -146,6 +146,11 @@ abstract class REST_Controller extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
+		
+		// init objects
+		$this->request = new stdClass();
+		$this->response = new stdClass();
+		$this->rest = new stdClass();
 
 		$this->_zlib_oc = @ini_get('zlib.output_compression');
 
@@ -154,10 +159,10 @@ abstract class REST_Controller extends CI_Controller
 
 		// let's learn about the request
 		$this->request = new stdClass();
-		
+
 		// Is it over SSL?
 		$this->request->ssl = $this->_detect_ssl();
-		
+
 		// How is this request being made? POST, DELETE, GET, PUT?
 		$this->request->method = $this->_detect_method();
 
@@ -170,7 +175,7 @@ abstract class REST_Controller extends CI_Controller
 		// Set up our GET variables
 		$this->_get_args = array_merge($this->_get_args, $this->uri->ruri_to_assoc());
 
-		//$this->load->library('security');
+		$this->load->library('security');
 
 		// This library is bundled with REST_Controller 2.5+, but will eventually be part of CodeIgniter itself
 		$this->load->library('format');
@@ -265,9 +270,9 @@ abstract class REST_Controller extends CI_Controller
 		// Should we answer if not over SSL?
 		if (config_item('force_https') AND !$this->_detect_ssl())
 		{
-			$this->response(array('status' => false, 'error' => 'Unsupported protocol'), 403);	
+			$this->response(array('status' => false, 'error' => 'Unsupported protocol'), 403);
 		}
-		
+
 		$pattern = '/^(.*)\.('.implode('|', array_keys($this->_supported_formats)).')$/';
 		if (preg_match($pattern, $object_called, $matches))
 		{
@@ -368,6 +373,12 @@ abstract class REST_Controller extends CI_Controller
 			$output = NULL;
 		}
 
+		// If data is empty but http code provided, keep the output empty
+		else if (empty($data) && is_numeric($http_code))
+		{
+			$output = NULL;
+		}
+
 		// Otherwise (if no data but 200 provided) or some data, carry on camping!
 		else
 		{
@@ -434,8 +445,8 @@ abstract class REST_Controller extends CI_Controller
 	{
     		return (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on");
 	}
-	
-	
+
+
 	/*
 	 * Detect input format
 	 *
@@ -608,7 +619,7 @@ abstract class REST_Controller extends CI_Controller
 			isset($row->user_id) AND $this->rest->user_id = $row->user_id;
 			isset($row->level) AND $this->rest->level = $row->level;
 			isset($row->ignore_limits) AND $this->rest->ignore_limits = $row->ignore_limits;
-			
+
 			/*
 			 * If "is private key" is enabled, compare the ip address with the list
 			 * of valid ip addresses stored in the database.
@@ -621,7 +632,7 @@ abstract class REST_Controller extends CI_Controller
 					// multiple ip addresses must be separated using a comma, explode and loop
 					$list_ip_addresses = explode(",", $row->ip_addresses);
 					$found_address = FALSE;
-					
+
 					foreach($list_ip_addresses as $ip_address)
 					{
 						if($this->input->ip_address() == trim($ip_address))
@@ -631,7 +642,7 @@ abstract class REST_Controller extends CI_Controller
 							break;
 						}
 					}
-					
+
 					return $found_address;
 				}
 				else
@@ -640,7 +651,7 @@ abstract class REST_Controller extends CI_Controller
 					return FALSE;
 				}
 			}
-			
+
 			return $row;
 		}
 
@@ -696,7 +707,7 @@ abstract class REST_Controller extends CI_Controller
 		return $this->rest->db->insert(config_item('rest_logs_table'), array(
 					'uri' => $this->uri->uri_string(),
 					'method' => $this->request->method,
-					'params' => $this->_args ? serialize($this->_args) : null,
+					'params' => $this->_args ? (config_item('rest_logs_json_params') ? json_encode($this->_args) : serialize($this->_args)) : null,
 					'api_key' => isset($this->rest->key) ? $this->rest->key : '',
 					'ip_address' => $this->input->ip_address(),
 					'time' => function_exists('now') ? now() : time(),
@@ -1080,7 +1091,7 @@ abstract class REST_Controller extends CI_Controller
 			return $this->_perform_ldap_auth($username, $password);
 		}
 
-		$valid_logins = & $this->config->item('rest_valid_logins');
+		$valid_logins = $this->config->item('rest_valid_logins');
 
 		if ( ! array_key_exists($username, $valid_logins))
 		{
@@ -1175,7 +1186,7 @@ abstract class REST_Controller extends CI_Controller
 			$this->_force_login($uniqid);
 		}
 
-		$valid_logins = & $this->config->item('rest_valid_logins');
+		$valid_logins = $this->config->item('rest_valid_logins');
 		$valid_pass = $valid_logins[$digest['username']];
 
 		// This is the valid response expected
