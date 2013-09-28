@@ -46,9 +46,6 @@
 	</li>
 	<li>
 		The admin pages require a browser that supports the flexible box model.
-		As of the time of writing, Opera 12 is the only browser which properly
-		supports this. (Chrome supports the required properties with the -webkit
-		prefix, but -prefix-free does not apply them due to a bug in Chrome.)
 	</li>
 	<li>
 		The scoring pages are designed to work with the BlackBerry Playbook browser.
