@@ -1,11 +1,13 @@
 # XAMPP Files
 /apache
+/bin
 /cgi-bin
 /contrib
 /install
 /licenses
 /locale
 /mysql
+/obj
 /perl
 /php
 /phpMyAdmin
@@ -29,6 +31,7 @@
 
 # Visual Studio Files
 *.suo
+*.csproj.user
 
 # Python
 __pycache__

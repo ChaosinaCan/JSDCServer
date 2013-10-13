@@ -1,0 +1,359 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <ProjectGuid>{567A0DAD-54DF-4CE8-AC76-CE252FA8EB43}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <OutputPath>bin</OutputPath>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <UseIISExpress>false</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace>Admin_Panel</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>15736</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>
+          </IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptTarget>ES3</TypeScriptTarget>
+    <TypeScriptIncludeComments>true</TypeScriptIncludeComments>
+    <TypeScriptSourceMap>true</TypeScriptSourceMap>
+    <TypeScriptModuleKind>AMD</TypeScriptModuleKind>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <TypeScriptTarget>ES3</TypeScriptTarget>
+    <TypeScriptIncludeComments>false</TypeScriptIncludeComments>
+    <TypeScriptSourceMap>false</TypeScriptSourceMap>
+    <TypeScriptModuleKind>AMD</TypeScriptModuleKind>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="ci\application\views\index.html" />
+    <Content Include="htdocs\.htaccess" />
+    <Content Include="htdocs\audio\alarm.ogg" />
+    <Content Include="htdocs\audio\buzzer.ogg" />
+    <Content Include="htdocs\audio\emergency.ogg" />
+    <Content Include="htdocs\audio\one_minute.ogg" />
+    <Content Include="htdocs\audio\red_alert.ogg" />
+    <Content Include="htdocs\audio\start_bell.ogg" />
+    <Content Include="htdocs\audio\transfer_complete.ogg" />
+    <Content Include="htdocs\css\admin\about.less" />
+    <Content Include="htdocs\css\admin\base.less" />
+    <Content Include="htdocs\css\admin\chosen.less" />
+    <Content Include="htdocs\css\admin\colors.less" />
+    <Content Include="htdocs\css\admin\debug.less" />
+    <Content Include="htdocs\css\admin\field-display.less" />
+    <Content Include="htdocs\css\admin\font.less" />
+    <Content Include="htdocs\css\admin\game.less" />
+    <Content Include="htdocs\css\admin\index.less" />
+    <Content Include="htdocs\css\admin\install.less" />
+    <Content Include="htdocs\css\admin\matches.less" />
+    <Content Include="htdocs\css\admin\reset.less" />
+    <Content Include="htdocs\css\admin\results.less" />
+    <Content Include="htdocs\css\admin\schedule.less" />
+    <Content Include="htdocs\css\admin\score-list.less" />
+    <Content Include="htdocs\css\admin\scoreboard.less" />
+    <Content Include="htdocs\css\admin\scores.less" />
+    <Content Include="htdocs\css\admin\teams.less" />
+    <Content Include="htdocs\css\scoring\base.less" />
+    <Content Include="htdocs\css\scoring\devicetest.less" />
+    <Content Include="htdocs\css\scoring\scoring.less" />
+    <Content Include="htdocs\fonts\DroidSansMono.ttf" />
+    <Content Include="htdocs\fonts\NOTICE" />
+    <Content Include="htdocs\fonts\segoeui.ttf" />
+    <Content Include="htdocs\fonts\segoeuib.ttf" />
+    <Content Include="htdocs\fonts\segoeuii.ttf" />
+    <Content Include="htdocs\fonts\segoeuil.ttf" />
+    <Content Include="htdocs\fonts\segoeuisl.ttf" />
+    <Content Include="htdocs\fonts\segoeuiz.ttf" />
+    <Content Include="htdocs\fonts\seguili.ttf" />
+    <Content Include="htdocs\fonts\seguisb.ttf" />
+    <Content Include="htdocs\fonts\seguisbi.ttf" />
+    <Content Include="htdocs\fonts\seguisli.ttf" />
+    <Content Include="htdocs\fonts\seguisym.ttf" />
+    <Content Include="htdocs\index.php" />
+    <Content Include="htdocs\js\jquery.min.map">
+      <DependentUpon>jquery.js</DependentUpon>
+    </Content>
+    <Content Include="htdocs\video\Darth Vader vs Japanese Police.webm" />
+    <Content Include="htdocs\video\Talor Mali - Conviction.webm" />
+    <Content Include="htdocs\video\Talor Mali - On Girls Lending Pens.webm" />
+    <Content Include="htdocs\video\Talor Mali - Teachers.webm" />
+    <Content Include="setup\cfg.py" />
+    <Content Include="setup\relocate.py" />
+    <Content Include="setup\setup.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="htdocs\apple-touch-icon.png" />
+    <Content Include="htdocs\audio\oneminutetoautodestruct_ep.mp3" />
+    <Content Include="htdocs\css\admin\about.css">
+      <DependentUpon>about.less</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\admin\base.css">
+      <DependentUpon>base.less</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\admin\chosen.css">
+      <DependentUpon>chosen.less</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\admin\colors.css">
+      <DependentUpon>colors.less</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\admin\debug.css">
+      <DependentUpon>debug.less</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\admin\field-display.css">
+      <DependentUpon>field-display.less</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\admin\font.css">
+      <DependentUpon>font.less</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\admin\game.css">
+      <DependentUpon>game.less</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\admin\index.css">
+      <DependentUpon>index.less</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\admin\install.css">
+      <DependentUpon>install.less</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\admin\matches.css">
+      <DependentUpon>matches.less</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\admin\reset.css">
+      <DependentUpon>reset.less</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\admin\results.css">
+      <DependentUpon>results.less</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\admin\schedule.css">
+      <DependentUpon>schedule.less</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\admin\score-list.css">
+      <DependentUpon>score-list.less</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\admin\scoreboard.css">
+      <DependentUpon>scoreboard.less</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\admin\scores.css">
+      <DependentUpon>scores.less</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\admin\teams.css">
+      <DependentUpon>teams.less</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\mediaelement\background.png" />
+    <Content Include="htdocs\css\mediaelement\bigplay.png" />
+    <Content Include="htdocs\css\mediaelement\bigplay.svg" />
+    <Content Include="htdocs\css\mediaelement\controls-ted.png" />
+    <Content Include="htdocs\css\mediaelement\controls-wmp-bg.png" />
+    <Content Include="htdocs\css\mediaelement\controls-wmp.png" />
+    <Content Include="htdocs\css\mediaelement\controls.png" />
+    <Content Include="htdocs\css\mediaelement\controls.svg" />
+    <Content Include="htdocs\css\mediaelement\flashmediaelement.swf" />
+    <Content Include="htdocs\css\mediaelement\loading.gif" />
+    <Content Include="htdocs\css\mediaelement\mediaelementplayer.css" />
+    <Content Include="htdocs\css\scoring\base.css">
+      <DependentUpon>base.less</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\scoring\devicetest.css">
+      <DependentUpon>devicetest.less</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\scoring\scoring.css">
+      <DependentUpon>scoring.less</DependentUpon>
+    </Content>
+    <Content Include="htdocs\favicon.ico" />
+    <Content Include="htdocs\favicon.png" />
+    <Content Include="htdocs\fonts\FONT INSTRUCTIONS.txt" />
+    <Content Include="htdocs\fonts\README.txt" />
+    <Content Include="htdocs\img\default-team.svg" />
+    <Content Include="htdocs\js\admin\audio.js">
+      <DependentUpon>audio.ts</DependentUpon>
+    </Content>
+    <Content Include="htdocs\js\admin\audio.ts" />
+    <Content Include="htdocs\js\admin\base.js">
+      <DependentUpon>base.ts</DependentUpon>
+    </Content>
+    <Content Include="htdocs\js\admin\base.ts" />
+    <Content Include="htdocs\js\admin\debug.js">
+      <DependentUpon>debug.ts</DependentUpon>
+    </Content>
+    <Content Include="htdocs\js\admin\debug.ts" />
+    <Content Include="htdocs\js\admin\field-listener.js">
+      <DependentUpon>field-listener.ts</DependentUpon>
+    </Content>
+    <Content Include="htdocs\js\admin\field-listener.ts" />
+    <Content Include="htdocs\js\admin\game.js">
+      <DependentUpon>game.ts</DependentUpon>
+    </Content>
+    <Content Include="htdocs\js\admin\game.ts" />
+    <Content Include="htdocs\js\admin\matches.js">
+      <DependentUpon>matches.ts</DependentUpon>
+    </Content>
+    <Content Include="htdocs\js\admin\matches.ts" />
+    <Content Include="htdocs\js\admin\navbar.js">
+      <DependentUpon>navbar.ts</DependentUpon>
+    </Content>
+    <Content Include="htdocs\js\admin\navbar.ts" />
+    <Content Include="htdocs\js\admin\results.js">
+      <DependentUpon>results.ts</DependentUpon>
+    </Content>
+    <Content Include="htdocs\js\admin\results.ts" />
+    <Content Include="htdocs\js\admin\schedule.js">
+      <DependentUpon>schedule.ts</DependentUpon>
+    </Content>
+    <Content Include="htdocs\js\admin\schedule.ts" />
+    <Content Include="htdocs\js\admin\score-listener.js">
+      <DependentUpon>score-listener.ts</DependentUpon>
+    </Content>
+    <Content Include="htdocs\js\admin\score-listener.ts" />
+    <Content Include="htdocs\js\admin\scoreboard.js">
+      <DependentUpon>scoreboard.ts</DependentUpon>
+    </Content>
+    <Content Include="htdocs\js\admin\scoreboard.ts" />
+    <Content Include="htdocs\js\admin\scores.js">
+      <DependentUpon>scores.ts</DependentUpon>
+    </Content>
+    <Content Include="htdocs\js\admin\scores.ts" />
+    <Content Include="htdocs\js\admin\teams.js">
+      <DependentUpon>teams.ts</DependentUpon>
+    </Content>
+    <Content Include="htdocs\js\admin\teams.ts" />
+    <Content Include="htdocs\js\bigscreen.d.ts" />
+    <Content Include="htdocs\js\bigscreen.min.js" />
+    <Content Include="htdocs\js\chosen.jquery.js" />
+    <Content Include="htdocs\js\chosen.jquery.min.js">
+      <DependentUpon>chosen.jquery.js</DependentUpon>
+    </Content>
+    <Content Include="htdocs\js\es5-shim.js" />
+    <Content Include="htdocs\js\jquery.chosen.d.ts" />
+    <Content Include="htdocs\js\jquery.d.ts" />
+    <Content Include="htdocs\js\jquery.js" />
+    <Content Include="htdocs\js\jquery.min.js">
+      <DependentUpon>jquery.js</DependentUpon>
+    </Content>
+    <Content Include="htdocs\js\jquery.simplemodal.d.ts" />
+    <Content Include="htdocs\js\jquery.simplemodal.js" />
+    <Content Include="htdocs\js\jquery.simplemodal.min.js">
+      <DependentUpon>jquery.simplemodal.js</DependentUpon>
+    </Content>
+    <Content Include="htdocs\js\jquery.single.d.ts" />
+    <Content Include="htdocs\js\jquery.single.js" />
+    <Content Include="htdocs\js\jquery.spin.js" />
+    <Content Include="htdocs\js\jsdc-api.d.ts" />
+    <Content Include="htdocs\js\lib.d.ts" />
+    <Content Include="htdocs\js\mediaelement.d.ts" />
+    <Content Include="htdocs\js\mediaelement\flashmediaelement.swf" />
+    <Content Include="htdocs\js\mediaelement\mediaelement-and-player.js" />
+    <Content Include="htdocs\js\mediaelement\silverlightmediaelement.xap" />
+    <Content Include="htdocs\js\prefixfree.min.js" />
+    <Content Include="htdocs\js\scoring\devicetest.js">
+      <DependentUpon>devicetest.ts</DependentUpon>
+    </Content>
+    <Content Include="htdocs\js\scoring\devicetest.ts" />
+    <Content Include="htdocs\js\scoring\scoring.js">
+      <DependentUpon>scoring.ts</DependentUpon>
+    </Content>
+    <Content Include="htdocs\js\scoring\scoring.ts" />
+    <Content Include="htdocs\js\scoring\teamselect.js">
+      <DependentUpon>teamselect.ts</DependentUpon>
+    </Content>
+    <Content Include="htdocs\js\scoring\teamselect.ts" />
+    <Content Include="htdocs\js\socket.io-client.d.ts" />
+    <Content Include="htdocs\js\spin.d.ts" />
+    <Content Include="htdocs\js\spin.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="setup\relocate" />
+    <Content Include="setup\relocate-here" />
+    <Content Include="setup\relocate-here.bat">
+      <DependentUpon>relocate-here</DependentUpon>
+    </Content>
+    <Content Include="setup\relocate.bat">
+      <DependentUpon>relocate</DependentUpon>
+    </Content>
+    <Content Include="setup\setup-ci" />
+    <Content Include="setup\setup-ci.bat">
+      <DependentUpon>setup-ci</DependentUpon>
+    </Content>
+    <Content Include="setup\setup-node" />
+    <Content Include="setup\setup-node.bat">
+      <DependentUpon>setup-node</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="htdocs\js\install\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ci\application\views\admin\about.php" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ci\application\views\admin\audio.php" />
+    <Content Include="ci\application\views\admin\debug.php" />
+    <Content Include="ci\application\views\admin\footer.php" />
+    <Content Include="ci\application\views\admin\game.php" />
+    <Content Include="ci\application\views\admin\header.php" />
+    <Content Include="ci\application\views\admin\index.php" />
+    <Content Include="ci\application\views\admin\info.php" />
+    <Content Include="ci\application\views\admin\matches.php" />
+    <Content Include="ci\application\views\admin\results.php" />
+    <Content Include="ci\application\views\admin\rules.php" />
+    <Content Include="ci\application\views\admin\schedule.php" />
+    <Content Include="ci\application\views\admin\scoreboard.php" />
+    <Content Include="ci\application\views\admin\scores.php" />
+    <Content Include="ci\application\views\admin\setup.php" />
+    <Content Include="ci\application\views\admin\teams.php" />
+    <Content Include="ci\application\views\admin\users.php" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ci\application\views\install\create_database.php" />
+    <Content Include="ci\application\views\install\design_database.php" />
+    <Content Include="ci\application\views\install\finished.php" />
+    <Content Include="ci\application\views\install\footer.php" />
+    <Content Include="ci\application\views\install\header.php" />
+    <Content Include="ci\application\views\install\login.php" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ci\application\views\scoring\2012\devicetest.php" />
+    <Content Include="ci\application\views\scoring\2012\error-match.php" />
+    <Content Include="ci\application\views\scoring\2012\login.php" />
+    <Content Include="ci\application\views\scoring\2012\main.php" />
+    <Content Include="ci\application\views\scoring\2012\teamselect.php" />
+    <Content Include="ci\application\views\scoring\devicetest.php" />
+    <Content Include="ci\application\views\scoring\error-match.php" />
+    <Content Include="ci\application\views\scoring\login.php" />
+    <Content Include="ci\application\views\scoring\main.php" />
+    <Content Include="ci\application\views\scoring\teamselect.php" />
+    <Content Include="ci\application\views\welcome_message.php" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ci\application\views\admin\2012\scoreboard.php" />
+  </ItemGroup>
+  <Import Project="$(VSToolsPath)\TypeScript\Microsoft.TypeScript.targets" />
+</Project>

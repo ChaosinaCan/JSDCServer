@@ -1,33 +1,30 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "JSDC Server", ".", "{334D6361-DCEF-4549-BBFB-8D1A97E9EDCF}"
-	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
-		Debug.AspNetCompiler.VirtualPath = "/JSDC Server"
-		Debug.AspNetCompiler.PhysicalPath = "..\..\..\..\..\..\JSDC Server\"
-		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\JSDC Server\"
-		Debug.AspNetCompiler.Updateable = "true"
-		Debug.AspNetCompiler.ForceOverwrite = "true"
-		Debug.AspNetCompiler.FixedNames = "false"
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.VirtualPath = "/JSDC Server"
-		Release.AspNetCompiler.PhysicalPath = "..\..\..\..\..\..\JSDC Server\"
-		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\JSDC Server\"
-		Release.AspNetCompiler.Updateable = "true"
-		Release.AspNetCompiler.ForceOverwrite = "true"
-		Release.AspNetCompiler.FixedNames = "false"
-		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "59213"
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Node Server", "Node Server.csproj", "{D5638EA2-3B11-4116-AC76-8366820E7A02}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "REST Server", "REST Server.csproj", "{2B47741F-C964-41B9-AD80-356AB3ECBEFC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Admin Panel", "Admin Panel.csproj", "{567A0DAD-54DF-4CE8-AC76-CE252FA8EB43}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{334D6361-DCEF-4549-BBFB-8D1A97E9EDCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{334D6361-DCEF-4549-BBFB-8D1A97E9EDCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5638EA2-3B11-4116-AC76-8366820E7A02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5638EA2-3B11-4116-AC76-8366820E7A02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5638EA2-3B11-4116-AC76-8366820E7A02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5638EA2-3B11-4116-AC76-8366820E7A02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B47741F-C964-41B9-AD80-356AB3ECBEFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B47741F-C964-41B9-AD80-356AB3ECBEFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B47741F-C964-41B9-AD80-356AB3ECBEFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B47741F-C964-41B9-AD80-356AB3ECBEFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{567A0DAD-54DF-4CE8-AC76-CE252FA8EB43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{567A0DAD-54DF-4CE8-AC76-CE252FA8EB43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{567A0DAD-54DF-4CE8-AC76-CE252FA8EB43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{567A0DAD-54DF-4CE8-AC76-CE252FA8EB43}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

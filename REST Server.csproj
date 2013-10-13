@@ -1,0 +1,494 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2B47741F-C964-41B9-AD80-356AB3ECBEFC}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>REST_Server</RootNamespace>
+    <AssemblyName>REST Server</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <UseIISExpress>false</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="ci\application\.htaccess" />
+    <Content Include="ci\application\cache\.htaccess" />
+    <Content Include="ci\application\config\autoload.php" />
+    <Content Include="ci\application\config\config.php" />
+    <Content Include="ci\application\config\constants.php" />
+    <Content Include="ci\application\config\database.php" />
+    <Content Include="ci\application\config\doctypes.php" />
+    <Content Include="ci\application\config\foreign_chars.php" />
+    <Content Include="ci\application\config\hooks.php" />
+    <Content Include="ci\application\config\jsdc.php" />
+    <Content Include="ci\application\config\migration.php" />
+    <Content Include="ci\application\config\mimes.php" />
+    <Content Include="ci\application\config\profiler.php" />
+    <Content Include="ci\application\config\rest.php" />
+    <Content Include="ci\application\config\routes.php" />
+    <Content Include="ci\application\config\smileys.php" />
+    <Content Include="ci\application\config\user_agents.php" />
+    <Content Include="ci\application\controllers\admin.php" />
+    <Content Include="ci\application\controllers\api.php" />
+    <Content Include="ci\application\controllers\install.php" />
+    <Content Include="ci\application\controllers\key.php" />
+    <Content Include="ci\application\controllers\scoring.php" />
+    <Content Include="ci\application\controllers\welcome.php" />
+    <Content Include="ci\application\controllers\_api\example.php" />
+    <Content Include="ci\application\controllers\_api\key.php" />
+    <Content Include="ci\application\core\MY_Input.php" />
+    <Content Include="ci\application\errors\error_404.php" />
+    <Content Include="ci\application\errors\error_db.php" />
+    <Content Include="ci\application\errors\error_general.php" />
+    <Content Include="ci\application\errors\error_php.php" />
+    <Content Include="ci\application\helpers\addprop_helper.php" />
+    <Content Include="ci\application\helpers\arrays_helper.php" />
+    <Content Include="ci\application\helpers\formatting_helper.php" />
+    <Content Include="ci\application\libraries\Curl.php" />
+    <Content Include="ci\application\libraries\Format.php" />
+    <Content Include="ci\application\libraries\REST_Controller.php" />
+    <Content Include="ci\application\models\configeditor.php" />
+    <Content Include="ci\application\models\database.php" />
+    <Content Include="ci\application\models\manage_database.php" />
+    <Content Include="ci\application\models\match.php" />
+    <Content Include="ci\application\models\rules.php" />
+    <Content Include="ci\application\models\score.php" />
+    <Content Include="ci\application\models\team.php" />
+    <Content Include="ci\application\models\user.php" />
+    <Content Include="ci\application\views\admin\2012\scoreboard.php" />
+    <Content Include="ci\application\views\admin\about.php" />
+    <Content Include="ci\application\views\admin\audio.php" />
+    <Content Include="ci\application\views\admin\debug.php" />
+    <Content Include="ci\application\views\admin\footer.php" />
+    <Content Include="ci\application\views\admin\game.php" />
+    <Content Include="ci\application\views\admin\header.php" />
+    <Content Include="ci\application\views\admin\index.php" />
+    <Content Include="ci\application\views\admin\info.php" />
+    <Content Include="ci\application\views\admin\matches.php" />
+    <Content Include="ci\application\views\admin\results.php" />
+    <Content Include="ci\application\views\admin\rules.php" />
+    <Content Include="ci\application\views\admin\schedule.php" />
+    <Content Include="ci\application\views\admin\scoreboard.php" />
+    <Content Include="ci\application\views\admin\scores.php" />
+    <Content Include="ci\application\views\admin\setup.php" />
+    <Content Include="ci\application\views\admin\teams.php" />
+    <Content Include="ci\application\views\admin\users.php" />
+    <Content Include="ci\application\views\install\create_database.php" />
+    <Content Include="ci\application\views\install\design_database.php" />
+    <Content Include="ci\application\views\install\finished.php" />
+    <Content Include="ci\application\views\install\footer.php" />
+    <Content Include="ci\application\views\install\header.php" />
+    <Content Include="ci\application\views\install\login.php" />
+    <Content Include="ci\application\views\scoring\2012\devicetest.php" />
+    <Content Include="ci\application\views\scoring\2012\error-match.php" />
+    <Content Include="ci\application\views\scoring\2012\login.php" />
+    <Content Include="ci\application\views\scoring\2012\main.php" />
+    <Content Include="ci\application\views\scoring\2012\teamselect.php" />
+    <Content Include="ci\application\views\scoring\devicetest.php" />
+    <Content Include="ci\application\views\scoring\error-match.php" />
+    <Content Include="ci\application\views\scoring\login.php" />
+    <Content Include="ci\application\views\scoring\main.php" />
+    <Content Include="ci\application\views\scoring\teamselect.php" />
+    <Content Include="ci\application\views\welcome_message.php" />
+    <Content Include="ci\index.php" />
+    <Content Include="ci\system\.htaccess" />
+    <Content Include="ci\system\core\Benchmark.php" />
+    <Content Include="ci\system\core\CodeIgniter.php" />
+    <Content Include="ci\system\core\Common.php" />
+    <Content Include="ci\system\core\Config.php" />
+    <Content Include="ci\system\core\Controller.php" />
+    <Content Include="ci\system\core\Exceptions.php" />
+    <Content Include="ci\system\core\Hooks.php" />
+    <Content Include="ci\system\core\Input.php" />
+    <Content Include="ci\system\core\Lang.php" />
+    <Content Include="ci\system\core\Loader.php" />
+    <Content Include="ci\system\core\Model.php" />
+    <Content Include="ci\system\core\Output.php" />
+    <Content Include="ci\system\core\Router.php" />
+    <Content Include="ci\system\core\Security.php" />
+    <Content Include="ci\system\core\URI.php" />
+    <Content Include="ci\system\core\Utf8.php" />
+    <Content Include="ci\system\database\DB.php" />
+    <Content Include="ci\system\database\DB_active_rec.php" />
+    <Content Include="ci\system\database\DB_cache.php" />
+    <Content Include="ci\system\database\DB_driver.php" />
+    <Content Include="ci\system\database\DB_forge.php" />
+    <Content Include="ci\system\database\DB_result.php" />
+    <Content Include="ci\system\database\DB_utility.php" />
+    <Content Include="ci\system\database\drivers\cubrid\cubrid_driver.php" />
+    <Content Include="ci\system\database\drivers\cubrid\cubrid_forge.php" />
+    <Content Include="ci\system\database\drivers\cubrid\cubrid_result.php" />
+    <Content Include="ci\system\database\drivers\cubrid\cubrid_utility.php" />
+    <Content Include="ci\system\database\drivers\mssql\mssql_driver.php" />
+    <Content Include="ci\system\database\drivers\mssql\mssql_forge.php" />
+    <Content Include="ci\system\database\drivers\mssql\mssql_result.php" />
+    <Content Include="ci\system\database\drivers\mssql\mssql_utility.php" />
+    <Content Include="ci\system\database\drivers\mysqli\mysqli_driver.php" />
+    <Content Include="ci\system\database\drivers\mysqli\mysqli_forge.php" />
+    <Content Include="ci\system\database\drivers\mysqli\mysqli_result.php" />
+    <Content Include="ci\system\database\drivers\mysqli\mysqli_utility.php" />
+    <Content Include="ci\system\database\drivers\mysql\mysql_driver.php" />
+    <Content Include="ci\system\database\drivers\mysql\mysql_forge.php" />
+    <Content Include="ci\system\database\drivers\mysql\mysql_result.php" />
+    <Content Include="ci\system\database\drivers\mysql\mysql_utility.php" />
+    <Content Include="ci\system\database\drivers\oci8\oci8_driver.php" />
+    <Content Include="ci\system\database\drivers\oci8\oci8_forge.php" />
+    <Content Include="ci\system\database\drivers\oci8\oci8_result.php" />
+    <Content Include="ci\system\database\drivers\oci8\oci8_utility.php" />
+    <Content Include="ci\system\database\drivers\odbc\odbc_driver.php" />
+    <Content Include="ci\system\database\drivers\odbc\odbc_forge.php" />
+    <Content Include="ci\system\database\drivers\odbc\odbc_result.php" />
+    <Content Include="ci\system\database\drivers\odbc\odbc_utility.php" />
+    <Content Include="ci\system\database\drivers\pdo\pdo_driver.php" />
+    <Content Include="ci\system\database\drivers\pdo\pdo_forge.php" />
+    <Content Include="ci\system\database\drivers\pdo\pdo_result.php" />
+    <Content Include="ci\system\database\drivers\pdo\pdo_utility.php" />
+    <Content Include="ci\system\database\drivers\postgre\postgre_driver.php" />
+    <Content Include="ci\system\database\drivers\postgre\postgre_forge.php" />
+    <Content Include="ci\system\database\drivers\postgre\postgre_result.php" />
+    <Content Include="ci\system\database\drivers\postgre\postgre_utility.php" />
+    <Content Include="ci\system\database\drivers\sqlite\sqlite_driver.php" />
+    <Content Include="ci\system\database\drivers\sqlite\sqlite_forge.php" />
+    <Content Include="ci\system\database\drivers\sqlite\sqlite_result.php" />
+    <Content Include="ci\system\database\drivers\sqlite\sqlite_utility.php" />
+    <Content Include="ci\system\database\drivers\sqlsrv\sqlsrv_driver.php" />
+    <Content Include="ci\system\database\drivers\sqlsrv\sqlsrv_forge.php" />
+    <Content Include="ci\system\database\drivers\sqlsrv\sqlsrv_result.php" />
+    <Content Include="ci\system\database\drivers\sqlsrv\sqlsrv_utility.php" />
+    <Content Include="ci\system\fonts\texb.ttf" />
+    <Content Include="ci\system\helpers\array_helper.php" />
+    <Content Include="ci\system\helpers\captcha_helper.php" />
+    <Content Include="ci\system\helpers\cookie_helper.php" />
+    <Content Include="ci\system\helpers\date_helper.php" />
+    <Content Include="ci\system\helpers\directory_helper.php" />
+    <Content Include="ci\system\helpers\download_helper.php" />
+    <Content Include="ci\system\helpers\email_helper.php" />
+    <Content Include="ci\system\helpers\file_helper.php" />
+    <Content Include="ci\system\helpers\form_helper.php" />
+    <Content Include="ci\system\helpers\html_helper.php" />
+    <Content Include="ci\system\helpers\inflector_helper.php" />
+    <Content Include="ci\system\helpers\language_helper.php" />
+    <Content Include="ci\system\helpers\number_helper.php" />
+    <Content Include="ci\system\helpers\path_helper.php" />
+    <Content Include="ci\system\helpers\security_helper.php" />
+    <Content Include="ci\system\helpers\smiley_helper.php" />
+    <Content Include="ci\system\helpers\string_helper.php" />
+    <Content Include="ci\system\helpers\text_helper.php" />
+    <Content Include="ci\system\helpers\typography_helper.php" />
+    <Content Include="ci\system\helpers\url_helper.php" />
+    <Content Include="ci\system\helpers\xml_helper.php" />
+    <Content Include="ci\system\language\english\calendar_lang.php" />
+    <Content Include="ci\system\language\english\date_lang.php" />
+    <Content Include="ci\system\language\english\db_lang.php" />
+    <Content Include="ci\system\language\english\email_lang.php" />
+    <Content Include="ci\system\language\english\form_validation_lang.php" />
+    <Content Include="ci\system\language\english\ftp_lang.php" />
+    <Content Include="ci\system\language\english\imglib_lang.php" />
+    <Content Include="ci\system\language\english\migration_lang.php" />
+    <Content Include="ci\system\language\english\number_lang.php" />
+    <Content Include="ci\system\language\english\profiler_lang.php" />
+    <Content Include="ci\system\language\english\unit_test_lang.php" />
+    <Content Include="ci\system\language\english\upload_lang.php" />
+    <Content Include="ci\system\libraries\Cache\Cache.php" />
+    <Content Include="ci\system\libraries\Cache\drivers\Cache_apc.php" />
+    <Content Include="ci\system\libraries\Cache\drivers\Cache_dummy.php" />
+    <Content Include="ci\system\libraries\Cache\drivers\Cache_file.php" />
+    <Content Include="ci\system\libraries\Cache\drivers\Cache_memcached.php" />
+    <Content Include="ci\system\libraries\Calendar.php" />
+    <Content Include="ci\system\libraries\Cart.php" />
+    <Content Include="ci\system\libraries\Driver.php" />
+    <Content Include="ci\system\libraries\Email.php" />
+    <Content Include="ci\system\libraries\Encrypt.php" />
+    <Content Include="ci\system\libraries\Form_validation.php" />
+    <Content Include="ci\system\libraries\Ftp.php" />
+    <Content Include="ci\system\libraries\Image_lib.php" />
+    <Content Include="ci\system\libraries\Javascript.php" />
+    <Content Include="ci\system\libraries\javascript\Jquery.php" />
+    <Content Include="ci\system\libraries\Log.php" />
+    <Content Include="ci\system\libraries\Migration.php" />
+    <Content Include="ci\system\libraries\Pagination.php" />
+    <Content Include="ci\system\libraries\Parser.php" />
+    <Content Include="ci\system\libraries\Profiler.php" />
+    <Content Include="ci\system\libraries\Session.php" />
+    <Content Include="ci\system\libraries\Sha1.php" />
+    <Content Include="ci\system\libraries\Table.php" />
+    <Content Include="ci\system\libraries\Trackback.php" />
+    <Content Include="ci\system\libraries\Typography.php" />
+    <Content Include="ci\system\libraries\Unit_test.php" />
+    <Content Include="ci\system\libraries\Upload.php" />
+    <Content Include="ci\system\libraries\User_agent.php" />
+    <Content Include="ci\system\libraries\Xmlrpc.php" />
+    <Content Include="ci\system\libraries\Xmlrpcs.php" />
+    <Content Include="ci\system\libraries\Zip.php" />
+    <Content Include="ci\user_guide\images\codeigniter_1.7.1_helper_reference.pdf" />
+    <Content Include="ci\user_guide\images\codeigniter_1.7.1_library_reference.pdf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ci\application\cache\index.html" />
+    <Content Include="ci\application\config\index.html" />
+    <Content Include="ci\application\controllers\index.html" />
+    <Content Include="ci\application\core\index.html" />
+    <Content Include="ci\application\errors\index.html" />
+    <Content Include="ci\application\helpers\index.html" />
+    <Content Include="ci\application\hooks\index.html" />
+    <Content Include="ci\application\index.html" />
+    <Content Include="ci\application\language\english\index.html" />
+    <Content Include="ci\application\libraries\index.html" />
+    <Content Include="ci\application\logs\index.html" />
+    <Content Include="ci\application\models\index.html" />
+    <Content Include="ci\application\models\jsdc\create-database.sql" />
+    <Content Include="ci\application\models\jsdc\repair-database.sql" />
+    <Content Include="ci\application\third_party\index.html" />
+    <Content Include="ci\application\views\index.html" />
+    <Content Include="ci\license.txt" />
+    <Content Include="ci\system\core\index.html" />
+    <Content Include="ci\system\database\drivers\cubrid\index.html" />
+    <Content Include="ci\system\database\drivers\index.html" />
+    <Content Include="ci\system\database\drivers\mssql\index.html" />
+    <Content Include="ci\system\database\drivers\mysqli\index.html" />
+    <Content Include="ci\system\database\drivers\mysql\index.html" />
+    <Content Include="ci\system\database\drivers\oci8\index.html" />
+    <Content Include="ci\system\database\drivers\odbc\index.html" />
+    <Content Include="ci\system\database\drivers\pdo\index.html" />
+    <Content Include="ci\system\database\drivers\postgre\index.html" />
+    <Content Include="ci\system\database\drivers\sqlite\index.html" />
+    <Content Include="ci\system\database\drivers\sqlsrv\index.html" />
+    <Content Include="ci\system\database\index.html" />
+    <Content Include="ci\system\fonts\index.html" />
+    <Content Include="ci\system\helpers\index.html" />
+    <Content Include="ci\system\index.html" />
+    <Content Include="ci\system\language\english\index.html" />
+    <Content Include="ci\system\language\index.html" />
+    <Content Include="ci\system\libraries\index.html" />
+    <Content Include="ci\user_guide\changelog.html" />
+    <Content Include="ci\user_guide\database\active_record.html" />
+    <Content Include="ci\user_guide\database\caching.html" />
+    <Content Include="ci\user_guide\database\call_function.html" />
+    <Content Include="ci\user_guide\database\configuration.html" />
+    <Content Include="ci\user_guide\database\connecting.html" />
+    <Content Include="ci\user_guide\database\examples.html" />
+    <Content Include="ci\user_guide\database\fields.html" />
+    <Content Include="ci\user_guide\database\forge.html" />
+    <Content Include="ci\user_guide\database\helpers.html" />
+    <Content Include="ci\user_guide\database\index.html" />
+    <Content Include="ci\user_guide\database\queries.html" />
+    <Content Include="ci\user_guide\database\results.html" />
+    <Content Include="ci\user_guide\database\table_data.html" />
+    <Content Include="ci\user_guide\database\transactions.html" />
+    <Content Include="ci\user_guide\database\utilities.html" />
+    <Content Include="ci\user_guide\doc_style\index.html" />
+    <Content Include="ci\user_guide\doc_style\template.html" />
+    <Content Include="ci\user_guide\general\alternative_php.html" />
+    <Content Include="ci\user_guide\general\ancillary_classes.html" />
+    <Content Include="ci\user_guide\general\autoloader.html" />
+    <Content Include="ci\user_guide\general\caching.html" />
+    <Content Include="ci\user_guide\general\cli.html" />
+    <Content Include="ci\user_guide\general\common_functions.html" />
+    <Content Include="ci\user_guide\general\controllers.html" />
+    <Content Include="ci\user_guide\general\core_classes.html" />
+    <Content Include="ci\user_guide\general\creating_drivers.html" />
+    <Content Include="ci\user_guide\general\creating_libraries.html" />
+    <Content Include="ci\user_guide\general\credits.html" />
+    <Content Include="ci\user_guide\general\drivers.html" />
+    <Content Include="ci\user_guide\general\environments.html" />
+    <Content Include="ci\user_guide\general\errors.html" />
+    <Content Include="ci\user_guide\general\helpers.html" />
+    <Content Include="ci\user_guide\general\hooks.html" />
+    <Content Include="ci\user_guide\general\libraries.html" />
+    <Content Include="ci\user_guide\general\managing_apps.html" />
+    <Content Include="ci\user_guide\general\models.html" />
+    <Content Include="ci\user_guide\general\profiling.html" />
+    <Content Include="ci\user_guide\general\quick_reference.html" />
+    <Content Include="ci\user_guide\general\requirements.html" />
+    <Content Include="ci\user_guide\general\reserved_names.html" />
+    <Content Include="ci\user_guide\general\routing.html" />
+    <Content Include="ci\user_guide\general\security.html" />
+    <Content Include="ci\user_guide\general\styleguide.html" />
+    <Content Include="ci\user_guide\general\urls.html" />
+    <Content Include="ci\user_guide\general\views.html" />
+    <Content Include="ci\user_guide\helpers\array_helper.html" />
+    <Content Include="ci\user_guide\helpers\captcha_helper.html" />
+    <Content Include="ci\user_guide\helpers\cookie_helper.html" />
+    <Content Include="ci\user_guide\helpers\date_helper.html" />
+    <Content Include="ci\user_guide\helpers\directory_helper.html" />
+    <Content Include="ci\user_guide\helpers\download_helper.html" />
+    <Content Include="ci\user_guide\helpers\email_helper.html" />
+    <Content Include="ci\user_guide\helpers\file_helper.html" />
+    <Content Include="ci\user_guide\helpers\form_helper.html" />
+    <Content Include="ci\user_guide\helpers\html_helper.html" />
+    <Content Include="ci\user_guide\helpers\inflector_helper.html" />
+    <Content Include="ci\user_guide\helpers\language_helper.html" />
+    <Content Include="ci\user_guide\helpers\number_helper.html" />
+    <Content Include="ci\user_guide\helpers\path_helper.html" />
+    <Content Include="ci\user_guide\helpers\security_helper.html" />
+    <Content Include="ci\user_guide\helpers\smiley_helper.html" />
+    <Content Include="ci\user_guide\helpers\string_helper.html" />
+    <Content Include="ci\user_guide\helpers\text_helper.html" />
+    <Content Include="ci\user_guide\helpers\typography_helper.html" />
+    <Content Include="ci\user_guide\helpers\url_helper.html" />
+    <Content Include="ci\user_guide\helpers\xml_helper.html" />
+    <Content Include="ci\user_guide\images\appflowchart.gif" />
+    <Content Include="ci\user_guide\images\arrow.gif" />
+    <Content Include="ci\user_guide\images\ci_logo.jpg" />
+    <Content Include="ci\user_guide\images\ci_logo_flame.jpg" />
+    <Content Include="ci\user_guide\images\ci_quick_ref.png" />
+    <Content Include="ci\user_guide\images\codeigniter_1.7.1_helper_reference.png" />
+    <Content Include="ci\user_guide\images\codeigniter_1.7.1_library_reference.png" />
+    <Content Include="ci\user_guide\images\file.gif" />
+    <Content Include="ci\user_guide\images\folder.gif" />
+    <Content Include="ci\user_guide\images\nav_bg_darker.jpg" />
+    <Content Include="ci\user_guide\images\nav_separator_darker.jpg" />
+    <Content Include="ci\user_guide\images\nav_toggle_darker.jpg" />
+    <Content Include="ci\user_guide\images\reactor-bullet.png" />
+    <Content Include="ci\user_guide\images\smile.gif" />
+    <Content Include="ci\user_guide\images\transparent.gif" />
+    <Content Include="ci\user_guide\index.html" />
+    <Content Include="ci\user_guide\installation\downloads.html" />
+    <Content Include="ci\user_guide\installation\index.html" />
+    <Content Include="ci\user_guide\installation\troubleshooting.html" />
+    <Content Include="ci\user_guide\installation\upgrade_120.html" />
+    <Content Include="ci\user_guide\installation\upgrade_130.html" />
+    <Content Include="ci\user_guide\installation\upgrade_131.html" />
+    <Content Include="ci\user_guide\installation\upgrade_132.html" />
+    <Content Include="ci\user_guide\installation\upgrade_133.html" />
+    <Content Include="ci\user_guide\installation\upgrade_140.html" />
+    <Content Include="ci\user_guide\installation\upgrade_141.html" />
+    <Content Include="ci\user_guide\installation\upgrade_150.html" />
+    <Content Include="ci\user_guide\installation\upgrade_152.html" />
+    <Content Include="ci\user_guide\installation\upgrade_153.html" />
+    <Content Include="ci\user_guide\installation\upgrade_154.html" />
+    <Content Include="ci\user_guide\installation\upgrade_160.html" />
+    <Content Include="ci\user_guide\installation\upgrade_161.html" />
+    <Content Include="ci\user_guide\installation\upgrade_162.html" />
+    <Content Include="ci\user_guide\installation\upgrade_163.html" />
+    <Content Include="ci\user_guide\installation\upgrade_170.html" />
+    <Content Include="ci\user_guide\installation\upgrade_171.html" />
+    <Content Include="ci\user_guide\installation\upgrade_172.html" />
+    <Content Include="ci\user_guide\installation\upgrade_200.html" />
+    <Content Include="ci\user_guide\installation\upgrade_201.html" />
+    <Content Include="ci\user_guide\installation\upgrade_202.html" />
+    <Content Include="ci\user_guide\installation\upgrade_203.html" />
+    <Content Include="ci\user_guide\installation\upgrade_210.html" />
+    <Content Include="ci\user_guide\installation\upgrade_211.html" />
+    <Content Include="ci\user_guide\installation\upgrade_212.html" />
+    <Content Include="ci\user_guide\installation\upgrade_213.html" />
+    <Content Include="ci\user_guide\installation\upgrade_214.html" />
+    <Content Include="ci\user_guide\installation\upgrade_b11.html" />
+    <Content Include="ci\user_guide\installation\upgrading.html" />
+    <Content Include="ci\user_guide\libraries\benchmark.html" />
+    <Content Include="ci\user_guide\libraries\caching.html" />
+    <Content Include="ci\user_guide\libraries\calendar.html" />
+    <Content Include="ci\user_guide\libraries\cart.html" />
+    <Content Include="ci\user_guide\libraries\config.html" />
+    <Content Include="ci\user_guide\libraries\email.html" />
+    <Content Include="ci\user_guide\libraries\encryption.html" />
+    <Content Include="ci\user_guide\libraries\file_uploading.html" />
+    <Content Include="ci\user_guide\libraries\form_validation.html" />
+    <Content Include="ci\user_guide\libraries\ftp.html" />
+    <Content Include="ci\user_guide\libraries\image_lib.html" />
+    <Content Include="ci\user_guide\libraries\input.html" />
+    <Content Include="ci\user_guide\libraries\javascript.html" />
+    <Content Include="ci\user_guide\libraries\language.html" />
+    <Content Include="ci\user_guide\libraries\loader.html" />
+    <Content Include="ci\user_guide\libraries\migration.html" />
+    <Content Include="ci\user_guide\libraries\output.html" />
+    <Content Include="ci\user_guide\libraries\pagination.html" />
+    <Content Include="ci\user_guide\libraries\parser.html" />
+    <Content Include="ci\user_guide\libraries\security.html" />
+    <Content Include="ci\user_guide\libraries\sessions.html" />
+    <Content Include="ci\user_guide\libraries\table.html" />
+    <Content Include="ci\user_guide\libraries\trackback.html" />
+    <Content Include="ci\user_guide\libraries\typography.html" />
+    <Content Include="ci\user_guide\libraries\unit_testing.html" />
+    <Content Include="ci\user_guide\libraries\uri.html" />
+    <Content Include="ci\user_guide\libraries\user_agent.html" />
+    <Content Include="ci\user_guide\libraries\xmlrpc.html" />
+    <Content Include="ci\user_guide\libraries\zip.html" />
+    <Content Include="ci\user_guide\license.html" />
+    <Content Include="ci\user_guide\nav\hacks.txt" />
+    <Content Include="ci\user_guide\nav\moo.fx.js" />
+    <Content Include="ci\user_guide\nav\nav.js" />
+    <Content Include="ci\user_guide\nav\prototype.lite.js" />
+    <Content Include="ci\user_guide\nav\user_guide_menu.js" />
+    <Content Include="ci\user_guide\overview\appflow.html" />
+    <Content Include="ci\user_guide\overview\at_a_glance.html" />
+    <Content Include="ci\user_guide\overview\cheatsheets.html" />
+    <Content Include="ci\user_guide\overview\features.html" />
+    <Content Include="ci\user_guide\overview\getting_started.html" />
+    <Content Include="ci\user_guide\overview\goals.html" />
+    <Content Include="ci\user_guide\overview\index.html" />
+    <Content Include="ci\user_guide\overview\mvc.html" />
+    <Content Include="ci\user_guide\toc.html" />
+    <Content Include="ci\user_guide\tutorial\conclusion.html" />
+    <Content Include="ci\user_guide\tutorial\create_news_items.html" />
+    <Content Include="ci\user_guide\tutorial\hard_coded_pages.html" />
+    <Content Include="ci\user_guide\tutorial\index.html" />
+    <Content Include="ci\user_guide\tutorial\news_section.html" />
+    <Content Include="ci\user_guide\tutorial\static_pages.html" />
+    <Content Include="ci\user_guide\userguide.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ci\application\views\admin\2013\" />
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>15588</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>
+          </IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
