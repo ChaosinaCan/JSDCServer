@@ -1,7 +1,10 @@
-﻿///<reference path='../node.d.ts'/>
-import jsdc = module('../jsdc');
-import clock = module('../clock');
-import field = module('field');
+﻿///<reference path="../node.d.ts" />
+///<reference path="../jsdc.ts" />
+///<reference path="../clock.ts" />
+
+import jsdc = require('../jsdc');
+import clock = require('../clock');
+import field = require('./field');
 
 var TimedEvent = clock.TimedEvent;
 
@@ -58,14 +61,14 @@ export interface GameStatus {
 export interface TerritoryStatus {
 	id: number;
 	owner: number;
-	powered: bool;
+	powered: boolean;
 }
 
 export interface TeamStatus {
 	team: clock.TeamInfo;
 	territories: number;
 	controlPoints: number;
-	batteries: bool[];
+	batteries: boolean[];
 }
 
 export interface BatteryStatus {
@@ -79,7 +82,7 @@ export class GameRules extends jsdc.GameRules {
 	public sources: field.PowerSource[];
 	public batteries: field.PowerSource[];
 	public homeTerritories: { [key: string]: field.Territory; };
-	public controlPointsOwned: { [key: string]: bool; };
+	public controlPointsOwned: { [key: string]: boolean; };
 
 	private _teams: { [key: string]: TeamStatus; };
 
@@ -217,7 +220,7 @@ export class GameRules extends jsdc.GameRules {
 		this._teams = {};
 		this.game.teams.forEach((team, i) => {
 			//console.log('init team', team.name, i, this.getColor(team.colorId));
-			var initBatteries: bool[] = [];
+			var initBatteries: boolean[] = [];
 			for (var i = 0; i < this.batteries.length; i++) {
 				initBatteries.push(false);
 			}
@@ -334,7 +337,7 @@ export class GameRules extends jsdc.GameRules {
 			// is this the first time the control point was taken?
 			if (node.ownerTeam && !this.controlPointsOwned[node.id.toString()]) {
 				this.controlPointsOwned[node.id.toString()] = true;
-				this.sendScore('take control point', node.ownerTeam, (err, id) => {
+				this.sendScore('take control point', node.ownerTeam, (err, id?) => {
 					if (err) {
 						console.log('Failed to score first capture of control point ' + node.id + ' for team ' + node.ownerTeam + ': ' + err);
 					}

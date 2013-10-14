@@ -4,8 +4,8 @@ interface ScoreInfo {
 	team: Team;
 	score: number;
 	fouls: number;
-	disabled: bool;
-	disqualified: bool;
+	disabled: boolean;
+	disqualified: boolean;
 }
 
 /**
@@ -246,7 +246,7 @@ class ScoreListener implements EventTarget {
 		}
 	}
 
-	dispatchEvent(evt: Event): bool {
+	dispatchEvent(evt: Event): boolean {
 		if (evt.type in this._listeners) {
 			this._listeners[evt.type].forEach((listener) => {
 				listener.apply(this, [evt]);
@@ -261,13 +261,13 @@ class ScoreList {
 	private _scores: ScoreListener = null;
 	private _colorsById: ColorMap = {};
 	private _rowsByScoreId: { [key: string]: JQuery; } = {};
-	private _allowDelete: bool = false;
+	private _allowDelete: boolean = false;
 	private _table: JQuery;
 	private _template: JQuery;
 
 	get table() { return this._table }
 
-	constructor (scores: ScoreListener, colors: Color[], allowDelete?: bool) {
+	constructor (scores: ScoreListener, colors: Color[], allowDelete?: boolean) {
 		bindMemberFunctions(this);
 		this._scores = scores;
 		this._allowDelete = allowDelete;

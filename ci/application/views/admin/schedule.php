@@ -1,7 +1,7 @@
 <script>
 	$(function() {
-		game.maxTeams = <?= $max_teams ?>;
-		game.colors = <?= json_encode($colors) ?>;
+		schedule.maxTeams = <?= $max_teams ?>;
+		schedule.colors = <?= json_encode($colors) ?>;
 		
 		schedule.init();
 	});

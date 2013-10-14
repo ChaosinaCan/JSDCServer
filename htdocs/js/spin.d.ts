@@ -9,8 +9,8 @@ interface SpinnerOptions {
 	color?: string;
 	speed?: number;
 	trail?: number;
-	shadow?: bool;
-	hwaccel?: bool;
+	shadow?: boolean;
+	hwaccel?: boolean;
 	className?: string;
 	zIndex?: number;
 	top?: any;
@@ -19,5 +19,5 @@ interface SpinnerOptions {
 
 interface JQuery {
 	spin(options?: SpinnerOptions);
-	spin(options: bool);
+	spin(options: boolean);
 }

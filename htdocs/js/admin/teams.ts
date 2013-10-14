@@ -1,21 +1,29 @@
 ﻿/// <reference path="base.ts" />
 
-module game {
-	export var teams: Team[];
-	export var teamsById: { [key: string]: Team; } = {};
+interface JQueryStatic {
+	event: {
+		props: {
+			push(event: string): void;
+		}
+	}
 }
 
 module teams {
+	// Public Variables
+	export var teamlist: Team[];
+	export var teamsById: { [key: string]: Team; } = {};
 
+	// Private Variables
 	var _template: JQuery;
 	var _uploadFile: File;
 
+	// Public Methods
 	export function init(): void {
 		// Make drag&drop handlers work properly
 		$.event.props.push( "dataTransfer" );
 
-		game.teams = jsdc.team.parse(game.teams);
-		game.teams.forEach((team) => game.teamsById[team.teamId.toString()] = team);
+		teamlist = jsdc.team.parse(teamlist);
+		teamlist.forEach((team) => teams.teamsById[team.teamId.toString()] = team);
 
 		_template = $('<tr>').append(
 			$('<td class=name>'),
@@ -37,7 +45,7 @@ module teams {
 		var list = $('#teams tbody').empty();
 
 		list.append(
-			game.teams.sort(teamSort).map((team) => {
+			teamlist.sort(teamSort).map((team) => {
 				var item = _template.clone();
 				item.data('team', team);
 				item.find('.name').text(team.name);
@@ -55,7 +63,7 @@ module teams {
 			if (err) {
 				Modal.apiError(err, 'Failed to refresh teams');
 			} else {
-				game.teams = teams;
+				teamlist = teams;
 				buildTeamList();
 			}
 		});
@@ -99,6 +107,8 @@ module teams {
 		});
 	}
 
+
+	// Private Methods
 	function teamSort(a: Team, b: Team) {
 		var uniComp = naturalSort(a.university, b.university);
 		if (uniComp === 0) {
@@ -125,7 +135,7 @@ module teams {
 			});
 	}
 
-	function saveTeam(isNewTeam: bool, team: Team, form: HTMLFormElement) {
+	function saveTeam(isNewTeam: boolean, team: Team, form: HTMLFormElement) {
 		if (isNewTeam) {
 			newTeam(form);
 		} else {
@@ -165,7 +175,6 @@ module teams {
 		refreshTeamList();
 	}
 
-	
 	function handleFileSelect(e: Event) {
 		var files: FileList;
 		_uploadFile = null;
@@ -212,10 +221,10 @@ module teams {
  */
 var naturalSort: {
 	(a: any, b: any): number;
-	insensitive: bool;
+	insensitive: boolean;
 } = (() => {
 
-	var _naturalSort: any = function (a, b) => {
+	var _naturalSort: any = (a, b) => {
 		var re = /(^-?[0-9]+(\.?[0-9]*)[df]?e?[0-9]?$|^0x[0-9a-f]+$|[0-9]+)/gi,
 			sre = /(^[ ]*|[ ]*$)/g,
 			dre = /(^([\w ]+,?[\w ]+)?[\w ]+,?[\w ]+\d+:\d+(:\d+)?[\w ]?|^\d{1,4}[\/\-]\d{1,4}[\/\-]\d{1,4}|^\w+, \w+ \d+, \d{4})/,

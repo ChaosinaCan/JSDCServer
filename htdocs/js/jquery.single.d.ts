@@ -5,6 +5,6 @@ interface SingleEventObject extends JQueryEventObject {
 }
 
 interface JQueryStatic {
-	single(handler: (eventObject: SingleEventObject) => any, noDisable?: bool);
+	single(handler: (eventObject: SingleEventObject) => any, noDisable?: boolean);
 	reset(callback: Function);
 }

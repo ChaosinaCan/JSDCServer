@@ -49,8 +49,14 @@ _old
 /htdocs/css/scoring/*.css
 /htdocs/fonts/seg*.ttf
 /htdocs/js/admin/*.js
+/htdocs/js/admin/*.js.map
 /htdocs/js/install/*.js
+/htdocs/js/install/*.js.map
 /htdocs/js/scoring/*.js
+/htdocs/js/scoring/*.js.map
 /htdocs/xampp/.htaccess
 /node/*.js
+/node/*.js.map
+/node/*/*.js
+/node/*/*.js.map
 !/node/compile.js

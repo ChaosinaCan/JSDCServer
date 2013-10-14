@@ -8,21 +8,21 @@ interface MediaElementOptions {
 	audioWidth?: number;
 	audioHeight?: number;
 	startVolume?: number;
-	loop?: bool;
-	enableAutosize?: bool;
+	loop?: boolean;
+	enableAutosize?: boolean;
 	features?: string[];
-	alwaysShowControls?: bool;
-	iPadUseNativeControls?: bool;
-	iPhoneUseNativeControls?: bool;
-	AndroidUseNativeControls?: bool;
-	alwaysShowHours?: bool;
-	showTimecodeFrameCount?: bool;
+	alwaysShowControls?: boolean;
+	iPadUseNativeControls?: boolean;
+	iPhoneUseNativeControls?: boolean;
+	AndroidUseNativeControls?: boolean;
+	alwaysShowHours?: boolean;
+	showTimecodeFrameCount?: boolean;
 	framesPerSecond?: number;
-	enableKeyboard?: bool;
-	pauseOtherPlayers?: bool;
+	enableKeyboard?: boolean;
+	pauseOtherPlayers?: boolean;
 	keyActions?: any[];
 
-	enablePluginDebug?: bool;
+	enablePluginDebug?: boolean;
 	plugins?: string[];
 	type?: string;
 	pluginPath?: string;
@@ -36,16 +36,16 @@ interface MediaElementOptions {
 }
 
 interface MediaElementPlayer extends HTMLElement {
-	paused: bool;
-	ended: bool;
-	seeking: bool;
-	duration: bool;
-	muted: bool;
+	paused: boolean;
+	ended: boolean;
+	seeking: boolean;
+	duration: boolean;
+	muted: boolean;
 	volume: number;
 	currentTime: number;
 	src: string;
 	
-	setMuted(mute: bool);
+	setMuted(mute: boolean);
 	setVolume(volume: number);
 	setCurrentTime(time: number);
 	setSrc(src: string);

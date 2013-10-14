@@ -22,9 +22,11 @@ module TestRunner {
 			}),
 			new Test('AJAX get request', (test) => {
 				jsdc.get('ping').then(test.pass, test.fail);
+				return undefined;
 			}),
 			new Test('AJAX post request', (test) => {
 				jsdc.post('ping', { method: 'ping' }).then(test.pass, test.fail);
+				return undefined;
 			}),
 			new Test('Socket.IO', (test) => {
 				jsdc.clock.connect((error) => {
@@ -34,6 +36,7 @@ module TestRunner {
 						test.pass();
 					}
 				});
+				return undefined;
 			}),
 			new Test('WebSockets', (test) => {
 				jsdc.clock.connect((error) => {
@@ -48,6 +51,7 @@ module TestRunner {
 						}
 					}
 				});
+				return undefined;
 			}),
 		];
 
@@ -61,12 +65,12 @@ module TestRunner {
 
 class Test {
 	name: string;
-	testFunc: (test: Test) => bool;
+	testFunc: (test: Test) => boolean;
 
 	private _rowEl: JQuery;
 	private _resultEl: JQuery;
 
-	constructor (name: string, testFunc: (test: Test) => bool) {
+	constructor (name: string, testFunc: (test: Test) => boolean) {
 		bindMemberFunctions(this);
 		this.name = name;
 		this.testFunc = testFunc;
@@ -90,7 +94,7 @@ class Test {
 		}
 	}
 
-	result(success: bool, info?: string) {
+	result(success: boolean, info?: string) {
 		if (success) {
 			this._resultEl.text('Passed');
 			this._rowEl.addClass('passed');

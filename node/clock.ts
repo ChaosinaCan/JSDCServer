@@ -1,7 +1,8 @@
-﻿///<reference path='node.d.ts'/>
+﻿///<reference path="node.d.ts" />
+///<reference path="jsdc.ts" />
 
-import jsdc = module('jsdc');
-import events = module('./events');
+import jsdc = require('./jsdc');
+import BaseEventEmitter = require('./eventbase');
 
 export class TeamInfo {
 	public teamId: number;
@@ -19,12 +20,12 @@ export class TeamInfo {
 	}
 }
 
-export class GameClock extends events.BaseEventEmitter {
-	private _running: bool;
-	private _paused: bool;
-	private _aborted: bool;
-	private _finished: bool;
-	private _emergency: bool;
+export class GameClock extends BaseEventEmitter {
+	private _running: boolean;
+	private _paused: boolean;
+	private _aborted: boolean;
+	private _finished: boolean;
+	private _emergency: boolean;
 
 	private _gameTime: number;
 	private _lastUpdateTime: number;
@@ -116,7 +117,7 @@ export class GameClock extends events.BaseEventEmitter {
 
 	loadCurrentMatch(callback?: Function): void {
 		callback = callback || this._logErrors;
-		this.jsdc.get('match', 'current', (err, data) => {
+		this.jsdc.get('match', 'current', (err, data?) => {
 
 			if (!err && data.length > 0) {
 				// if there is a current match, load data from it
@@ -185,7 +186,7 @@ export class GameClock extends events.BaseEventEmitter {
 		this.updateResults();
 	}
 
-	private _logErrors(err, data): void {
+	private _logErrors(err, data?): void {
 		if (err)
 			console.log(err);
 	}
@@ -206,7 +207,7 @@ export class GameClock extends events.BaseEventEmitter {
 		});
 	}*/
 
-	public updateResults(callback?: (err, data) => any): void {
+	public updateResults(callback?: (err, data?) => any): void {
 		callback = callback || this._logErrors;
 
 		if (this.match <= 0) {
@@ -222,7 +223,7 @@ export class GameClock extends events.BaseEventEmitter {
 	
 
 
-	public start(): bool {
+	public start(): boolean {
 		if (this.running || this.paused)
 			return false;
 		
@@ -240,7 +241,7 @@ export class GameClock extends events.BaseEventEmitter {
 		return true;
 	}
 
-	public stop(noAbort?: bool): bool {
+	public stop(noAbort?: boolean): boolean {
 		this._stopInterval();
 		this._stopUpdateInterval();
 
@@ -257,7 +258,7 @@ export class GameClock extends events.BaseEventEmitter {
 		return true;
 	}
 
-	public pause(): bool {
+	public pause(): boolean {
 		if (!this._running || this._paused) 
 			return false;
 
@@ -271,7 +272,7 @@ export class GameClock extends events.BaseEventEmitter {
 		return true;
 	}
 	
-	public resume(): bool {
+	public resume(): boolean {
 		if (!this._paused) 
 			return false;
 

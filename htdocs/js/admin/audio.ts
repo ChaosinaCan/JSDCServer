@@ -2,14 +2,46 @@
 /// <reference path="../mediaelement.d.ts" />
 
 module audio {
-
+	// Public Variables
 	export var base = '/audio/';
+
+	// Private Variables
 	var sounds: { [key: string]: MediaElementPlayer; } = {};
 
+	// Public Methods
 	export function init(): void {
 		jsdc.clock.connect(onconnect);
 	}
 
+	export function add(map: { [key: string]: string; }): void;
+	export function add(name: string, path: string): void;
+	export function add(name: any, path?: any): void {
+		
+		if (typeof name === 'object') {
+			for (var key in name) {
+				if (name.hasOwnProperty(key)) {
+					createPlayer(key, name[key]);
+				}
+			}
+		} else {
+			createPlayer(name, path);
+		}
+
+	}
+
+	export function play(name: string) {
+		console.log('play', name);
+		var sound = sounds[name];
+		sound.setCurrentTime(0);
+		sound.play();
+	}
+
+	export function stop(name: string) {
+		console.log('stop', name);
+		sounds[name].pause();
+	}
+
+	// Private Methods
 	function onconnect(error: string) {
 		if (error) {
 			Modal.error('Cannot connect to clock server', error);
@@ -49,33 +81,5 @@ module audio {
 					'Could not create an audio player for "' + name + '", ' + path);
 			}
 		});
-	}
-
-	export function add(map: { [key: string]: string; }): void;
-	export function add(name: string, path: string): void;
-	export function add(name: any, path?: any): void {
-		
-		if (typeof name === 'object') {
-			for (var key in name) {
-				if (name.hasOwnProperty(key)) {
-					createPlayer(key, name[key]);
-				}
-			}
-		} else {
-			createPlayer(name, path);
-		}
-
-	}
-
-	export function play(name: string) {
-		console.log('play', name);
-		var sound = sounds[name];
-		sound.setCurrentTime(0);
-		sound.play();
-	}
-
-	export function stop(name: string) {
-		console.log('stop', name);
-		sounds[name].pause();
 	}
 }

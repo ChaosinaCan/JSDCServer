@@ -44,13 +44,13 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-    <TypeScriptTarget>ES3</TypeScriptTarget>
+    <TypeScriptTarget>ES5</TypeScriptTarget>
     <TypeScriptIncludeComments>true</TypeScriptIncludeComments>
     <TypeScriptSourceMap>true</TypeScriptSourceMap>
     <TypeScriptModuleKind>AMD</TypeScriptModuleKind>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <TypeScriptTarget>ES3</TypeScriptTarget>
+    <TypeScriptTarget>ES5</TypeScriptTarget>
     <TypeScriptIncludeComments>false</TypeScriptIncludeComments>
     <TypeScriptSourceMap>false</TypeScriptSourceMap>
     <TypeScriptModuleKind>AMD</TypeScriptModuleKind>
@@ -100,6 +100,7 @@
     <Content Include="htdocs\fonts\seguisli.ttf" />
     <Content Include="htdocs\fonts\seguisym.ttf" />
     <Content Include="htdocs\index.php" />
+    <Content Include="htdocs\js\bigscreen.min.js" />
     <Content Include="htdocs\js\jquery.min.map">
       <DependentUpon>jquery.js</DependentUpon>
     </Content>
@@ -196,78 +197,88 @@
     <Content Include="htdocs\js\admin\audio.js">
       <DependentUpon>audio.ts</DependentUpon>
     </Content>
-    <Content Include="htdocs\js\admin\audio.ts" />
+    <TypeScriptCompile Include="htdocs\js\admin\audio.ts" />
     <Content Include="htdocs\js\admin\base.js">
       <DependentUpon>base.ts</DependentUpon>
     </Content>
-    <Content Include="htdocs\js\admin\base.ts" />
+    <TypeScriptCompile Include="htdocs\js\admin\base.ts" />
     <Content Include="htdocs\js\admin\debug.js">
       <DependentUpon>debug.ts</DependentUpon>
     </Content>
-    <Content Include="htdocs\js\admin\debug.ts" />
+    <TypeScriptCompile Include="htdocs\js\admin\debug.ts" />
     <Content Include="htdocs\js\admin\field-listener.js">
       <DependentUpon>field-listener.ts</DependentUpon>
     </Content>
-    <Content Include="htdocs\js\admin\field-listener.ts" />
+    <TypeScriptCompile Include="htdocs\js\admin\field-listener.ts" />
     <Content Include="htdocs\js\admin\game.js">
       <DependentUpon>game.ts</DependentUpon>
     </Content>
-    <Content Include="htdocs\js\admin\game.ts" />
+    <TypeScriptCompile Include="htdocs\js\admin\game.ts" />
     <Content Include="htdocs\js\admin\matches.js">
       <DependentUpon>matches.ts</DependentUpon>
     </Content>
-    <Content Include="htdocs\js\admin\matches.ts" />
+    <TypeScriptCompile Include="htdocs\js\admin\matches.ts" />
     <Content Include="htdocs\js\admin\navbar.js">
       <DependentUpon>navbar.ts</DependentUpon>
     </Content>
-    <Content Include="htdocs\js\admin\navbar.ts" />
+    <TypeScriptCompile Include="htdocs\js\admin\navbar.ts" />
     <Content Include="htdocs\js\admin\results.js">
       <DependentUpon>results.ts</DependentUpon>
     </Content>
-    <Content Include="htdocs\js\admin\results.ts" />
+    <TypeScriptCompile Include="htdocs\js\admin\results.ts" />
     <Content Include="htdocs\js\admin\schedule.js">
       <DependentUpon>schedule.ts</DependentUpon>
     </Content>
-    <Content Include="htdocs\js\admin\schedule.ts" />
+    <TypeScriptCompile Include="htdocs\js\admin\schedule.ts" />
     <Content Include="htdocs\js\admin\score-listener.js">
       <DependentUpon>score-listener.ts</DependentUpon>
     </Content>
-    <Content Include="htdocs\js\admin\score-listener.ts" />
+    <TypeScriptCompile Include="htdocs\js\admin\score-listener.ts" />
     <Content Include="htdocs\js\admin\scoreboard.js">
       <DependentUpon>scoreboard.ts</DependentUpon>
     </Content>
-    <Content Include="htdocs\js\admin\scoreboard.ts" />
+    <TypeScriptCompile Include="htdocs\js\admin\scoreboard.ts" />
     <Content Include="htdocs\js\admin\scores.js">
       <DependentUpon>scores.ts</DependentUpon>
     </Content>
-    <Content Include="htdocs\js\admin\scores.ts" />
+    <TypeScriptCompile Include="htdocs\js\admin\scores.ts" />
     <Content Include="htdocs\js\admin\teams.js">
       <DependentUpon>teams.ts</DependentUpon>
     </Content>
-    <Content Include="htdocs\js\admin\teams.ts" />
-    <Content Include="htdocs\js\bigscreen.d.ts" />
-    <Content Include="htdocs\js\bigscreen.min.js" />
+    <TypeScriptCompile Include="htdocs\js\admin\teams.ts" />
+    <Content Include="htdocs\js\bigscreen.d.ts">
+      <DependentUpon>bigscreen.min.js</DependentUpon>
+    </Content>
     <Content Include="htdocs\js\chosen.jquery.js" />
     <Content Include="htdocs\js\chosen.jquery.min.js">
       <DependentUpon>chosen.jquery.js</DependentUpon>
     </Content>
     <Content Include="htdocs\js\es5-shim.js" />
-    <Content Include="htdocs\js\jquery.chosen.d.ts" />
-    <Content Include="htdocs\js\jquery.d.ts" />
+    <Content Include="htdocs\js\jquery.chosen.d.ts">
+      <DependentUpon>chosen.jquery.js</DependentUpon>
+    </Content>
+    <Content Include="htdocs\js\jquery.d.ts">
+      <DependentUpon>jquery.js</DependentUpon>
+    </Content>
     <Content Include="htdocs\js\jquery.js" />
     <Content Include="htdocs\js\jquery.min.js">
       <DependentUpon>jquery.js</DependentUpon>
     </Content>
-    <Content Include="htdocs\js\jquery.simplemodal.d.ts" />
+    <Content Include="htdocs\js\jquery.simplemodal.d.ts">
+      <DependentUpon>jquery.simplemodal.js</DependentUpon>
+    </Content>
     <Content Include="htdocs\js\jquery.simplemodal.js" />
     <Content Include="htdocs\js\jquery.simplemodal.min.js">
       <DependentUpon>jquery.simplemodal.js</DependentUpon>
     </Content>
-    <Content Include="htdocs\js\jquery.single.d.ts" />
+    <Content Include="htdocs\js\jquery.single.d.ts">
+      <DependentUpon>jquery.single.js</DependentUpon>
+    </Content>
     <Content Include="htdocs\js\jquery.single.js" />
-    <Content Include="htdocs\js\jquery.spin.js" />
+    <Content Include="htdocs\js\jquery.spin.js">
+      <DependentUpon>spin.js</DependentUpon>
+    </Content>
     <Content Include="htdocs\js\jsdc-api.d.ts" />
-    <Content Include="htdocs\js\lib.d.ts" />
     <Content Include="htdocs\js\mediaelement.d.ts" />
     <Content Include="htdocs\js\mediaelement\flashmediaelement.swf" />
     <Content Include="htdocs\js\mediaelement\mediaelement-and-player.js" />
@@ -276,17 +287,19 @@
     <Content Include="htdocs\js\scoring\devicetest.js">
       <DependentUpon>devicetest.ts</DependentUpon>
     </Content>
-    <Content Include="htdocs\js\scoring\devicetest.ts" />
+    <TypeScriptCompile Include="htdocs\js\scoring\devicetest.ts" />
     <Content Include="htdocs\js\scoring\scoring.js">
       <DependentUpon>scoring.ts</DependentUpon>
     </Content>
-    <Content Include="htdocs\js\scoring\scoring.ts" />
+    <TypeScriptCompile Include="htdocs\js\scoring\scoring.ts" />
     <Content Include="htdocs\js\scoring\teamselect.js">
       <DependentUpon>teamselect.ts</DependentUpon>
     </Content>
-    <Content Include="htdocs\js\scoring\teamselect.ts" />
+    <TypeScriptCompile Include="htdocs\js\scoring\teamselect.ts" />
     <Content Include="htdocs\js\socket.io-client.d.ts" />
-    <Content Include="htdocs\js\spin.d.ts" />
+    <Content Include="htdocs\js\spin.d.ts">
+      <DependentUpon>spin.js</DependentUpon>
+    </Content>
     <Content Include="htdocs\js\spin.js" />
   </ItemGroup>
   <ItemGroup>

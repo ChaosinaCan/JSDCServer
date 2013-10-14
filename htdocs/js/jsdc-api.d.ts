@@ -65,7 +65,7 @@ interface FoulUpdateParams {
 
 interface Match {
 	matchId: number;
-	open: bool;
+	open: boolean;
 	status: string;
 	roundNum: number;
 	matchNum: number;
@@ -73,10 +73,10 @@ interface Match {
 }
 
 interface MatchQuery {
-	all?: bool;
-	current?: bool;
+	all?: boolean;
+	current?: boolean;
 	id?: number;
-	open?: bool;
+	open?: boolean;
 	status?: string;
 	round?: number;
 	match?: number;
@@ -88,7 +88,7 @@ interface MatchCreateTeamParams {
 }
 
 interface MatchCreateParams {
-	open?: bool;
+	open?: boolean;
 	status?: string;
 	round: number;
 	match: number;
@@ -97,7 +97,7 @@ interface MatchCreateParams {
 
 interface MatchUpdateParams {
 	id: number;
-	open?: bool;
+	open?: boolean;
 	status?: string;
 	round?: number;
 	match?: number;
@@ -112,13 +112,13 @@ interface MatchResult {
 	matchId: number;
 	score: number;
 	fouls: number;
-	disabled: bool;
-	disqualified: bool;
+	disabled: boolean;
+	disqualified: boolean;
 }
 
 interface MatchResultQuery {
-	all?: bool;
-	current?: bool;
+	all?: boolean;
+	current?: boolean;
 	match?: number;
 	team?: number;
 }
@@ -137,15 +137,15 @@ interface Score {
 	onTeamId: number;
 	actionId: number;
 	foulId: number;
-	disabled: bool;
-	disqualified: bool;
+	disabled: boolean;
+	disqualified: boolean;
 	apiId: number;
 	dateTime?: string;
 }
 
 interface ScoreQuery {
-	all?: bool;
-	current?: bool;
+	all?: boolean;
+	current?: boolean;
 	match?: number;
 	team?: number;
 }
@@ -156,8 +156,8 @@ interface ScoreCreateParams {
 	on: number;
 	action?: number;
 	foul?: number;
-	disqualified?: bool;
-	disabled?: bool;
+	disqualified?: boolean;
+	disabled?: boolean;
 	apikey?: string;
 }
 
@@ -169,8 +169,8 @@ interface ScoreUpdateParams {
 	action?: number;
 	foul?: number;
 	datetime?: string;
-	disabled?: bool;
-	disqualified?: bool;
+	disabled?: boolean;
+	disqualified?: boolean;
 }
 
 

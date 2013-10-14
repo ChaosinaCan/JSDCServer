@@ -1,11 +1,12 @@
-﻿///<reference path='../node.d.ts'/>
+﻿///<reference path="../node.d.ts" />
+///<reference path="../jsdc.ts" />
 import jsdc = module('../jsdc');
-import events = module('../events');
+import BaseEventEmitter = require('../eventbase');
 
 /** Events:
  *  territory changed: source		Sent when the power source moves to a new territory
  */
-export class PowerSource extends events.BaseEventEmitter {
+export class PowerSource extends BaseEventEmitter {
 	private _territory: Territory;
 	get territory() { return this._territory }
 	set territory(value: Territory) {
@@ -30,10 +31,10 @@ export class PowerSource extends events.BaseEventEmitter {
 		this.emit('territory changed', this);
 	}
 
-	private _moveable: bool;
+	private _moveable: boolean;
 	get moveable() { return this._moveable }
 
-	constructor(territory: Territory, moveable?: bool) {
+	constructor(territory: Territory, moveable?: boolean) {
 		super()
 		this.territory = territory;
 		this._moveable = !!(moveable || false);
@@ -48,7 +49,7 @@ export class PowerSource extends events.BaseEventEmitter {
  *  warning: node				Sent when the node is 3 seconds from being scored
  *  sync: node					Sent when the scoring timer is paused, resumed, etc
  */
-export class Territory extends events.BaseEventEmitter {
+export class Territory extends BaseEventEmitter {
 	public field: Field;
 	public id: number;
 	public x: number;
@@ -65,9 +66,9 @@ export class Territory extends events.BaseEventEmitter {
 	private _scoringTimer: any;				// main scoring timer ID
 	private _warningTimer: any;				// 3-second warning timer ID
 
-	private _invalidated: bool;
-	private _holdEvents: bool;				// if true, don't send power change events until processing is finished
-	private _heldPower: bool;				// save the power value before processing begins
+	private _invalidated: boolean;
+	private _holdEvents: boolean;				// if true, don't send power change events until processing is finished
+	private _heldPower: boolean;				// save the power value before processing begins
 
 	private _ownerTeam: number;
 	get ownerTeam() { return this._ownerTeam }
@@ -92,7 +93,7 @@ export class Territory extends events.BaseEventEmitter {
 		}
 	}
 
-	private _powered: bool;
+	private _powered: boolean;
 	get powered() {
 		if (this._invalidated) {
 			//console.log('updating power for', this.id);
@@ -100,7 +101,7 @@ export class Territory extends events.BaseEventEmitter {
 		}
 		return this._powered 
 	}
-	set powered(value: bool) {
+	set powered(value: boolean) {
 		//console.log('power validated for', this.id);
 		this._invalidated = false;
 		if (value !== this.powered) {
@@ -259,10 +260,10 @@ export class Territory extends events.BaseEventEmitter {
  *  warning: node				Sent when a territory is 3 seconds from being scored
  *  sync: node					Sent when the scoring timer for a territory is paused, resumed, etc
  */
-export class Field extends events.BaseEventEmitter {
+export class Field extends BaseEventEmitter {
 	public width: number;
 	public height: number;
-	private _holdChecks: bool;
+	private _holdChecks: boolean;
 	private _territories: Territory[];
 	private _grid: Territory[][];
 	private sources: PowerSource[];

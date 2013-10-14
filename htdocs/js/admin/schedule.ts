@@ -1,20 +1,16 @@
 ﻿/// <reference path="base.ts" />
 
-module game {
+module schedule {
+	// Public Variables
 	export var maxTeams: number;
 	
 	export var colors: Color[];
 	export var colorsById: ColorMap = {};
 
-	export function init(): void {
-		colors = jsdc.color.parse(colors);
-		colorsById = <ColorMap><any>colors.indexByProperty('colorId');
-	}
-}
-
-module schedule {
+	// Private Variables
 	var _template: JQuery;
 
+	// Public Methods
 	export function onconnect(error: string) {
 		if (error) {
 			Modal.error('Cannot connect to clock server', error);
@@ -26,13 +22,14 @@ module schedule {
 	}
 
 	export function init(): void {
-		game.init();
+		colors = jsdc.color.parse(colors);
+		colorsById = <ColorMap><any>colors.indexByProperty('colorId');
 		jsdc.clock.connect(onconnect);
 
 		var header = $('#match-header tr');
 		header.append(
 			$('<td class=round colspan=2>').text('Match'),
-			game.colors.map((color) =>
+			schedule.colors.map((color) =>
 				$('<td class=team>').text(color.name.capitalize()).addClass(color.name)
 			)
 		);
@@ -40,7 +37,7 @@ module schedule {
 		_template = $('<tr>').append(
 			$('<td class=round>'),
 			$('<td class=match>'),
-			game.colors.map((color) =>
+			schedule.colors.map((color) =>
 				$('<td class=team>').addClass(color.name)
 			)
 		);
@@ -80,7 +77,7 @@ module schedule {
 				row.find('.match').text(match.matchNum.toString());
 				
 				match.teams.forEach((team) => {
-					var color = game.colorsById[team.colorId.toString()];
+					var color = schedule.colorsById[team.colorId.toString()];
 					row.find('.' + color.name).text(team.name);
 				});
 
@@ -212,7 +209,7 @@ module schedule {
 
 				elem.find('ul').append(
 					match.teams.map((team) =>
-						$('<li>').text(team.name).addClass(game.colorsById[team.colorId.toString()].name)
+						$('<li>').text(team.name).addClass(schedule.colorsById[team.colorId.toString()].name)
 					)
 				);
 			} else {

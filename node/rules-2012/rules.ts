@@ -1,6 +1,9 @@
-﻿///<reference path='../node.d.ts'/>
-import jsdc = module('../jsdc');
-import clock = module('../clock');
+﻿///<reference path="../node.d.ts" />
+///<reference path="../jsdc.ts" />
+///<reference path="../clock.ts" />
+
+import jsdc = require('../jsdc');
+import clock = require('../clock');
 
 var TimedEvent = clock.TimedEvent;
 
@@ -106,7 +109,7 @@ export class GameRules extends jsdc.GameRules {
 		console.log('Game Over.');
 
 		if (this.currentKing != 0) {
-			this.sendScore('Capture Hill', this.currentKing, (err, response) => {
+			this.sendScore('Capture Hill', this.currentKing, (err, response?) => {
 				if (err) {
 					console.log('Failed to update king of the hill score.');
 					console.log(err);

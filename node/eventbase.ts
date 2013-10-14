@@ -2,7 +2,7 @@
 
 var events = require('events');
 
-export class BaseEventEmitter implements EventEmitter {
+class BaseEventEmitter implements EventEmitter {
 	private emitter = new events.EventEmitter();
 
 	addListener(event: string, listener: Function) {
@@ -15,6 +15,10 @@ export class BaseEventEmitter implements EventEmitter {
 
 	once(event: string, listener: Function): void {
 		this.emitter.once(event, listener);
+	}
+	
+	removeAllListeners(event?: string): void {
+		this.emitter.removeAllListeners(event);
 	}
 
 	removeListener(event: string, listener: Function): void {
@@ -29,7 +33,7 @@ export class BaseEventEmitter implements EventEmitter {
 		this.emitter.setMaxListeners(n);
 	}
 
-	listeners(event: string): { Function; }[] {
+	listeners(event: string): Function[] {
 		return this.emitter.listeners();
 	}
 
@@ -37,3 +41,5 @@ export class BaseEventEmitter implements EventEmitter {
 		this.emitter.emit.apply(this.emitter, Array.prototype.slice.apply(arguments));
 	}
 }
+
+export = BaseEventEmitter;

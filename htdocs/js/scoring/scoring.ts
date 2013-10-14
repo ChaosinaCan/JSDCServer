@@ -1,7 +1,8 @@
 ﻿/// <reference path="../admin/base.ts" />
 /// <reference path="../admin/field-listener.ts" />
 
-module game {
+module scoring {
+	// Public Variables
 	export var colors: Color[];
 	export var actions: Action[];
 	export var fouls: Foul[];
@@ -13,7 +14,18 @@ module game {
 	export var actionsById: ActionMap;
 	export var foulsById: FoulMap;
 
+	export var field: Field;
+	export var fieldRotation = 0;
+	export var claimingBattery = -1;
+
+	export var actionIds = {
+		action: 1,
+		takeTerritory: 2,
+	}
+
+	// Public Methods
 	export function init(): void {
+		
 		colors = jsdc.color.parse(colors);
 		team = jsdc.team.parseOne(team);
 		match = jsdc.match.parseOne(match);
@@ -21,24 +33,10 @@ module game {
 		colorsById = <any>colors.indexByProperty('colorId');
 		actionsById = <any>actions.indexByProperty('actionId');
 		foulsById = <any>fouls.indexByProperty('foulId');
-	}
-}
 
-module scoring {
-	export var field: Field;
-	export var fieldRotation = 0;
-	export var claimingBattery = -1;
-
-	export var actions = {
-		action: 1,
-		takeTerritory: 2,
-	}
-
-	export function init(): void {
-		game.init();
 		jsdc.clock.connect(onconnect);
 
-		field = new Field(game.colors, game.match.teams);
+		field = new Field(scoring.colors, scoring.match.teams);
 		field.onload = onFieldLoaded;
 		$('#field').append(field.field);
 
@@ -85,7 +83,7 @@ module scoring {
 	export function onFieldLoaded(): void {
 		field.getCells().forEach((cell) => {
 			var id: number = cell.data('id');
-			var capturable: bool = cell.data('capturable');
+			var capturable: boolean = cell.data('capturable');
 
 			if (capturable) {
 				cell.click(territoryDialog.bind(null, id));
@@ -111,7 +109,7 @@ module scoring {
 			var ownedIndicator = $('#battery-' + i);
 			var unclaimedIndicator = $('#battery-' + i + '-unclaimed');
 
-			if (battery.owner === game.team.teamId) {
+			if (battery.owner === scoring.team.teamId) {
 				ownedIndicator.addClass('owned');
 			} else {
 				ownedIndicator.removeClass('owned');
@@ -129,7 +127,7 @@ module scoring {
 	}
 
 	export function getColor(id: number) {
-		return game.colorsById[id.toString()] || null;
+		return scoring.colorsById[id.toString()] || null;
 	}
 
 	export function getColorName(id: number) {
@@ -138,20 +136,20 @@ module scoring {
 	}
 
 	export function getTeam(id: number) {
-		for (var i = 0; i < game.match.teams.length; i++) {
-			if (game.match.teams[i].teamId === id) {
-				return game.match.teams[i];
+		for (var i = 0; i < scoring.match.teams.length; i++) {
+			if (scoring.match.teams[i].teamId === id) {
+				return scoring.match.teams[i];
 			}
 		}
 		return null;
 	}
 	
 	export function getAction(id: number) {
-		return game.actionsById[id.toString()] || null;
+		return scoring.actionsById[id.toString()] || null;
 	}
 
 	export function getFoul(id: number) {
-		return game.foulsById[id.toString()] || null;
+		return scoring.foulsById[id.toString()] || null;
 	}
 
 	export function canTakeTerritory(territoryId: number) {
@@ -159,35 +157,35 @@ module scoring {
 		var status: TerritoryStatus = cell.data('status');
 		
 		// can't take if already owned
-		if (status.owner === game.team.teamId) {
+		if (status.owner === scoring.team.teamId) {
 			return false;
 		}
 
 		var neighbors = field.getNeighbors(territoryId);
 		for (var i = 0; i < neighbors.length; i++) {
 			var status: TerritoryStatus = neighbors[i].data('status');
-			if (status.owner === game.team.teamId && status.powered) {
+			if (status.owner === scoring.team.teamId && status.powered) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	export function canPlaceBattery(territoryId: number): bool[] {
+	export function canPlaceBattery(territoryId: number): boolean[] {
 		var cell = field.getCell(territoryId)
-		if (cell.hasClass('battery')/* || cell.data('status').owner !== game.team.teamId*/) {
+		if (cell.hasClass('battery')/* || cell.data('status').owner !== scoring.team.teamId*/) {
 			return [false, false];
 		}
 
 		return field.currentStatus.batteries.map((battery) => {
-			return battery.owner === game.team.teamId || battery.id === claimingBattery;
+			return battery.owner === scoring.team.teamId || battery.id === claimingBattery;
 		});
 	}
 
 	export function sendAction(fromTeam: number, callback: (err: APIError) => any) {
 		jsdc.score.create({
-			match: game.match.matchId,
-			action: scoring.actions.action,
+			match: scoring.match.matchId,
+			action: scoring.actionIds.action,
 			from: fromTeam,
 			on: 0,
 		}, callback);
@@ -195,7 +193,7 @@ module scoring {
 
 	export function sendFoul(foulId: number, fromTeam: number, onTeam: number, callback: (err: APIError) => any) {
 		jsdc.score.create({
-			match: game.match.matchId,
+			match: scoring.match.matchId,
 			foul: foulId,
 			from: fromTeam,
 			on: onTeam,
@@ -207,7 +205,7 @@ module scoring {
 		jsdc.clock.emit('game event', {
 			event: 'take territory',
 			data: {
-				team: game.team.teamId,
+				team: scoring.team.teamId,
 				territory: territoryId,
 			}
 		});
@@ -217,7 +215,7 @@ module scoring {
 		jsdc.clock.emit('game event', {
 			event: 'place battery',
 			data: {
-				team: game.team.teamId,
+				team: scoring.team.teamId,
 				battery: batteryId,
 				territory: territoryId,
 			}
@@ -232,7 +230,7 @@ module scoring {
 		jsdc.clock.emit('game event', {
 			event: 'place battery',
 			data: {
-				team: game.team.teamId,
+				team: scoring.team.teamId,
 				battery: batteryId,
 				territory: 0
 			}
@@ -253,6 +251,8 @@ module scoring {
 		updateFieldRotation();
 	}
 
+
+	// Private Methods
 	function updateFieldRotation(): void {
 		$('table.field').css('-webkit-transform', 'rotate(' + fieldRotation + 'deg)');
 	}
@@ -275,8 +275,8 @@ module scoring {
 			(result) => {
 				if (result) {
 					jsdc.score.create({
-						match: game.match.matchId,
-						from: game.team.teamId,
+						match: scoring.match.matchId,
+						from: scoring.team.teamId,
 						on: 0,
 						action: 0,
 						foul: 0,
@@ -294,7 +294,7 @@ module scoring {
 			body: 'Sending...',
 		});
 
-		sendAction(game.team.teamId, (err) => {
+		sendAction(scoring.team.teamId, (err) => {
 			if (err) {
 				Modal.apiError(err, 'Failed to send action');
 			}
@@ -305,7 +305,7 @@ module scoring {
 	
 	function foulDialog(foulId: number): void {
 		var body: JQuery = $('<ul class=colorselect>').append(
-			game.match.teams.filter((team) => team.teamId !== game.team.teamId)
+			scoring.match.teams.filter((team) => team.teamId !== scoring.team.teamId)
 				.concat([{
 					teamId: 0,
 					colorId: 0,
@@ -321,7 +321,7 @@ module scoring {
 								body.replaceWith(								
 									$('<p>').text('Sending...')
 								);
-								sendFoul(foulId, game.team.teamId, team.teamId, (err) => {
+								sendFoul(foulId, scoring.team.teamId, team.teamId, (err) => {
 									if (err) {
 										Modal.apiError(err, 'Failed to send foul');
 									}
@@ -382,7 +382,7 @@ module scoring {
 	}
 
 	function ownedBatteryDialog(batteryId: number): void {
-		if (field.currentStatus.batteries[batteryId].owner !== game.team.teamId) {
+		if (field.currentStatus.batteries[batteryId].owner !== scoring.team.teamId) {
 			return;
 		}
 
@@ -429,10 +429,7 @@ module scoring {
 }
 
 
-
-
-
-
+/** Handles touch events on BlackBerry Playbook tablets */
 module touch {
 	export var SCROLL_THRESHOLD = 15;
 	export var GESTURE_ANGLE_THRESHOLD = 25;
@@ -488,7 +485,7 @@ module touch {
 		}
 	}
 
-	function initScroll(e: TouchEvent, press: bool): void {
+	function initScroll(e: TouchEvent, press: boolean): void {
 		var point = e.touches[0];
 		scrollPoint.x = point.clientX;
 		scrollPoint.y = point.clientY;

@@ -9,7 +9,7 @@ interface GameStatus {
 interface TerritoryStatus {
 	id: number;
 	owner: number;
-	powered: bool;
+	powered: boolean;
 }
 
 interface TeamInfo {
@@ -24,7 +24,7 @@ interface TeamStatus {
 	team: TeamInfo;
 	territories: number;
 	controlPoints: number;
-	batteries: bool[];
+	batteries: boolean[];
 }
 
 interface BatteryStatus {
@@ -412,7 +412,7 @@ class Field implements EventTarget {
 		}
 	}
 
-	dispatchEvent(evt: Event): bool {
+	dispatchEvent(evt: Event): boolean {
 		if (evt.type in this._listeners) {
 			this._listeners[evt.type].forEach((listener) => {
 				listener.apply(this, [evt]);

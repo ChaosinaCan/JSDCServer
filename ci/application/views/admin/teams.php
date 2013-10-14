@@ -1,6 +1,6 @@
 <script>
 	$(function() {
-		game.teams = <?= json_encode($teams)?>;
+		teams.teamlist = <?= json_encode($teams)?>;
 		teams.init();
 	});
 </script>

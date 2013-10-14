@@ -6,7 +6,7 @@ interface SimpleModalCallback {
 
 interface SimpleModalOptions {
 	appendTo?: string;
-	focus?: bool;
+	focus?: boolean;
 	opacity?: number;
 	overlayId?: string;
 	overlayCss?: any;
@@ -18,17 +18,17 @@ interface SimpleModalOptions {
 	minWidth?: number;
 	maxHeight?: number;
 	maxWidth?: number;
-	autoResize?: bool;
-	autoPosition?: bool;
+	autoResize?: boolean;
+	autoPosition?: boolean;
 	zIndex?: number;
-	close?: bool;
+	close?: boolean;
 	closeHTML?: string;
 	closeClass?: string;
-	escClose?: bool;
-	overlayClose?: bool;
+	escClose?: boolean;
+	overlayClose?: boolean;
 	position?: any[];
-	persist?: bool;
-	modal?: bool;
+	persist?: boolean;
+	modal?: boolean;
 	onOpen?: SimpleModalCallback;
 	onShow?: SimpleModalCallback;
 	onClose?: SimpleModalCallback;
@@ -41,7 +41,7 @@ interface SimpleModalDialog {
 	overlay: JQuery;
 	origHeight: number;
 	origWidth: number;
-	placeholder: bool;
+	placeholder: boolean;
 }
 
 interface JQuery {

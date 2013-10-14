@@ -44,58 +44,58 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-    <TypeScriptTarget>ES3</TypeScriptTarget>
+    <TypeScriptTarget>ES5</TypeScriptTarget>
     <TypeScriptIncludeComments>true</TypeScriptIncludeComments>
     <TypeScriptSourceMap>true</TypeScriptSourceMap>
-    <TypeScriptModuleKind>AMD</TypeScriptModuleKind>
+    <TypeScriptModuleKind>CommonJS</TypeScriptModuleKind>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <TypeScriptTarget>ES3</TypeScriptTarget>
+    <TypeScriptTarget>ES5</TypeScriptTarget>
     <TypeScriptIncludeComments>false</TypeScriptIncludeComments>
     <TypeScriptSourceMap>false</TypeScriptSourceMap>
-    <TypeScriptModuleKind>AMD</TypeScriptModuleKind>
+    <TypeScriptModuleKind>CommonJS</TypeScriptModuleKind>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="node\clock.js">
-      <DependentUpon>clock.ts</DependentUpon>
+      <DependentUpon>node\clock.ts</DependentUpon>
     </Content>
-    <Content Include="node\clock.ts" />
+    <TypeScriptCompile Include="node\clock.ts" />
     <Content Include="node\compile.js">
       <DependentUpon>compile</DependentUpon>
     </Content>
     <Content Include="node\config.js">
       <DependentUpon>config.ts</DependentUpon>
     </Content>
-    <Content Include="node\config.ts" />
-    <Content Include="node\events.js">
-      <DependentUpon>events.ts</DependentUpon>
+    <TypeScriptCompile Include="node\config.ts" />
+    <Content Include="node\eventbase.js">
+      <DependentUpon>eventbase.ts</DependentUpon>
     </Content>
-    <Content Include="node\events.ts" />
+    <TypeScriptCompile Include="node\eventbase.ts" />
     <Content Include="node\jsdc.js">
       <DependentUpon>jsdc.ts</DependentUpon>
     </Content>
-    <Content Include="node\jsdc.ts" />
+    <TypeScriptCompile Include="node\jsdc.ts" />
     <Content Include="node\main.js">
       <DependentUpon>main.ts</DependentUpon>
     </Content>
-    <Content Include="node\main.ts" />
+    <TypeScriptComplie Include="node\main.ts" />
     <Content Include="node\node.d.ts" />
     <Content Include="node\rule-template\rules.js">
       <DependentUpon>rules.ts</DependentUpon>
     </Content>
-    <Content Include="node\rule-template\rules.ts" />
+    <TypeScriptComplie Include="node\rule-template\rules.ts" />
     <Content Include="node\rules-2012\rules.js">
       <DependentUpon>rules.ts</DependentUpon>
     </Content>
-    <Content Include="node\rules-2012\rules.ts" />
+    <TypeScriptComplie Include="node\rules-2012\rules.ts" />
     <Content Include="node\rules-2013\field.js">
       <DependentUpon>field.ts</DependentUpon>
     </Content>
-    <Content Include="node\rules-2013\field.ts" />
+    <TypeScriptComplie Include="node\rules-2013\field.ts" />
     <Content Include="node\rules-2013\rules.js">
       <DependentUpon>rules.ts</DependentUpon>
     </Content>
-    <Content Include="node\rules-2013\rules.ts" />
+    <TypeScriptComplie Include="node\rules-2013\rules.ts" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="node\compile" />

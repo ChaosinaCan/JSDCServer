@@ -1,5 +1,4 @@
-﻿/// <reference path="../lib.d.ts" />
-/// <reference path="../spin.d.ts" />
+﻿/// <reference path="../spin.d.ts" />
 /// <reference path="../jquery.d.ts" />
 /// <reference path="../jsdc-api.d.ts" />
 /// <reference path="../bigscreen.d.ts" />
@@ -145,21 +144,21 @@ module jsdc {
 		}
 	}
 
-	export function handleResponse(call: JQueryPromise, parser: (response: any[]) => any[], callback: (error: APIError, data: any[]) => any) {
+	export function handleResponse(call: JQueryPromise<any>, parser: (response: any[]) => any[], callback: (error: APIError, data: any[]) => any) {
 		call.then(
 			(res) => callback.call(null, null, parser(res)),
 			(xhr) => callback.call(null, getError(xhr), null)
 		);
 	}
 
-	export function handleRawResponse(call: JQueryPromise, callback: (error: APIError, id: number) => any) {
+	export function handleRawResponse(call: JQueryPromise<any>, callback: (error: APIError, id: number) => any) {
 		call.then(
 			(res) => callback.call(null, null, res),
 			(xhr) => callback.call(null, getError(xhr), null)
 		);
 	}
 
-	export function handleSingleResponse(call: JQueryPromise, parser: (response: any[]) => any[], callback: (error: APIError, data: any) => any) {
+	export function handleSingleResponse(call: JQueryPromise<any>, parser: (response: any[]) => any[], callback: (error: APIError, data: any) => any) {
 		function toSingle(items: any[]): any {
 			items = parser(items);
 			if (!Array.isArray(items))
@@ -752,7 +751,7 @@ module jsdc {
 	 * @param name The team's imageName property
 	 * @param thumb Use "true" to get the thumbnail version of the image
 	 */
-	export function getTeamImage(name: string, thumb?: bool): string {
+	export function getTeamImage(name: string, thumb?: boolean): string {
 		if (name == null || name == "")
 			return null;
 
@@ -767,11 +766,11 @@ module jsdc {
 	export interface GameStatus {
 		timestamp: number;
 		match: number;
-		running: bool;
-		paused: bool;
-		aborted: bool;
-		finished: bool;
-		emergency: bool;
+		running: boolean;
+		paused: boolean;
+		aborted: boolean;
+		finished: boolean;
+		emergency: boolean;
 		timeElapsed: number;
 		timeRemaining: number;
 	}
@@ -782,7 +781,7 @@ module jsdc {
 		/** The base URL of the clock server */
 		export var baseUrl: string;
 		/** Whether or not the page is connected to the clock server */
-		export var connected: bool = false;
+		export var connected: boolean = false;
 
 		export function _getSocket(): SocketWrapper {
 			return socket;
@@ -858,8 +857,8 @@ module jsdc {
 		/** Synchronizes a local timer with the clock server's game timer */
 		export class Timer {
 			private _time: number;
-			private _running: bool;
-			private _connected: bool;
+			private _running: boolean;
+			private _connected: boolean;
 
 			private _lastTime: number;
 			private _lastStatus: GameStatus;
@@ -1027,7 +1026,7 @@ module Modal {
 
 	/** A callback function for confirmation dialog results */
 	export interface ConfirmCallback {
-		(result: bool): any;
+		(result: boolean): any;
 	}
 
 	/** Default confirmation buttons */
@@ -1527,7 +1526,7 @@ function toArray(object: any) {
 }
 
 /** Tests whether two objects are equal to each other property-by-property */
-function deepEquals(a: any, b: any): bool {
+function deepEquals(a: any, b: any): boolean {
 	var type;
 	if ((type = typeof a) !== typeof b)
 		return false;
@@ -1578,7 +1577,7 @@ function serialize(obj: any): string {
 }
 
 /** Parses the string representation of a boolean value */
-function parseBool(value: any): bool {
+function parseBool(value: any): boolean {
 	if (value === true || value === false)
 		return value;
 
@@ -1691,7 +1690,7 @@ function writeObject(object: any, maxLevel?: number): string {
 
 /** The result of a string partition call */
 interface PartitionResult {
-	success: bool;
+	success: boolean;
 	before: string;
 	after: string;
 }
@@ -1702,8 +1701,8 @@ interface String {
 	pad(length: number, char?: string);
 	partition(sep: string): PartitionResult;
 	rpartition(sep: string): PartitionResult;
-	startswith(str: string): bool;
-	endswith(str: string): bool;
+	startswith(str: string): boolean;
+	endswith(str: string): boolean;
 	capitalize(): string;
 }
 
@@ -1770,12 +1769,12 @@ String.prototype.rpartition = function(sep: string): PartitionResult {
 }
 
 /** Returns true if the string starts with a search string */
-String.prototype.startswith = function(str: string): bool {
+String.prototype.startswith = function(str: string): boolean {
 	return this.indexOf(str) === 0;
 }
 
 /** Returns true if the string ends with a search string */
-String.prototype.endswith = function(str: string): bool {
+String.prototype.endswith = function(str: string): boolean {
 	return (this.lastIndexOf(str) === this.length - str.length) && (this.length >= str.length);
 }
 
@@ -1787,8 +1786,8 @@ String.prototype.capitalize = function(): string {
 
 interface Array {
 	indexByProperty(prop: string): any[];
-	remove(object: any): bool;
-	contains(object: any): bool;
+	remove(object: any): boolean;
+	contains(object: any): boolean;
 }
 
 /** 
@@ -1814,7 +1813,7 @@ Array.prototype.remove = function(object: any) {
 }
 
 /** Gets whether the array contains an object */
-Array.prototype.contains = function(object: any): bool {
+Array.prototype.contains = function(object: any): boolean {
 	return this.indexOf(object) >= 0;
 }
 

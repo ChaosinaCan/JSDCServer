@@ -1,9 +1,9 @@
 
 <script>
 	$(document).ready(function() {
-		game.colors = <?= json_encode($colors) ?>;
-		game.actions = <?= json_encode($actions) ?>;
-		game.fouls = <?= json_encode($fouls) ?>;
+		scores.colors = <?= json_encode($colors) ?>;
+		scores.actions = <?= json_encode($actions) ?>;
+		scores.fouls = <?= json_encode($fouls) ?>;
 		
 		scores.init();
 	});

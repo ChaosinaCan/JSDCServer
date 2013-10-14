@@ -20,9 +20,9 @@ process.on('uncaughtException', function (err) {
 });
 
 
-import jsdc = module('jsdc')
-import clock = module('clock')
-import config = module('config')
+import jsdc = require('./jsdc')
+import clock = require('./clock')
+import config = require('./config')
 
 var api = new jsdc.API(config.mainServer.host, config.mainServer.port, config.mainServer.path);
 api.apikey = 'JSDC4Life';
@@ -116,7 +116,7 @@ game.on('stop', () => {
 		method: 'update',
 		id: game.match,
 		status: 'finished',
-	}, (err, result) => {
+	}, (err, result?) => {
 		if (err) {
 			console.log('Failed to set the match state to finished', err);
 		} else {
@@ -145,7 +145,7 @@ game.on('score deleted', (data) => {
 	api.post('matchresult', {
 		method: 'update',
 		match: game.match,
-	}, (err, result) => {
+	}, (err, result?) => {
 		if (err) {
 			console.log('Failed to update match results after score deletion', err);
 		} else {
@@ -405,7 +405,7 @@ process.stdin.on('data', (line) => {
 					cue = parseInt(cue);
 				} catch (e) { }
 
-				cueServers[server].send(cue, (err, result) => {
+				cueServers[server].send(cue, (err, result?) => {
 					if (err)
 						console.log('Failed to send cue.')
 					else

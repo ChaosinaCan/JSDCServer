@@ -10,7 +10,7 @@ interface BigScreenStatic {
 	onexit: Function;
 
 	element: Element;
-	enabled: bool;
+	enabled: boolean;
 
 	videoEnabled(video: Element);
 }

@@ -31,9 +31,9 @@ interface SocketWrapper {
 
 interface Socket {
 	options: ConnectionOptions;
-	connected: bool;
-	connecting: bool;
-	reconnecting: bool;
+	connected: boolean;
+	connecting: boolean;
+	reconnecting: boolean;
 	transport;
 
 	addListener(event: string, callback: Function);
@@ -50,8 +50,8 @@ interface ConnectionOptions {
 	resource?;
 	transports?: string[];
 	//'connect timeout'?: number;
-	//'try multiple transports'?: bool;
-	reconnect?: bool;
+	//'try multiple transports'?: boolean;
+	reconnect?: boolean;
 	//'reconnection delay'?: number;
 	//'max reconnection attempts'?: number;
 

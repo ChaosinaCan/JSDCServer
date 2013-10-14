@@ -1,10 +1,10 @@
 <script>
 	$(function() {
-		game.maxTeams = <?= $max_teams ?>;
-		game.maxRounds = <?= $max_rounds ?>;
-		game.colors = <?= json_encode($colors) ?>;
-		game.actions = <?= json_encode($actions) ?>;
-		game.fouls = <?= json_encode($fouls) ?>;
+		scoreboard.maxTeams = <?= $max_teams ?>;
+		scoreboard.maxRounds = <?= $max_rounds ?>;
+		scoreboard.colors = <?= json_encode($colors) ?>;
+		scoreboard.actions = <?= json_encode($actions) ?>;
+		scoreboard.fouls = <?= json_encode($fouls) ?>;
 		scoreboard.init();
 	});
 </script>

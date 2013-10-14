@@ -1,6 +1,7 @@
 ﻿/// <reference path="base.ts" />
 
-module game {
+module matches {
+	// Public Variables
 	export var maxRounds: number;
 	export var maxMatches: number;
 	export var maxTeams: number;
@@ -9,11 +10,8 @@ module game {
 
 	export var colorsById: { [key: string]: Color; } = {};
 	export var teamsById: { [key: string]: Team; } = {};
-}
 
-module matches {
-
-	export var statuses: { [key: string]: { status: string; open: bool; }; } = {
+	export var statuses: { [key: string]: { status: string; open: boolean; }; } = {
 		pending: { status: 'none', open: false },
 		ready: { status: 'ready', open: false },
 		running: { status: 'running', open: true },
@@ -22,26 +20,29 @@ module matches {
 		finished: { status: 'finished', open: false },
 	};
 
+	// Private Variables
 	var _template: JQuery;
 	var _columnsByColor: { [key: string]: number; } = {};
 
+
+	// Public Methods
 	export function init(): void {
-		game.colors = jsdc.color.parse(game.colors);
-		game.teams = jsdc.team.parse(game.teams);
+		matches.colors = jsdc.color.parse(matches.colors);
+		matches.teams = jsdc.team.parse(matches.teams);
 
 		// limit the number of colors to the number of teams playing
-		game.colors = game.colors.slice(0, game.maxTeams);
+		matches.colors = matches.colors.slice(0, matches.maxTeams);
 
-		game.colors.forEach((color, i) => {
-			game.colorsById[color.colorId.toString()] = color;
+		matches.colors.forEach((color, i) => {
+			matches.colorsById[color.colorId.toString()] = color;
 			_columnsByColor[color.colorId.toString()] = i;
 		});
-		game.teams.forEach((team) => game.teamsById[team.teamId.toString()] = team);
+		matches.teams.forEach((team) => matches.teamsById[team.teamId.toString()] = team);
 
 		
 		// enhance <select> inputs
 		$('#filter-round').append(
-			range(1, game.maxRounds).map((index) =>
+			range(1, matches.maxRounds).map((index) =>
 				$('<option>').attr('value', index).text(index.toString()))
 		);
 
@@ -62,7 +63,7 @@ module matches {
 			$('<td class=round>').text('Round'),
 			$('<td class=match>').text('Match'),
 			$('<td class=status>').text('Status'),
-			game.colors.map((color) =>
+			matches.colors.map((color) =>
 				$('<td class=team>').text(color.name.capitalize()).addClass(color.name)
 			),
 			$('<td class=controls>')
@@ -70,7 +71,7 @@ module matches {
 
 		// get a list of teams to add into each team <select>
 		// append a "no team" entry to the beginning of the list
-		var teams = game.teams;
+		var teams = matches.teams;
 		teams.unshift({
 			teamId: 0,
 			name: '',
@@ -82,13 +83,13 @@ module matches {
 		_template = $('<tr>').append(
 			$('<td class=round>').append(
 				$('<select>').append(
-					range(1, game.maxRounds).map((index) => 
+					range(1, matches.maxRounds).map((index) => 
 						$('<option>').attr('value', index).text(index.toString()))
 				)
 			),
 			$('<td class=match>').append(
 				$('<select>').append(
-					range(1, game.maxMatches).map((index) => 
+					range(1, matches.maxMatches).map((index) => 
 						$('<option>').attr('value', index).text(index.toString()))
 				)
 			),
@@ -99,10 +100,10 @@ module matches {
 							.text(key.capitalize()))
 				)
 			),
-			game.colors.map((color) =>
+			matches.colors.map((color) =>
 				$('<td class=team>').addClass(color.name).append(
 					$('<select>').append(
-						game.teams.map((team) =>
+						matches.teams.map((team) =>
 							$('<option>').attr('value', team.teamId).text(team.name)
 						)
 					)
@@ -128,33 +129,6 @@ module matches {
 			saveChanges(() => e.complete());
 		}));
 	}
-
-
-
-	function getStatusName(status: { status: string; open: bool; }) {
-		for (var key in statuses) {
-			if (statuses.hasOwnProperty(key)) {
-				var test = statuses[key];
-				if (status.status == test.status && status.open == test.open)
-					return key;
-			}
-		}
-		return 'unknown';
-	}
-
-	function statusToString(status: { status: string; open: bool; }) {
-		return status.status + ' ' + status.open;
-	}
-
-	function stringToStatus(str: string) {
-		var parts = str.partition(' ');
-		return {
-			status: parts.before,
-			open: parseBool(parts.after),
-		}
-	}
-
-
 
 	export function loadMatches(matches: Match[]) {
 		matches = jsdc.match.parse(matches);
@@ -198,129 +172,6 @@ module matches {
 		return buildRow(getTableBody(), match);
 	}
 
-	function updateInputs(row: JQuery) {
-		var match = getMatch(row);
-		row.find('.round select').val(match.roundNum.toString());
-		row.find('.match select').val(match.matchNum.toString());
-		row.find('.status select').val(statusToString({
-			status: match.status,
-			open: match.open,
-		}));
-
-		match.teams.forEach((team) => {
-			getTeamCell(row, team.colorId).find('select').val(team.teamId.toString());
-		});
-	}
-
-	function buildRow(table: JQuery, match: Match) {
-		var row = _template.clone();
-		
-		// attach match data to the row
-		row.data('match', match);
-		row.data('original', clone(match));
-		row.data('teams-valid', true);
-		row.data('match-valid', true);
-		row.data('delete', false);
-
-		// if the match is new (id is null), mark it as such
-		row.data('is-new', match.matchId === null);
-		if (row.data('is-new'))
-			row.addClass('new');
-
-		// set the initial values of each input
-		updateInputs(row);
-
-		// change handlers
-		row.find('.round select').change((e) => {
-			getMatch(row).roundNum = parseInt($(e.target).val());
-			validateRowMatchNumbers();
-			enableUndo(row);
-		});
-
-		row.find('.match select').change((e) => {
-			getMatch(row).matchNum = parseInt($(e.target).val());
-			validateRowMatchNumbers();
-			enableUndo(row);
-		});
-
-		row.find('.status select').change((e) => {
-			var data = getMatch(row);
-			var status = stringToStatus($(e.target).val());
-			data.status = status.status;
-			data.open = status.open;
-			enableUndo(row);
-		});
-
-		row.find('.team select').each((n, elem) => {
-			var color = game.colors[n].colorId;
-			$(elem).change((e) => {
-				var data = getMatch(row);
-				var newTeam = parseInt($(e.target).val());
-				var teamData: Team;
-
-				if (newTeam > 0) {
-					teamData = <Team>clone(game.teamsById[newTeam.toString()]);
-					teamData.colorId = color;
-				}
-
-				for (var i = 0; i < data.teams.length; i++) {
-					// if team with this color exists, replace it
-					if (data.teams[i].colorId == color) {
-						if (newTeam > 0) {
-							data.teams[i] = teamData;
-						} else {
-							data.teams.splice(i, 1);
-							console.log('team removed', data.teams);
-						}
-
-						validateRowTeams(row);
-						enableUndo(row);
-						return;
-					}
-				}
-				// if no team with this color exists, add it
-				data.teams.push(teamData);
-				validateRowTeams(row);
-				enableUndo(row);
-			});
-		});
-
-		// button handlers
-		row.find('button.undo').click((e) => {
-			resetRow(row);
-		});
-
-		row.find('button.delete').click((e) => {
-			deleteRow(row);
-		});
-
-		row.find('button.undelete').click((e) => {
-			undeleteRow(row);
-		});
-
-		// if the match is running or finished, disallow changes
-		enableControls(row);
-
-		// enhance <select> inputs
-		row.hide();
-		table.append(row);
-		row.find('.round select, .match select, .status select').chosen({
-			disable_search: true,
-		});
-
-		row.find('.team select').chosen({
-			allow_single_deselect: true,
-			placeholder_text: 'no team',
-		});
-
-		row.show();
-
-
-		return row;
-	}
-
-
-	
 	export function resetRow(row: JQuery) {
 		if (row.data('delete')) 
 			undeleteRow(row);
@@ -352,106 +203,15 @@ module matches {
 		validateRow(row);
 	}
 
-
-
-	export function validateRow(row: JQuery): bool {
+	export function validateRow(row: JQuery): boolean {
 		validateRowTeams(row);
 		validateRowMatchNumbers();
 		return isRowValid(row);
 	}
 
-	export function isRowValid(row: JQuery): bool {
+	export function isRowValid(row: JQuery): boolean {
 		return row.data('teams-valid') && row.data('match-valid');
 	}
-
-	function validateRowTeams(row: JQuery): void {
-		var valid = true;
-		var match = getMatch(row);
-		var cells = row.find('.team').removeClass('invalid');
-
-		if (row.data('delete'))
-			return;
-
-		for (var i = 0; i < match.teams.length; i++) {
-			for (var j = i + 1; j < match.teams.length; j++) {
-				var teamA = match.teams[i];
-				var teamB = match.teams[j];
-
-				if (teamA.teamId === teamB.teamId) {
-					var columnA = _columnsByColor[teamA.colorId.toString()];
-					var columnB = _columnsByColor[teamB.colorId.toString()];
-					$(cells.get(columnA)).addClass('invalid');
-					$(cells.get(columnB)).addClass('invalid');
-					valid = false;
-				}
-			}
-		}
-
-		row.data('teams-valid', valid);
-	}
-
-	function validateRowMatchNumbers(): void {
-		var rows = getRows();
-		rows.each((i, elem) => {
-			$(elem).data('match-valid', true);
-		});
-
-		rows.find('.round, .match').removeClass('invalid');
-
-		for (var i = 0; i < rows.length; i++) {
-			var rowA = $(rows.get(i));
-			if (rowA.data('delete'))
-				continue;
-
-			var matchA = getMatch(rowA);
-			for (var j = i + 1; j < rows.length; j++) {
-				var rowB = $(rows.get(j));
-				if (rowB.data('delete'))
-					continue;
-
-				var matchB = getMatch(rowB);
-
-				if (matchA.roundNum === matchB.roundNum && matchA.matchNum === matchB.matchNum) {
-					rowA.find('.round, .match').addClass('invalid');
-					rowB.find('.round, .match').addClass('invalid');
-					rowA.data('match-valid', false);
-					rowB.data('match-valid', false);
-				}
-			}
-		}
-	}
-
-
-
-	function enableUndo(row: JQuery): void {
-		row.find('button.undo').prop('disabled', false);
-	}
-
-	function disableUndo(row: JQuery): void {
-		row.find('button.undo').prop('disabled', true);
-	}
-
-	function enableControls(row: JQuery): void {
-		if (row.data('delete')) {
-			// if the match is deleted, disallow any changes
-			row.find('select').prop('disabled', true);
-		} else {
-			// if the match is running or finished, disallow changes
-			// to everything but the status
-			var match = getMatch(row);
-			if (match.status !== statuses['pending'].status) {
-				row.find(':not(.status) select').prop('disabled', true);
-				row.find('.status select').prop('disabled', false);
-				row.find('button.delete').prop('disabled', true);
-			} else {
-				row.find('select').prop('disabled', false);
-				row.find('button.delete').prop('disabled', false);
-			}
-		}
-		row.find('select').trigger('chosen:update');
-	}
-
-
 
 	export function getMatch(row: JQuery): Match {
 		return row.data('match');
@@ -479,21 +239,19 @@ module matches {
 			}
 		});
 
-		if (lastMatch < game.maxMatches) {
+		if (lastMatch < matches.maxMatches) {
 			round = lastRound;
 			match = lastMatch + 1;
-		} else if (lastRound < game.maxRounds) {
+		} else if (lastRound < matches.maxRounds) {
 			round = lastRound + 1;
 			match = 1;
 		} else {
-			round = game.maxRounds;
-			match = game.maxMatches;
+			round = matches.maxRounds;
+			match = matches.maxMatches;
 		}
 
 		return { round: round, match: match };
 	}
-
-
 
 	export function saveChanges(oncomplete?: Function): void {
 		var cancel = false;
@@ -550,7 +308,7 @@ module matches {
 
 		// Builds the progress dialog and determines which matches need to be changed
 		// Returns false if nothing needs to be changed
-		function setupSave(): bool {
+		function setupSave(): boolean {
 			// validate rows first
 			var valid = true;
 			validateRowMatchNumbers();
@@ -792,6 +550,237 @@ module matches {
 				row.removeClass('hidden');
 			}
 		});
+	}
+
+
+	// Private Methods
+	function getStatusName(status: { status: string; open: boolean; }) {
+		for (var key in statuses) {
+			if (statuses.hasOwnProperty(key)) {
+				var test = statuses[key];
+				if (status.status == test.status && status.open == test.open)
+					return key;
+			}
+		}
+		return 'unknown';
+	}
+
+	function statusToString(status: { status: string; open: boolean; }) {
+		return status.status + ' ' + status.open;
+	}
+
+	function stringToStatus(str: string) {
+		var parts = str.partition(' ');
+		return {
+			status: parts.before,
+			open: parseBool(parts.after),
+		}
+	}
+
+	function updateInputs(row: JQuery) {
+		var match = getMatch(row);
+		row.find('.round select').val(match.roundNum.toString());
+		row.find('.match select').val(match.matchNum.toString());
+		row.find('.status select').val(statusToString({
+			status: match.status,
+			open: match.open,
+		}));
+
+		match.teams.forEach((team) => {
+			getTeamCell(row, team.colorId).find('select').val(team.teamId.toString());
+		});
+	}
+
+	function buildRow(table: JQuery, match: Match) {
+		var row = _template.clone();
+		
+		// attach match data to the row
+		row.data('match', match);
+		row.data('original', clone(match));
+		row.data('teams-valid', true);
+		row.data('match-valid', true);
+		row.data('delete', false);
+
+		// if the match is new (id is null), mark it as such
+		row.data('is-new', match.matchId === null);
+		if (row.data('is-new'))
+			row.addClass('new');
+
+		// set the initial values of each input
+		updateInputs(row);
+
+		// change handlers
+		row.find('.round select').change((e) => {
+			getMatch(row).roundNum = parseInt($(e.target).val());
+			validateRowMatchNumbers();
+			enableUndo(row);
+		});
+
+		row.find('.match select').change((e) => {
+			getMatch(row).matchNum = parseInt($(e.target).val());
+			validateRowMatchNumbers();
+			enableUndo(row);
+		});
+
+		row.find('.status select').change((e) => {
+			var data = getMatch(row);
+			var status = stringToStatus($(e.target).val());
+			data.status = status.status;
+			data.open = status.open;
+			enableUndo(row);
+		});
+
+		row.find('.team select').each((n, elem) => {
+			var color = matches.colors[n].colorId;
+			$(elem).change((e) => {
+				var data = getMatch(row);
+				var newTeam = parseInt($(e.target).val());
+				var teamData: Team;
+
+				if (newTeam > 0) {
+					teamData = <Team>clone(matches.teamsById[newTeam.toString()]);
+					teamData.colorId = color;
+				}
+
+				for (var i = 0; i < data.teams.length; i++) {
+					// if team with this color exists, replace it
+					if (data.teams[i].colorId == color) {
+						if (newTeam > 0) {
+							data.teams[i] = teamData;
+						} else {
+							data.teams.splice(i, 1);
+							console.log('team removed', data.teams);
+						}
+
+						validateRowTeams(row);
+						enableUndo(row);
+						return;
+					}
+				}
+				// if no team with this color exists, add it
+				data.teams.push(teamData);
+				validateRowTeams(row);
+				enableUndo(row);
+			});
+		});
+
+		// button handlers
+		row.find('button.undo').click((e) => {
+			resetRow(row);
+		});
+
+		row.find('button.delete').click((e) => {
+			deleteRow(row);
+		});
+
+		row.find('button.undelete').click((e) => {
+			undeleteRow(row);
+		});
+
+		// if the match is running or finished, disallow changes
+		enableControls(row);
+
+		// enhance <select> inputs
+		row.hide();
+		table.append(row);
+		row.find('.round select, .match select, .status select').chosen({
+			disable_search: true,
+		});
+
+		row.find('.team select').chosen({
+			allow_single_deselect: true,
+			placeholder_text: 'no team',
+		});
+
+		row.show();
+
+
+		return row;
+	}
+
+	function validateRowTeams(row: JQuery): void {
+		var valid = true;
+		var match = getMatch(row);
+		var cells = row.find('.team').removeClass('invalid');
+
+		if (row.data('delete'))
+			return;
+
+		for (var i = 0; i < match.teams.length; i++) {
+			for (var j = i + 1; j < match.teams.length; j++) {
+				var teamA = match.teams[i];
+				var teamB = match.teams[j];
+
+				if (teamA.teamId === teamB.teamId) {
+					var columnA = _columnsByColor[teamA.colorId.toString()];
+					var columnB = _columnsByColor[teamB.colorId.toString()];
+					$(cells.get(columnA)).addClass('invalid');
+					$(cells.get(columnB)).addClass('invalid');
+					valid = false;
+				}
+			}
+		}
+
+		row.data('teams-valid', valid);
+	}
+
+	function validateRowMatchNumbers(): void {
+		var rows = getRows();
+		rows.each((i, elem) => {
+			$(elem).data('match-valid', true);
+		});
+
+		rows.find('.round, .match').removeClass('invalid');
+
+		for (var i = 0; i < rows.length; i++) {
+			var rowA = $(rows.get(i));
+			if (rowA.data('delete'))
+				continue;
+
+			var matchA = getMatch(rowA);
+			for (var j = i + 1; j < rows.length; j++) {
+				var rowB = $(rows.get(j));
+				if (rowB.data('delete'))
+					continue;
+
+				var matchB = getMatch(rowB);
+
+				if (matchA.roundNum === matchB.roundNum && matchA.matchNum === matchB.matchNum) {
+					rowA.find('.round, .match').addClass('invalid');
+					rowB.find('.round, .match').addClass('invalid');
+					rowA.data('match-valid', false);
+					rowB.data('match-valid', false);
+				}
+			}
+		}
+	}
+
+	function enableUndo(row: JQuery): void {
+		row.find('button.undo').prop('disabled', false);
+	}
+
+	function disableUndo(row: JQuery): void {
+		row.find('button.undo').prop('disabled', true);
+	}
+
+	function enableControls(row: JQuery): void {
+		if (row.data('delete')) {
+			// if the match is deleted, disallow any changes
+			row.find('select').prop('disabled', true);
+		} else {
+			// if the match is running or finished, disallow changes
+			// to everything but the status
+			var match = getMatch(row);
+			if (match.status !== statuses['pending'].status) {
+				row.find(':not(.status) select').prop('disabled', true);
+				row.find('.status select').prop('disabled', false);
+				row.find('button.delete').prop('disabled', true);
+			} else {
+				row.find('select').prop('disabled', false);
+				row.find('button.delete').prop('disabled', false);
+			}
+		}
+		row.find('select').trigger('chosen:update');
 	}
 }
 

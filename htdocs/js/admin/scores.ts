@@ -2,6 +2,11 @@
 /// <reference path="score-listener.ts" />
 
 module game {
+	
+}
+
+module scores {
+	// Public Variables
 	export var colors: Color[];
 	export var actions: Action[];
 	export var fouls: Foul[];
@@ -11,19 +16,9 @@ module game {
 	export var foulsById: FoulMap = {};
 
 	export var match: Match;
-	export var scores: ScoreListener;
+	export var scoreListener: ScoreListener;
 
-	export function init(): void {
-		colors = jsdc.color.parse(colors);
-		actions = jsdc.action.parse(actions);
-		fouls = jsdc.foul.parse(fouls);
-
-		colorsById = <ColorMap><any>colors.indexByProperty('colorId');
-		actionsById = <ActionMap><any>actions.indexByProperty('actionId');
-		foulsById = <FoulMap><any>fouls.indexByProperty('foulId');
-	}
-
-	export var statuses: { [key: string]: { status: string; open: bool; }; } = {
+	export var statuses: { [key: string]: { status: string; open: boolean; }; } = {
 		pending: { status: 'none', open: false },
 		ready: { status: 'ready', open: false },
 		running: { status: 'running', open: true },
@@ -32,7 +27,8 @@ module game {
 		finished: { status: 'finished', open: false },
 	};
 
-	export function getStatusName(status: { status: string; open: bool; }) {
+	// Public Methods
+	export function getStatusName(status: { status: string; open: boolean; }) {
 		for (var key in statuses) {
 			if (statuses.hasOwnProperty(key)) {
 				var test = statuses[key];
@@ -42,9 +38,7 @@ module game {
 		}
 		return 'unknown';
 	}
-}
 
-module scores {
 	export function onconnect(error): void {
 		if (error) {
 			Modal.error('Cannot connect to clock server', error);
@@ -52,23 +46,30 @@ module scores {
 			var clock = jsdc.clock;
 			clock.join('scoring');
 
-			game.scores = new ScoreListener(game.match, game.actions, game.fouls);
-			game.scores.addEventListener('resultchanged', onResultChange);
+			scoreListener = new ScoreListener(scores.match, scores.actions, scores.fouls);
+			scoreListener.addEventListener('resultchanged', onResultChange);
 
-			$('#history-wrap').append(new ScoreList(game.scores, game.colors, true));
+			$('#history-wrap').append(new ScoreList(scoreListener, scores.colors, true));
 		}
 	}
 
-	export function init(): void {
-		game.init();
+	export function init(): void {	
+		colors = jsdc.color.parse(colors);
+		actions = jsdc.action.parse(actions);
+		fouls = jsdc.foul.parse(fouls);
+
+		colorsById = <ColorMap><any>colors.indexByProperty('colorId');
+		actionsById = <ActionMap><any>actions.indexByProperty('actionId');
+		foulsById = <FoulMap><any>fouls.indexByProperty('foulId');
+
 		jsdc.clock.connect(onconnect);
 
 		$('#action').append(
-			game.actions.map((action) => $('<option>').attr('value', action.actionId).text(action.name.capitalize()))
+			scores.actions.map((action) => $('<option>').attr('value', action.actionId).text(action.name.capitalize()))
 		);
 
 		$('#foul').append(
-			game.fouls.map((foul) => $('<option>').attr('value', foul.foulId).text(foul.name.capitalize()))
+			scores.fouls.map((foul) => $('<option>').attr('value', foul.foulId).text(foul.name.capitalize()))
 		);
 
 		$('#from-team, #on-team').chosen({
@@ -97,105 +98,26 @@ module scores {
 		$('#create').click($.single(createScoreEntry));
 
 		loadMatch(null);
-		display.updateHistoryHeight();
-		$(window).resize(display.updateHistoryHeight);
+		scoreDisplay.updateHistoryHeight();
+		$(window).resize(scoreDisplay.updateHistoryHeight);
 
 		loadCurrentMatch();
 	}
 
-	function changeMatchOpen(): void {
-		var open: bool = <any>$('#open').prop('checked');
-		jsdc.match.update({
-			id: game.match.matchId,
-			open: open
-		}, (err, match) => {
-			if (err) {
-				Modal.apiError(err, 'Failed to ' + (open ? 'open' : 'close') + ' scoring');
-			} else {
-				loadMatch(match);
-			}
-		});
-	}
-
-	function deselectFoul(): void {
-		if ($('#action').val() != '0') {
-			$('#foul').val('0').trigger('chosen:update');
-		}
-		validateScoreEntry();
-	}
-
-	function deselectAction(): void {
-		if ($('#foul').val() != '0') {
-			$('#action').val('0').trigger('chosen:update');
-		}
-		validateScoreEntry();
-	}
-
-	function updateTeamSelectClass(e: JQueryEventObject): void {
-		var select = $(this);
-		var chznSpan = select.siblings('.chzn-container').find('.chzn-single span');
-		
-		chznSpan.removeClass();
-		if (select.val() != 0) {
-			chznSpan.addClass(getColor(select.val()));
-		}
-	}
-
-	export function getColor(id: number) {
-		return game.colorsById[id.toString()].name;
-	}
-
-	function onResultChange(e): void {
-		display.update(<any>e.detail);
-	}
-
-	function fillTeamSelects(match): void {
-		$('#from-team, #on-team').empty().append(
-			$('<option value=0>')
-		)
-
-		if (match) {
-			$('#from-team, #on-team').append(
-				match.teams.map((team) => 
-					$('<option>').attr('value', team.teamId).text(team.name).addClass(getColor(team.colorId))
-				)
-			)
-		}
-
-		$('#from-team, #on-team').trigger('chosen:update');	
-	}
-
-	function validateScoreEntry(): void {
-		var valid = true;
-		if (!game.match || !game.match.open) {
-			valid = false;
-		}
-
-		if ($('#from-team').val() == 0 && $('#on-team').val() == 0) {
-			valid = false;
-		}
-
-		if ($('#action').val() == 0 && $('#foul').val() == 0 
-			&& !$('#disable').prop('checked') && !$('#disqualify').prop('checked')) {
-			valid = false;
-		}
-
-		$('#create').prop('disabled', !valid);
-	}
-
+	
 	export function resetForm(): void {
 		$('#from-team, #on-team, #action, #foul').val('0').trigger('chosen:update');
 		$('#disable, #disqualify').prop('checked', false);
 	}
 
 	export function createScoreEntry(e?: SingleEventObject): void {
-		if (!game.match) {
+		if (!scores.match) {
 			Modal.error('No match selected', 'A new score entry cannot be created because no match is loaded. Load a match first.');
 			return;
 		}
 
 		jsdc.score.create({
-			match: game.match.matchId,
+			match: scores.match.matchId,
 			from: parseInt($('#from-team').val()),
 			on: parseInt($('#on-team').val()),
 			action: parseInt($('#action').val()),
@@ -215,18 +137,18 @@ module scores {
 	}
 
 	export function refreshScores(e?: SingleEventObject): void {
-		if (!game.match) {
+		if (!scores.match) {
 			Modal.error('No match selected', 'Scores cannot be refreshed because no match is loaded. Load a match first.');
 			return;
 		}
 
 		jsdc.matchresult.update({
-			match: game.match.matchId,
+			match: scores.match.matchId,
 		}, (err, results) => {
 			if (err) {
 				Modal.apiError(err, 'Failed to update match results');
 			} else {
-				game.scores.reload();
+				scoreListener.reload();
 			}
 
 			if (e) {
@@ -236,7 +158,7 @@ module scores {
 	}
 
 	export function confirmDeleteScores(): void {
-		if (!game.match) {
+		if (!scores.match) {
 			Modal.error('No match selected', 'Scores cannot be deleted because no match is loaded. Load a match first.');
 			return;
 		}
@@ -245,12 +167,12 @@ module scores {
 			'Are you sure you want to delete all score entries for this match? This operation cannot be undone.',
 			{ yes: 'Delete all scores', no: 'Cancel' },
 			(result) => {
-				jsdc.score.reset(game.match.matchId, (err) => {
+				jsdc.score.reset(scores.match.matchId, (err) => {
 					if (err) {
 						Modal.apiError(err, 'Failed to delete all score entries');
 					} else {
 						refreshScores();
-						Modal.info('Scores deleted', 'All score entries for round ' + game.match.roundNum + ', match ' + game.match.matchNum +
+						Modal.info('Scores deleted', 'All score entries for round ' + scores.match.roundNum + ', match ' + scores.match.matchNum +
 							' were successfully deleted.');
 					}
 				})
@@ -259,22 +181,22 @@ module scores {
 
 	export function loadMatch(match: Match): void {
 		
-		if (!game.match || !match || game.match.matchId !== match.matchId) {
+		if (!scores.match || !match || scores.match.matchId !== match.matchId) {
 			fillTeamSelects(match);
-			display.init(match);
+			scoreDisplay.init(match);
 
-			if (game.scores) {
-				game.scores.match = match;
+			if (scoreListener) {
+				scoreListener.match = match;
 			}
 		}
 
-		game.match = match;
+		scores.match = match;
 
 		if (match) {
 			$('section.controls h2').removeClass('no-match');
 			$('section.controls h2 .round').text(match.roundNum.toString());
 			$('section.controls h2 .match').text(match.matchNum.toString());
-			$('#match-status').text('Status: ' + game.getStatusName(match));
+			$('#match-status').text('Status: ' + scores.getStatusName(match));
 			$('#refresh, #clear-all').prop('disabled', false);
 			$('#open').prop('checked', match.open).prop('disabled', false);
 			$('#new-score').find('input, select, button')
@@ -369,9 +291,9 @@ module scores {
 					currentList.append(
 						$('<li>').text('Match ' + match.matchNum.toString())
 							.addClass(match.status === 'finished' ? 'finished' : '')
-							.addClass((game.match && match.matchId === game.match.matchId) ? 'current' : '')
+							.addClass((scores.match && match.matchId === scores.match.matchId) ? 'current' : '')
 							.click(() => {
-								if (!game.match || match.matchId !== game.match.matchId) {
+								if (!scores.match || match.matchId !== scores.match.matchId) {
 									loadMatch(match);
 									$.modal.close();
 								}
@@ -381,10 +303,91 @@ module scores {
 			}
 		});
 	}
+
+	// Private Methods
+	function changeMatchOpen(): void {
+		var open: boolean = <any>$('#open').prop('checked');
+		jsdc.match.update({
+			id: scores.match.matchId,
+			open: open
+		}, (err, match) => {
+			if (err) {
+				Modal.apiError(err, 'Failed to ' + (open ? 'open' : 'close') + ' scoring');
+			} else {
+				loadMatch(match);
+			}
+		});
+	}
+
+	function deselectFoul(): void {
+		if ($('#action').val() != '0') {
+			$('#foul').val('0').trigger('chosen:update');
+		}
+		validateScoreEntry();
+	}
+
+	function deselectAction(): void {
+		if ($('#foul').val() != '0') {
+			$('#action').val('0').trigger('chosen:update');
+		}
+		validateScoreEntry();
+	}
+
+	function updateTeamSelectClass(e: JQueryEventObject): void {
+		var select = $(this);
+		var chznSpan = select.siblings('.chzn-container').find('.chzn-single span');
+		
+		chznSpan.removeClass();
+		if (select.val() != 0) {
+			chznSpan.addClass(getColor(select.val()));
+		}
+	}
+
+	export function getColor(id: number) {
+		return scores.colorsById[id.toString()].name;
+	}
+
+	function onResultChange(e): void {
+		scoreDisplay.update(<any>e.detail);
+	}
+
+	function fillTeamSelects(match): void {
+		$('#from-team, #on-team').empty().append(
+			$('<option value=0>')
+		)
+
+		if (match) {
+			$('#from-team, #on-team').append(
+				match.teams.map((team) => 
+					$('<option>').attr('value', team.teamId).text(team.name).addClass(getColor(team.colorId))
+				)
+			)
+		}
+
+		$('#from-team, #on-team').trigger('chosen:update');	
+	}
+
+	function validateScoreEntry(): void {
+		var valid = true;
+		if (!scores.match || !scores.match.open) {
+			valid = false;
+		}
+
+		if ($('#from-team').val() == 0 && $('#on-team').val() == 0) {
+			valid = false;
+		}
+
+		if ($('#action').val() == 0 && $('#foul').val() == 0 
+			&& !$('#disable').prop('checked') && !$('#disqualify').prop('checked')) {
+			valid = false;
+		}
+
+		$('#create').prop('disabled', !valid);
+	}
 }
 
 
-module display {
+module scoreDisplay {
 
 	var template = $('<li>').append(
 		$('<div class=primary>').append(
@@ -415,7 +418,7 @@ module display {
 
 	function createStatus(team: Team) {
 		var item = template.clone(true);
-		item.addClass(game.colorsById[team.colorId.toString()].name);
+		item.addClass(scores.colorsById[team.colorId.toString()].name);
 		item.find('.team').text(team.name);
 		item.find('.score').text('0');
 		return item;

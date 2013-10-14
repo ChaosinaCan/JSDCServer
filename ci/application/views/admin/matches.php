@@ -1,11 +1,11 @@
 
 <script>
 	$(function() {
-		game.maxRounds = <?= $max_rounds ?>;
-		game.maxMatches = <?= $max_matches ?>;
-		game.maxTeams = <?= $max_teams ?>;
-		game.colors = <?= json_encode($colors) ?>;
-		game.teams = <?= json_encode($teams) ?>;
+		matches.maxRounds = <?= $max_rounds ?>;
+		matches.maxMatches = <?= $max_matches ?>;
+		matches.maxTeams = <?= $max_teams ?>;
+		matches.colors = <?= json_encode($colors) ?>;
+		matches.teams = <?= json_encode($teams) ?>;
 		matches.init();
 		matches.loadMatches(<?= json_encode($matches) ?>);
 	});

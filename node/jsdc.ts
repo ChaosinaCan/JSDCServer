@@ -1,8 +1,12 @@
 ﻿///<reference path='node.d.ts'/>
 
-import http = module('http')
-import clock = module('clock')
-import events = module('./events')
+import http = require('http');
+import clock = require('./clock');
+import BaseEventEmitter = require('./eventbase');
+
+export interface NodeCallback {
+	(err: any, data?: any): any;
+}
 
 export function serialize(obj: any) {
 	if (typeof obj === 'string')
@@ -44,10 +48,10 @@ export function bindMemberFunctions(obj: any) {
 }
 
 
-export class ResponseHandler extends events.BaseEventEmitter {
+export class ResponseHandler extends BaseEventEmitter {
 	private callback: Function;
 
-	constructor(callback: (err, data) => any) {
+	constructor(callback: NodeCallback) {
 		super();
 		bindMemberFunctions(this);
 		this.callback = callback;
@@ -111,8 +115,8 @@ export class ResponseHandler extends events.BaseEventEmitter {
 		return this;
 	}
 
-	static get(host: string, path: string, callback?: (err, data) => any) {
-		callback = callback || (err, data) => undefined;
+	static get(host: string, path: string, callback?: NodeCallback) {
+		callback = callback || (err, data?) => undefined;
 		new ResponseHandler(callback).get({
 			host: host,
 			port: 80,
@@ -120,8 +124,8 @@ export class ResponseHandler extends events.BaseEventEmitter {
 		});
 	}
 
-	static post(host: string, path: string, data: any, callback?: (err, data) => any) {
-		callback = callback || (err, data) => undefined;
+	static post(host: string, path: string, data: any, callback?: NodeCallback) {
+		callback = callback || (err, data?) => undefined;
 		new ResponseHandler(callback).post({
 			host: host,
 			port: 80,
@@ -131,6 +135,7 @@ export class ResponseHandler extends events.BaseEventEmitter {
 }
 
 
+
 export class API {
 	public apikey: string;
 
@@ -138,7 +143,7 @@ export class API {
 		bindMemberFunctions(this);
 	}
 
-	get(method: string, params: any, callback?: (err, data) => any): ResponseHandler {
+	get(method: string, params: any, callback?: NodeCallback): ResponseHandler {
 		var request = {
 			host: this.host,
 			port: this.port,
@@ -150,12 +155,12 @@ export class API {
 			}
 		}
 
-		callback = callback || (err, data) => null;
+		callback = callback || (err, data?) => null;
 
 		return new ResponseHandler(callback).get(request);
 	}
 
-	post(method: string, params: any, callback?: (err, data) => any): ResponseHandler {
+	post(method: string, params: any, callback?: NodeCallback): ResponseHandler {
 		
 		var request = {
 			host: this.host,
@@ -168,21 +173,20 @@ export class API {
 			}
 		}
 
-		callback = callback || (err, data) => null;
+		callback = callback || (err, data?) => null;
 
 		return new ResponseHandler(callback).post(request, params);
 	}
 }
 
-
 export class CueServer {
-	constructor(public host: string, public port?: number = 80, public path?: string = '/') {
+	constructor(public host: string, public port: number = 80, public path: string = '/') {
 		bindMemberFunctions(this);
 	}
 
-	send(cue: number, callback: Function): ResponseHandler;
-	send(cmd: any, callback: Function): ResponseHandler;
-	send(options: { cmd?: string; user?: number; def?: number; }, callback: (err, data) => any): ResponseHandler {
+	send(cue: number, callback: NodeCallback): ResponseHandler;
+	send(cmd: any, callback: NodeCallback): ResponseHandler;
+	send(options: { cmd?: string; user?: number; def?: number; }, callback: NodeCallback): ResponseHandler {
 		var command, 
 			user = null, 
 			def = null;
@@ -213,7 +217,7 @@ export class CueServer {
 }
 
 
-export class GameAudio extends events.BaseEventEmitter {
+export class GameAudio extends BaseEventEmitter {
 	public files = {};
 
 	constructor() {
@@ -244,7 +248,7 @@ export class GameAudio extends events.BaseEventEmitter {
 }
 
 
-export class GameRules extends events.BaseEventEmitter {
+export class GameRules extends BaseEventEmitter {
 	public cues: any;
 	public actions: any;
 	
@@ -291,7 +295,7 @@ export class GameRules extends events.BaseEventEmitter {
 		}
 
 		// retrieve rules
-		api.get('color', 'all', function (err, data: any[]) => {
+		api.get('color', 'all', (err, data?: any[]) => {
 			this._colors = {};
 			data.forEach((color) => {
 				this._colors[color.colorId] = color.name;
@@ -342,9 +346,9 @@ export class GameRules extends events.BaseEventEmitter {
 	 * @param {number} onTeam The id of the team upon which the action was performed
 	 * @param {Function} callback
 	 */
-	sendScore(action: string, team: number, callback?: (err, data) => any): void;
-	sendScore(action: string, fromTeam: number, onTeam?: number, callback?: (err, data) => any): void;
-	sendScore(action: string, fromTeam: number, onTeam?: number, callback?: (err, data) => any) {
+	sendScore(action: string, team: number, callback?: NodeCallback): void;
+	sendScore(action: string, fromTeam: number, onTeam?: number, callback?: NodeCallback): void;
+	sendScore(action: string, fromTeam: number, onTeam?: number, callback?: NodeCallback) {
 		if (typeof arguments[2] !== 'number') {
 			callback = arguments[2];
 			fromTeam = arguments[1];
@@ -375,9 +379,9 @@ export class GameRules extends events.BaseEventEmitter {
 	 * @param {string} name The name of the cue in this.cues
 	 * @param {Function} callback
 	 */
-	sendCue(name: string, callback?: Function);
-	sendCue(server?: number, name?: string, callback?: Function);
-	sendCue(server?: number, name?: string, callback?: Function) {
+	sendCue(name: string, callback?: NodeCallback);
+	sendCue(server?: number, name?: string, callback?: NodeCallback);
+	sendCue(server?: any, name?: any, callback?: NodeCallback) {
 		if (typeof arguments[0] === 'string') {
 			name = arguments[0];
 			server = 0;

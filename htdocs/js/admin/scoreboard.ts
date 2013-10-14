@@ -2,7 +2,8 @@
 /// <reference path="score-listener.ts" />
 /// <reference path="field-listener.ts" />
 
-module game {
+module scoreboard {
+	// Public Variables
 	export var maxTeams: number;
 	
 	export var colors: Color[];
@@ -18,7 +19,13 @@ module game {
 	export var clock: jsdc.clock.Timer;
 	export var scores: ScoreListener;
 
+	export var field: Field;
+	export var fieldScores: FieldScoringListener;
+
+
+	// Public Methods
 	export function init(): void {
+		
 		colors = jsdc.color.parse(colors);
 		actions = jsdc.action.parse(actions);
 		fouls = jsdc.foul.parse(fouls);
@@ -26,36 +33,10 @@ module game {
 		colorsById = <ColorMap><any>colors.indexByProperty('colorId');
 		actionsById = <ActionMap><any>actions.indexByProperty('actionId');
 		foulsById = <FoulMap><any>fouls.indexByProperty('foulId');
-	}
-}
 
-module scoreboard {
-
-	export var field: Field;
-	export var fieldScores: FieldScoringListener;
-
-	function onconnect(error: string) {
-		if (error) {
-			Modal.error('Cannot connect to clock server', error);
-		} else {
-			var clock = jsdc.clock;
-			clock.join('game', 'scoring', 'admin');
-			clock.on('match changed', onMatchChanged);
-			clock.on('game start', onGameStart);
-
-			game.clock = new jsdc.clock.Timer(onTimerUpdate, onTimerStatusChange);
-			game.scores = new ScoreListener(game.match, game.actions, game.fouls);
-
-			game.scores.addEventListener('resultchanged', onResultChange);
-		}
-	}
-
-	
-	export function init(): void {
-		game.init();
 		jsdc.clock.connect(onconnect);
 
-		field = new Field(game.colors, []);
+		field = new Field(scoreboard.colors, []);
 		fieldScores = new FieldScoringListener(field);
 
 		field.addEventListener('territory update', onTerritoryUpdate);
@@ -117,25 +98,25 @@ module scoreboard {
 	}
 
 	export function setMatch(match: Match) {
-		game.match = match;
+		scoreboard.match = match;
 		if (match) {
-			if (match.roundNum === game.maxRounds) {
+			if (match.roundNum === scoreboard.maxRounds) {
 				if (match.matchNum === 1) {
 					setMatchNumber('Final match');
 				} else {
 					setMatchNumber('Demolition round');
 				}
-			} else if (match.roundNum === game.maxRounds - 1) {
+			} else if (match.roundNum === scoreboard.maxRounds - 1) {
 				setMatchNumber('Semifinal match ' + match.matchNum);
-			} else if (match.roundNum === game.maxRounds - 2) {
+			} else if (match.roundNum === scoreboard.maxRounds - 2) {
 				setMatchNumber('Quaterfinal match ' + match.matchNum);
-			} else if (match.roundNum === game.maxRounds - 3) {
+			} else if (match.roundNum === scoreboard.maxRounds - 3) {
 				setMatchNumber('Elimation match ' + match.matchNum);
 			} else {
 				setMatchNumber(match.roundNum, match.matchNum);
 			}
 
-			display.init(match);
+			scheduleDisplay.init(match);
 
 			if (match.status === 'ready') {
 				changeView('pregame');
@@ -146,16 +127,34 @@ module scoreboard {
 			field.changeTeams(match.teams);
 		} else {
 			setMatchNumber('No match loaded');
-			display.init(null);
+			scheduleDisplay.init(null);
 
 			changeView('scoreboard');
 		}
 
-		if (game.scores) {
-			game.scores.match = match;
+		if (scoreboard.scores) {
+			scoreboard.scores.match = match;
 		}
 
 		jsdc.clock.emit('game status');
+	}
+
+
+	// Private Methods
+	function onconnect(error: string) {
+		if (error) {
+			Modal.error('Cannot connect to clock server', error);
+		} else {
+			var clock = jsdc.clock;
+			clock.join('game', 'scoring', 'admin');
+			clock.on('match changed', onMatchChanged);
+			clock.on('game start', onGameStart);
+
+			scoreboard.clock = new jsdc.clock.Timer(onTimerUpdate, onTimerStatusChange);
+			scoreboard.scores = new ScoreListener(scoreboard.match, scoreboard.actions, scoreboard.fouls);
+
+			scoreboard.scores.addEventListener('resultchanged', onResultChange);
+		}
 	}
 
 	function onMatchChanged(): void {
@@ -197,7 +196,7 @@ module scoreboard {
 	}
 
 	function onResultChange(e: CustomEvent) {
-		display.update(<any>e.detail)
+		scheduleDisplay.update(<any>e.detail)
 	}
 
 	function onTerritoryUpdate(e: CustomEvent) {
@@ -209,20 +208,20 @@ module scoreboard {
 	}
 
 	function updateAllGameStatuses(): void {
-		field.currentStatus.teams.forEach(display.updateGameStatus);
+		field.currentStatus.teams.forEach(scheduleDisplay.updateGameStatus);
 	}
 
 	function refreshScores(): void {
 		jsdc.matchresult.update({
-			match: game.match.matchId
+			match: scoreboard.match.matchId
 		}, (err, result) => {
-			game.scores.reload();
+			scoreboard.scores.reload();
 		});
 	}
 }
 
 
-module display {
+module scheduleDisplay {
 	var template = $('<li>').append(
 		$('<div class=primary>').append(
 			$('<span class=team>'),
@@ -268,7 +267,7 @@ module display {
 
 	function createCard(team: Team) {
 		var card = pregameTemplate.clone(true);
-		card.addClass(game.colorsById[team.colorId.toString()].name);
+		card.addClass(scoreboard.colorsById[team.colorId.toString()].name);
 		card.find('h1').text(team.name);
 		card.find('h2').text(team.university);
 		card.find('img').attr('src', jsdc.getTeamImage(team.imageName) || '/img/default-team.svg');
@@ -277,7 +276,7 @@ module display {
 
 	function createStatus(team: Team) {
 		var item = template.clone(true);
-		item.addClass(game.colorsById[team.colorId.toString()].name);
+		item.addClass(scoreboard.colorsById[team.colorId.toString()].name);
 		item.find('.team').text(team.name);
 		return item;
 	}

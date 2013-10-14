@@ -56,8 +56,8 @@ module game {
 		$('#emergency').click(confirmEmergency);
 		$('#reset-field').click(confirmResetField);
 
-		display.updateHistoryHeight();
-		$(window).resize(display.updateHistoryHeight);
+		gameDisplay.updateHistoryHeight();
+		$(window).resize(gameDisplay.updateHistoryHeight);
 	}
 
 	export function onconnect(err: string): void {
@@ -101,7 +101,7 @@ module game {
 
 	function onResultChange(e: CustomEvent) {
 		//console.log('game result change', e.detail);
-		display.update(<any>e.detail);
+		gameDisplay.update(<any>e.detail);
 	}
 
 	function onMatchChange(e: CustomEvent) {
@@ -172,7 +172,7 @@ module game {
 			$('#start').prop('disabled', true);
 		}
 
-		display.init(match);
+		gameDisplay.init(match);
 	}
 
 	export function loadMatch(match: Match): void {
@@ -400,7 +400,7 @@ module game {
 }
 
 
-module display {
+module gameDisplay {
 
 	var template = $('<li>').append(
 		$('<div class=primary>').append(
