@@ -45,6 +45,7 @@ node_modules
 
 # Untracked Files
 _old
+/htdocs/forbidden/*
 /htdocs/restricted/*
 /htdocs/xampp/*
 /htdocs/css/admin/*.css
