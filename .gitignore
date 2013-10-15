@@ -45,6 +45,8 @@ node_modules
 
 # Untracked Files
 _old
+/htdocs/restricted/*
+/htdocs/xampp/*
 /htdocs/css/admin/*.css
 /htdocs/css/scoring/*.css
 /htdocs/fonts/seg*.ttf
