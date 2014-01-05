@@ -49,7 +49,7 @@ module scores {
 			scoreListener = new ScoreListener(scores.match, scores.actions, scores.fouls);
 			scoreListener.addEventListener('resultchanged', onResultChange);
 
-			$('#history-wrap').append(new ScoreList(scoreListener, scores.colors, true));
+			$('#history-wrap').append(new ScoreList(scoreListener, scores.colors, true).table);
 		}
 	}
 

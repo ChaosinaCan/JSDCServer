@@ -116,7 +116,7 @@ export class ResponseHandler extends BaseEventEmitter {
 	}
 
 	static get(host: string, path: string, callback?: NodeCallback) {
-		callback = callback || (err, data?) => undefined;
+		callback = callback || ((err, data?) => undefined);
 		new ResponseHandler(callback).get({
 			host: host,
 			port: 80,
@@ -125,7 +125,7 @@ export class ResponseHandler extends BaseEventEmitter {
 	}
 
 	static post(host: string, path: string, data: any, callback?: NodeCallback) {
-		callback = callback || (err, data?) => undefined;
+		callback = callback || ((err, data?) => undefined);
 		new ResponseHandler(callback).post({
 			host: host,
 			port: 80,
@@ -155,7 +155,7 @@ export class API {
 			}
 		}
 
-		callback = callback || (err, data?) => null;
+		callback = callback || ((err, data?) => undefined);
 
 		return new ResponseHandler(callback).get(request);
 	}
@@ -173,7 +173,7 @@ export class API {
 			}
 		}
 
-		callback = callback || (err, data?) => null;
+		callback = callback || ((err, data?) => undefined);
 
 		return new ResponseHandler(callback).post(request, params);
 	}

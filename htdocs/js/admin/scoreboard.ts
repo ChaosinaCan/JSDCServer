@@ -55,7 +55,8 @@ module scoreboard {
 
 		$('.view:not(.current)').hide();
 
-		$(document).on('viewchange', (e, view) => {
+		$(document).on('viewchange', (e, ...args) => {
+			var view: string = args[0];
 			console.log('view change', e, view);
 			if (view === 'videos') {
 				var videos = [

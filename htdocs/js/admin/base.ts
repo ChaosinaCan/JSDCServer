@@ -7,17 +7,14 @@
 /// <reference path="../socket.io-client.d.ts" />
 /// <reference path="../jquery.simplemodal.d.ts" />
 
-/** Enables or disabled fullscreen */
-function toggleFullscreen() {
-	if (BigScreen.enabled) 
-		BigScreen.toggle();
-}
-
+/*-----------------------------------------------------------------------------
+ * Common page logic
+ *---------------------------------------------------------------------------*/
 
 $(function () {
 
+	// Map F11 or #fullscreen and #restore buttons to toggle fullscreen
 	if (typeof BigScreen !== 'undefined') {
-		// toggle fullscreen on F11
 		window.addEventListener('keydown', (e: KeyboardEvent) => {
 			if (e.which === 122) {
 				e.preventDefault();
@@ -53,12 +50,12 @@ $(function () {
 		});
 
 		$(elem).hide().after(replacement);
-
 	});
 });
 
-
-
+/*-----------------------------------------------------------------------------
+ * Modules and Types
+ *---------------------------------------------------------------------------*/
 
 /** Provides methods for communicating with the REST and clock servers */
 module jsdc {
@@ -94,7 +91,7 @@ module jsdc {
 	 * @param params Parameters to with the request
 	 *		Either a string or a dictionary of key-value pairs
 	 */
-	export function get(method: string, params?: any): JQueryPromise {
+	export function get(method: string, params?: any): JQueryPromise<any> {
 		return $.ajax(apiUrl(method, params), {
 			type: 'GET',
 			dataType: 'json',
@@ -109,7 +106,7 @@ module jsdc {
 	 * @param method The method or datatype to access
 	 * @param data Any JSON-serializable data to send
 	 */
-	export function post(method: string, data: any): JQueryPromise {
+	export function post(method: string, data: any): JQueryPromise<any> {
 		return $.ajax(apiUrl(method), {
 			type: 'POST',
 			contentType: 'application/json',
@@ -121,7 +118,7 @@ module jsdc {
 		});
 	}
 
-	export function postFormData(method: string, data: FormData): JQueryPromise {
+	export function postFormData(method: string, data: FormData): JQueryPromise<any> {
 		return $.ajax(apiUrl(method), {
 			type: 'POST',
 			contentType: false,
@@ -147,14 +144,14 @@ module jsdc {
 	export function handleResponse(call: JQueryPromise<any>, parser: (response: any[]) => any[], callback: (error: APIError, data: any[]) => any) {
 		call.then(
 			(res) => callback.call(null, null, parser(res)),
-			(xhr) => callback.call(null, getError(xhr), null)
+			(...reasons) => callback.call(null, getError(reasons[0]), null)
 		);
 	}
 
 	export function handleRawResponse(call: JQueryPromise<any>, callback: (error: APIError, id: number) => any) {
 		call.then(
 			(res) => callback.call(null, null, res),
-			(xhr) => callback.call(null, getError(xhr), null)
+			(...reasons) => callback.call(null, getError(reasons[0]), null)
 		);
 	}
 
@@ -183,7 +180,7 @@ module jsdc {
 	export module action {
 		/** Converts an array of JSON objects to Actions */
 		export function parse(response: any[]): Action[] {
-			return response.map((item) => {
+			return response.map((item: any) => {
 				item.actionId = parseInt(item.actionId);
 				item.fromValue = parseInt(item.fromValue);
 				item.onValue = parseInt(item.onValue);
@@ -262,7 +259,7 @@ module jsdc {
 	export module color {
 		/** Converts an array of JSON objects to Colors */
 		export function parse(response: any[]): Color[] {
-			return response.map((item) => {
+			return response.map((item: any) => {
 				item.colorId = parseInt(item.colorId);
 				return item;
 			});
@@ -330,7 +327,7 @@ module jsdc {
 	export module foul {
 		/** Converts an array of JSON objects to Fouls */
 		export function parse(response: any[]): Foul[] {
-			return response.map((item) => {
+			return response.map((item: any) => {
 				item.foulId = parseInt(item.foulId);
 				item.value = parseInt(item.value);
 				return item;
@@ -406,7 +403,7 @@ module jsdc {
 	export module match {
 		/** Converts an array of JSON objects to Matches */
 		export function parse(response: any[]): Match[] {
-			return response.map((item) => {
+			return response.map((item: any) => {
 				item.matchId = parseInt(item.matchId);
 				item.open = parseBool(item.open);
 				item.roundNum = parseInt(item.roundNum);
@@ -548,7 +545,7 @@ module jsdc {
 	/** Accesses the results of matches */
 	export module matchresult {
 		export function parse(response: any[]): MatchResult[] {
-			return response.map((item) => {
+			return response.map((item: any) => {
 				item.id = parseInt(item.id);
 				item.teamId = parseInt(item.teamId);
 				item.matchId = parseInt(item.matchId);
@@ -608,7 +605,7 @@ module jsdc {
 	/** Accesses score entries */
 	export module score {
 		export function parse(response: any[]): Score[] {
-			return response.map((item) => {
+			return response.map((item: any) => {
 				item.id = parseInt(item.id);
 				item.matchId = parseInt(item.matchId);
 				item.fromTeamId = parseInt(item.fromTeamId);
@@ -699,7 +696,7 @@ module jsdc {
 	/** Accesses team definitions */
 	export module team {
 		export function parse(response: any[]): Team[] {
-			return response.map((item) => {
+			return response.map((item: any) => {
 				item.teamId = parseInt(item.teamId);
 				if (item.colorId !== undefined)
 					item.colorId = parseInt(item.colorId);
@@ -792,7 +789,7 @@ module jsdc {
 		 * @param url The URL of the clock server
 		 */
 		export function connect(callback?: (error: string) => any) {
-			callback = callback || () => null;
+			callback = callback || (() => undefined);
 
 			if (connected) {
 				callback(null);
@@ -886,8 +883,8 @@ module jsdc {
 				this._time = 0;
 				this._running = false;
 				this._connected = false;
-				this._onupdate = updateCallback || () => null;
-				this._onstatuschange = statusChangeCallback || () => null;
+				this._onupdate = updateCallback || (() => undefined);
+				this._onstatuschange = statusChangeCallback || (() => undefined);
 
 				var clock = jsdc.clock;
 				clock.connect((err) => {
@@ -1118,13 +1115,12 @@ module Modal {
 
 			var _onOpen = options.options.onOpen;
 			options.options.onOpen = (dialog) => {
-				var _this = this;
 				var _args = slice(arguments);
 
 				dialogOpen = true;
 				dialog.overlay.fadeIn(300, () => {
 					if (_onOpen)
-						_onOpen.apply(_this, _args);
+						_onOpen.apply(this, _args);
 				});
 				dialog.container.css({
 						left: '-100%',
@@ -1141,7 +1137,6 @@ module Modal {
 
 			var _onClose = options.options.onClose;
 			options.options.onClose = (dialog) => {
-				var _this = this;
 				var _args = slice(arguments);
 
 				dialog.container.animate({ 
@@ -1154,7 +1149,7 @@ module Modal {
 					dialogOpen = false;
 
 					if (_onClose)
-						_onClose.apply(_this, _args);
+						_onClose.apply(this, _args);
 
 					var queued;
 					if (queued = dequeueDialog()) {
@@ -1232,7 +1227,7 @@ module Modal {
 	 * @param callback A function to call with the user's response
 	 */
 	export function confirm(title: string, message: JQuery, buttons: ConfirmButtons, callback: ConfirmCallback);
-	export function confirm(title: string, message: any, buttons: any) {
+	export function confirm(title: string, message: any, _buttons: any) {
 		if (arguments.length >= 4) {
 			var callback: ConfirmCallback = arguments[3];
 			var buttons: ConfirmButtons = arguments[2];
@@ -1453,39 +1448,31 @@ module Modal {
 }
 
 
+/*-----------------------------------------------------------------------------
+ * Global Functions
+ *---------------------------------------------------------------------------*/
 
+/** Ensures that "this" will always be correct for all of an object's functions */
+function bindMemberFunctions(obj: any) {
+	var _this = obj, _constructor = (<any>obj).constructor;
 
-
-
-
-// Helper functions
-
-/** Converts an array-like object to an array */
-var slice = Function.prototype.call.bind(Array.prototype.slice);
-
-/** 
- * Generates an array containing a range of integers in increasing order
- * @param start The first number in the list
- * @param end The last number in the list
- */
-function range(start, end): number[] {
-	var array = new Array(end - start + 1);
-	for (var i = 0; i < array.length; i++)
-		array[i] = start + i;
-
-	return array;
-}
-
-/** Returns the names of all properties of an object */
-function keys(object: any): string[] {
-	var keys: string[] = [];
-	
-	for (var k in object) {
-		if (object.hasOwnProperty(k))
-			keys.push(k);
+	if (!_constructor.__fn__) {
+		_constructor.__fn__ = {};
+		for (var m in _this) {
+			var fn = _this[m];
+			if (typeof fn === 'function' && m != 'constructor') {
+				_constructor.__fn__[m] = fn;
+			}
+		}
 	}
 
-	return keys;
+	for (var m in _constructor.__fn__) {
+		(function (m, fn) {
+			_this[m] = function () {
+				return fn.apply(_this, Array.prototype.slice.call(arguments));
+			};
+		})(m, _constructor.__fn__[m]);
+	}
 }
 
 /** Creates a deep clone of any JSON-serializable object */
@@ -1510,6 +1497,96 @@ function clone(object: any) {
 	}
 }
 
+/** Tests whether two objects are equal to each other property-by-property */
+function deepEquals(a: any, b: any): boolean {
+	var type;
+	if ((type = typeof a) !== typeof b)
+		return false;
+
+	if (type === 'object') {
+		for (var key in a) {
+			var aHas = a.hasOwnProperty(key);
+			var bHas = b.hasOwnProperty(key);
+			// if both have the property and they aren't equal, return false
+			if (aHas && bHas && !deepEquals(a[key], b[key]))
+				return false;
+			// if only one has the property, return false
+			else if (aHas && !bHas)
+				return false;
+		}
+		for (var key in b) {
+			if (b.hasOwnProperty(key) && !a.hasOwnProperty(key))
+				return false;
+		}
+
+		// if both objects have the same properties and each is equal, return true
+		return true;
+	} else {
+		return a === b;
+	}
+}
+
+/** Returns the names of all properties of an object */
+function keys(object: any): string[] {
+	var keys: string[] = [];
+
+	for (var k in object) {
+		if (object.hasOwnProperty(k))
+			keys.push(k);
+	}
+
+	return keys;
+}
+
+/** Parses the string representation of a boolean value */
+function parseBool(value: any): boolean {
+	if (value === true || value === false)
+		return value;
+
+	if (typeof value === 'string')
+		return (<string>value).toLowerCase() === 'true' || (<string>value) === '1';
+
+	return !!parseInt(value);
+}
+
+/** 
+ * Generates an array containing a range of integers in increasing order
+ * @param start The first number in the list
+ * @param end The last number in the list
+ */
+function range(start, end): number[] {
+	var array = new Array(end - start + 1);
+	for (var i = 0; i < array.length; i++)
+		array[i] = start + i;
+
+	return array;
+}
+
+/** Converts an object to a URL query string */
+function serialize(obj: any): string {
+	if (typeof obj === 'string')
+		return obj;
+
+	var q = [];
+	for (var p in obj) {
+		if (!obj.hasOwnProperty(p))
+			continue;
+
+		var name = encodeURIComponent(p);
+
+		if (obj[p] === null)
+			q.push(p);
+		else if (typeof obj[p] === 'object')
+			q.push(name + '=' + encodeURIComponent(JSON.stringify(obj[p])));
+		else
+			q.push(name + '=' + encodeURIComponent(obj[p]));
+	}
+	return q.join('&');
+}
+
+/** Converts an array-like object to an array */
+var slice = Function.prototype.call.bind(Array.prototype.slice);
+
 /** Converts an object with numeric keys to an array 
  * e.g. { 0: 'foo', 1: 'bar' } => ['foo', 'bar'] */
 function toArray(object: any) {
@@ -1525,89 +1602,10 @@ function toArray(object: any) {
 	return array;
 }
 
-/** Tests whether two objects are equal to each other property-by-property */
-function deepEquals(a: any, b: any): boolean {
-	var type;
-	if ((type = typeof a) !== typeof b)
-		return false;
-
-	if (type === 'object') {
-		for (var key in a) {
-			var aHas = a.hasOwnProperty(key);
-			var bHas = b.hasOwnProperty(key);
-			// if both have the property and they aren't equal, return false
-			if (aHas && bHas && !deepEquals(a[key], b[key])) 
-				return false;
-				// if only one has the property, return false
-			else if (aHas && !bHas) 
-				return false;
-		}
-		for (var key in b) {
-			if (b.hasOwnProperty(key) && !a.hasOwnProperty(key)) 
-				return false;
-		}
-
-		// if both objects have the same properties and each is equal, return true
-		return true;
-	} else {
-		return a === b;
-	}
-}
-
-/** Converts an object to a URL query string */
-function serialize(obj: any): string {
-	if (typeof obj === 'string')
-		return obj;
-
-	var q = [];
-	for (var p in obj) {
-		if (!obj.hasOwnProperty(p))
-			continue;
-		
-		var name = encodeURIComponent(p);
-
-		if (obj[p] === null)
-			q.push(p);
-		else if (typeof obj[p] === 'object')
-			q.push(name + '=' + encodeURIComponent(JSON.stringify(obj[p])));
-		else
-			q.push(name + '=' + encodeURIComponent(obj[p]));
-	}
-	return q.join('&');
-}
-
-/** Parses the string representation of a boolean value */
-function parseBool(value: any): boolean {
-	if (value === true || value === false)
-		return value;
-
-	if (typeof value === 'string') 
-		return (<string>value).toLowerCase() === 'true' || (<string>value) === '1';
-
-	return !!parseInt(value);
-}
-
-/** Ensures that "this" will always be correct for all of an object's functions */
-function bindMemberFunctions(obj: any) {
-	var _this = obj, _constructor = (<any>obj).constructor;
-
-	if (!_constructor.__fn__) {
-		_constructor.__fn__ = {};
-		for (var m in _this) {
-			var fn = _this[m];
-			if (typeof fn === 'function' && m != 'constructor') {
-				_constructor.__fn__[m] = fn;	
-			}
-		}
-	}
-
-	for (var m in _constructor.__fn__) {
-		(function (m, fn) {
-			_this[m] = function () {
-				return fn.apply(_this, Array.prototype.slice.call(arguments));						
-			};
-		})(m, _constructor.__fn__[m]);
-	}
+/** Enables or disabled fullscreen */
+function toggleFullscreen() {
+	if (BigScreen.enabled)
+		BigScreen.toggle();
 }
 
 /** Generates a string representation of a JSON-serializable object */
@@ -1683,10 +1681,42 @@ function writeObject(object: any, maxLevel?: number): string {
 	return write(object, null, 0, []);
 }
 
+/*-----------------------------------------------------------------------------
+ * Type Extensions
+ *---------------------------------------------------------------------------*/
 
+interface Array {
+	indexByProperty(prop: string): any[];
+	remove(object: any): boolean;
+	contains(object: any): boolean;
+}
 
+/** Gets whether the array contains an object */
+Array.prototype.contains = function (object: any): boolean {
+	return this.indexOf(object) >= 0;
+}
 
-// Base type extensions
+/** 
+ * Converts an array to an object of key-value pairs indexed by a property on each item
+ * e.g. [{ a: 'foo' }, { a: 'bar' }].indexByProperty('a') => { foo: { a: 'foo' }, bar: { a: 'bar' } }
+ * @param prop The name of the property to index by
+ */
+Array.prototype.indexByProperty = function (prop: string): any {
+	var obj = {};
+	this.forEach((item) => obj[item[prop]] = item);
+	return obj;
+}
+
+/** Removes the first instance of an object from the array */
+Array.prototype.remove = function (object: any) {
+	var i = this.indexOf(object);
+	if (i >= 0) {
+		this.splice(i, 1);
+		return true;
+	} else {
+		return false;
+	}
+}
 
 /** The result of a string partition call */
 interface PartitionResult {
@@ -1706,6 +1736,40 @@ interface String {
 	capitalize(): string;
 }
 
+/** Capitalizes the first letter of the string */
+String.prototype.capitalize = function (): string {
+	return this.substr(0, 1).toUpperCase() + this.substr(1);
+}
+
+/** 
+ * Removes one tab or 4 spaces from the beginning of the string 
+ * @param level The number of 4-space indents to remove (default: 1)
+ */
+String.prototype.dedent = function (level?: number): string {
+	level = (typeof level === 'undefined') ? 1 : level;
+	var newstring = this;
+	for (var i = level; i > 0; i--)
+		newstring = newstring.replace(/^(\t| {1,4})/, '');
+	return newstring;
+}
+
+/** Returns true if the string ends with a search string */
+String.prototype.endswith = function (str: string): boolean {
+	return (this.lastIndexOf(str) === this.length - str.length) && (this.length >= str.length);
+}
+
+/**
+ * Adds 4 spaces to the beginning of the string 
+ * @param level The number of 4-space indents to add (default: 1)
+ */
+String.prototype.indent = function (level?: number): string {
+	level = (typeof level === 'undefined') ? 1 : level;
+	var indent = '';
+	for (var i = level; i > 0; i--)
+		indent += '    ';
+	return indent + this;
+}
+
 /** Left-pads a string to a given length. If it is already the desired length or longer, nothing is done */
 String.prototype.pad = function(length: number, char?: string) {
 	char = char || ' ';
@@ -1714,30 +1778,6 @@ String.prototype.pad = function(length: number, char?: string) {
 	for (var i = pad; i > 0; i--)
 		padstr += char;
 	return padstr + this;
-}
-
-/**
- * Adds 4 spaces to the beginning of the string 
- * @param level The number of 4-space indents to add (default: 1)
- */
-String.prototype.indent = function(level?: number): string {
-	level = (typeof level === 'undefined') ? 1 : level;
-	var indent = '';
-	for (var i = level; i > 0; i--)
-		indent += '    ';
-	return indent + this;
-}
-
-/** 
- * Removes one tab or 4 spaces from the beginning of the string 
- * @param level The number of 4-space indents to remove (default: 1)
- */
-String.prototype.dedent = function(level?: number): string {
-	level = (typeof level === 'undefined') ? 1 : level;
-	var newstring = this;
-	for (var i = level; i > 0; i--)
-		newstring = newstring.replace(/^(\t| {1,4})/, '');
-	return newstring;
 }
 
 /** Splits the string into the parts before and after the first instance of a separator */
@@ -1773,56 +1813,7 @@ String.prototype.startswith = function(str: string): boolean {
 	return this.indexOf(str) === 0;
 }
 
-/** Returns true if the string ends with a search string */
-String.prototype.endswith = function(str: string): boolean {
-	return (this.lastIndexOf(str) === this.length - str.length) && (this.length >= str.length);
-}
-
-/** Capitalizes the first letter of the string */
-String.prototype.capitalize = function(): string {
-	return this.substr(0, 1).toUpperCase() + this.substr(1);
-}
-
-
-interface Array {
-	indexByProperty(prop: string): any[];
-	remove(object: any): boolean;
-	contains(object: any): boolean;
-}
-
-/** 
- * Converts an array to an object of key-value pairs indexed by a property on each item
- * e.g. [{ a: 'foo' }, { a: 'bar' }].indexByProperty('a') => { foo: { a: 'foo' }, bar: { a: 'bar' } }
- * @param prop The name of the property to index by
- */
-Array.prototype.indexByProperty = function (prop: string): any {
-	var obj = {};
-	this.forEach((item) => obj[item[prop]] = item);
-	return obj;
-}
-
-/** Removes the first instance of an object from the array */
-Array.prototype.remove = function(object: any) {
-	var i = this.indexOf(object);
-	if (i >= 0) {
-		this.splice(i, 1);
-		return true;
-	} else {
-		return false;
-	}
-}
-
-/** Gets whether the array contains an object */
-Array.prototype.contains = function(object: any): boolean {
-	return this.indexOf(object) >= 0;
-}
-
-
 // jQuery easings
-interface JQueryStatic {
-	easing: any;
-}
-
 $.extend($.easing,
 {
 	easeInQuad: function (x, t, b, c, d) {

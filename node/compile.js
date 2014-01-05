@@ -20,7 +20,7 @@ var path = require('path'),
 
 function compileTS(path, callback) {
 	console.log('compiling', path);
-	var child = exec('tsc  -target ES5 ' + path, function(err, stdout, stderr) {
+	var child = exec('tsc  -target ES5 -module CommonJS' + path, function(err, stdout, stderr) {
 		if (err !== null) {
 			console.log(err, stderr);
 		}

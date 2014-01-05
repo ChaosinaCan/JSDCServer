@@ -294,9 +294,6 @@ class ScoreList {
 			);
 			console.log(this._template);
 		}
-
-
-		return this._table;
 	}
 
 	getColor(id: number): string {

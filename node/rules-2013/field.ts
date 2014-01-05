@@ -1,6 +1,6 @@
 ﻿///<reference path="../node.d.ts" />
 ///<reference path="../jsdc.ts" />
-import jsdc = module('../jsdc');
+import jsdc = require('../jsdc');
 import BaseEventEmitter = require('../eventbase');
 
 /** Events:

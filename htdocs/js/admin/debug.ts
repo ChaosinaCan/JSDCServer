@@ -58,7 +58,7 @@ module Debug {
 				debug.sendRequestHelper(jsdc.post, debug.getQueryBody());
 		}
 
-		private sendRequestHelper(fn: (method: string, data: any) => JQueryPromise, data: any) {
+		private sendRequestHelper(fn: (method: string, data: any) => JQueryPromise<any>, data: any) {
 			console.log(data);
 
 			this.displayProgress();
@@ -66,7 +66,8 @@ module Debug {
 				(res) => {
 					this.displayResponse(res);
 				},
-				(xhr) => {
+				(...reasons) => {
+					var xhr: JQueryXHR = reasons[0]
 					console.log(xhr.responseText);
 					this.displayResponse({
 						status: xhr.status,

@@ -91,7 +91,7 @@ module game {
 
 			scores.match = game.match;
 
-			$('#history-wrap').append(new ScoreList(scores, game.colors, true));
+			$('#history-wrap').append(new ScoreList(scores, game.colors, true).table);
 		}
 	}
 	
