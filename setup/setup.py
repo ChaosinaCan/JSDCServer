@@ -3,6 +3,7 @@ import cfg
 import fileinput
 
 def fix_config():
+	""" Makes necessary changes to config.php for the JSDC server """
 	file = os.path.join(cfg.config_path, 'config.php')
 	if os.path.exists(file):
 		print('Modifying config.php')
@@ -14,6 +15,7 @@ def fix_config():
 
 
 def fix_rest():
+	""" Makes necessary changes to rest.php for the JSDC server """
 	file = os.path.join(cfg.config_path, 'rest.php')
 	if os.path.exists(file):
 		print('Modifying rest.php')

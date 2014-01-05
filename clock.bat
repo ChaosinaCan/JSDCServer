@@ -1,4 +1,6 @@
-@Echo OFF
+@echo off
+REM Starts the Node server
+
 cd node
 
 node main.js

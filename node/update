@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/bin/sh
+# Installs the latest versions of required Node modules
+
 npm install
 if [ $1 != "nopause" ]
 then

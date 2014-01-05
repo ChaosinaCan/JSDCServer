@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/bin/sh
+# Edits CodeIgniter config files for the JSDC server
+
 python setup.py $*
 
 read -p "Done. Press [Enter] to continue."

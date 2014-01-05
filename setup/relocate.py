@@ -19,7 +19,7 @@ def set_server_addr(addr):
 
 	o = urlparse(addr)
 	hostname = re.sub(':.+?$', '', o.netloc)
-	port = o.port if o.port != None else 80
+	port = o.port if o.port is not None else 80
 
 	inside_main_server = False
 	for file in ['config.js', 'config.ts']:
@@ -50,7 +50,7 @@ def set_clock_addr(addr):
 		print(line, end='')
 
 	o = urlparse(addr)
-	port = o.port if o.port != None else 80
+	port = o.port if o.port is not None else 80
 
 	inside_node_server = False
 	for file in ['config.ts', 'config.js']:
@@ -68,7 +68,7 @@ def set_clock_addr(addr):
 				print(e, sys.stdout)
 			finally:
 				print(line, end="")
-	
+
 
 if __name__ == "__main__":
 	cfg.set_wd()
@@ -86,15 +86,15 @@ if __name__ == "__main__":
 		serverAddr = args.server
 		clockAddr = args.clock
 
-	if serverAddr == None and clockAddr == None:
+	if serverAddr is None and clockAddr is None:
 		print('Enter the web server address and port. Leave blank to use current location.')
 		serverAddr = input()
 		print('Enter the node server address and port. Leave blank to use current location.')
 		clockAddr = input()
 
-	if serverAddr != None:
+	if serverAddr is not None:
 		set_server_addr(serverAddr)
-	if clockAddr != None:
+	if clockAddr is not None:
 		set_clock_addr(clockAddr)
 
 	cfg.reset_wd()

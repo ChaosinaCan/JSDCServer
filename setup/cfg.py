@@ -1,5 +1,7 @@
 import re, os, sys
 
+""" Generic methods for editing CodeIgniter config files """
+
 wd = ''
 config_path = '../ci/application/config/'
 node_path = '../node'

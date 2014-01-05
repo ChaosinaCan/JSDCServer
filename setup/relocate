@@ -1,2 +1,5 @@
-#!/bin/bash
+#!/bin/sh
+# Updates IP addresses in server config files.
+# Use relocate.py -h for usage information.
+
 python relocate.py $*
