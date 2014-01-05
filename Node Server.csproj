@@ -57,7 +57,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="node\clock.js">
-      <DependentUpon>node\clock.ts</DependentUpon>
+      <DependentUpon>clock.ts</DependentUpon>
     </Content>
     <TypeScriptCompile Include="node\clock.ts" />
     <Content Include="node\compile.js">

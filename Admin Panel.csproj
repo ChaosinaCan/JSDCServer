@@ -100,6 +100,10 @@
     <Content Include="htdocs\fonts\seguisli.ttf" />
     <Content Include="htdocs\fonts\seguisym.ttf" />
     <Content Include="htdocs\index.php" />
+    <TypeScriptCompile Include="htdocs\js\admin\field-renderer.ts" />
+    <Content Include="htdocs\js\admin\field-renderer.js">
+      <DependentUpon>field-renderer.ts</DependentUpon>
+    </Content>
     <Content Include="htdocs\js\bigscreen.min.js" />
     <Content Include="htdocs\js\jquery.min.map">
       <DependentUpon>jquery.js</DependentUpon>
@@ -367,6 +371,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ci\application\views\admin\2012\scoreboard.php" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="htdocs\js\admin\field-style.json" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TypeScript\Microsoft.TypeScript.targets" />
 </Project>

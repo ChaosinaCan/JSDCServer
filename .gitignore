@@ -32,6 +32,8 @@
 # Visual Studio Files
 *.suo
 *.csproj.user
+bin
+obj
 
 # Python
 __pycache__

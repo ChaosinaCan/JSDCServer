@@ -1,0 +1,67 @@
+﻿<Window x:Class="JSDC.Launcher.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:my="clr-namespace:JSDC.Launcher"
+        xmlns:console="clr-namespace:JSDC.ConsoleControl.WPF"
+        Title="JSDC Server"
+        Icon="Resources/favicon.ico"
+        SnapsToDevicePixels="True"
+        Width="420"
+        Height="205"
+        MinWidth="420"
+        MinHeight="205"
+        Closing="Window_Closing" 
+        SizeChanged="Window_SizeChanged">
+    <Window.Resources>
+        <my:ConsoleColorizer x:Key="colorizer" />
+    </Window.Resources>
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <my:ApplicationStatus Grid.Row="0" x:Name="ApacheStatus" ApplicationName="Web Server (Apache)" />
+        <my:ApplicationStatus Grid.Row="1" x:Name="MySqlStatus" ApplicationName="Database Server (MySQL)" />
+        <my:ApplicationStatus Grid.Row="2" x:Name="NodeStatus" ApplicationName="Game Server (Node)" />
+        <Expander Header="Game Server Console"
+                  x:Name="expander"
+                  Grid.Row="3"
+                  Margin="5" Collapsed="Expander_Collapsed" Expanded="Expander_Expanded">
+            <Grid Margin="0,10,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <console:ConsoleControl x:Name="console" 
+                                        Foreground="Black"
+                                        Background="White" 
+                                        IsInputEnabled="False"
+                                        TextColorizer="{StaticResource colorizer}">
+                    <console:ConsoleControl.Resources>
+                        <Style TargetType="{x:Type RichTextBox}">
+                            <Setter Property="BorderThickness" Value="1,1,1,0" />
+                            <Setter Property="Padding" Value="3,5" />
+                        </Style>
+                    </console:ConsoleControl.Resources>
+                </console:ConsoleControl>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Input" 
+                           BorderThickness="1,1,0,1" 
+                           BorderBrush="#FFABADB3" />
+                    <TextBox x:Name="input" 
+                             Grid.Column="1"
+                             Padding="5,0"
+                             FontFamily="Consolas" 
+                             VerticalContentAlignment="Center" KeyDown="input_KeyDown" />
+                </Grid>
+                
+            </Grid>
+        </Expander>
+    </Grid>
+</Window>
