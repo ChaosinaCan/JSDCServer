@@ -193,6 +193,7 @@ class Admin extends CI_Controller {
 		),
 		'matches' => array(
 			'view' => 'full',
+			'require' => array( 'tournament'),
 		),
 		'scores' => array(
 			'view' => 'columns',
@@ -251,7 +252,10 @@ class Admin extends CI_Controller {
 		'field-listener' => array(
 			'js' => array('admin/field-listener.js'),
 			'css' => array('admin/field-display.css'),
-		)
+		),
+		'tournament' => array(
+			'js' => array('admin/tournament.js'),
+		),
 	);
 	
 }

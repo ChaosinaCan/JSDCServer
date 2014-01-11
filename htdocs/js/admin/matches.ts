@@ -1,4 +1,9 @@
 ﻿/// <reference path="base.ts" />
+/// <reference path="tournament.ts" />
+
+interface HTMLAnchorElement {
+	download: string;
+}
 
 module matches {
 	// Public Variables
@@ -784,4 +789,96 @@ module matches {
 	}
 }
 
+module tournament {
+	export var teamsProgressPerMatch = 2;
 
+	export function init() {
+		$('#tournament').click(tournament.showDialog);
+	}
+
+	export function showDialog() {
+		var bracket: Tournament;
+		var teamCount = $('<input type=number>')
+			.val(matches.teams.length)
+			.prop('min', matches.maxTeams)
+			.prop('max', matches.teams.length);
+		var optimize = $('<select>').append(
+			$('<option value=balance selected>').text('Balanced bracket'),
+			$('<option value=reduce>').text('Fewest matches')
+			);
+
+		var render = $('<canvas>');
+
+		var body = $('<div class=tourney-dialog>').append(
+			$('<div>').append(
+				$('<label>').append('Team count ', teamCount),
+				$('<label>').append('Optimize for ', optimize)
+				),
+			render
+			);
+
+		function refresh() {
+			var canvas: HTMLCanvasElement = render.get(0);
+			canvas.width = canvas.offsetWidth;
+			canvas.height = canvas.offsetHeight;
+
+			var strategy = optimize.val() === 'reduce' ? TournamentGenerationStrategry.MinimizeMatches : TournamentGenerationStrategry.BalanceMatches;
+			var count: number = teamCount.val();
+			var teams = [];
+			
+			for (var i = 0; i < count; i++) {
+				teams.push(matches.teams[i]);
+			}
+
+			bracket = new Tournament(teams, matches.maxTeams, tournament.teamsProgressPerMatch, strategy);
+			bracket.lineColor = '#fff';
+			bracket.textColor = '#fff';
+			bracket.matchColor = '#222';
+			bracket.render(canvas, bracket.teamCount > 16);
+		}
+		
+		function renderToImage(width?: number, height?: number) {
+			bracket.lineColor = '#000';
+			bracket.textColor = '#000';
+			bracket.matchColor = '#060';
+
+			var canvas = document.createElement('canvas');
+			canvas.width = width ? width: render.outerWidth();
+			canvas.height = height ? height: render.outerHeight();
+			bracket.render(canvas, bracket.teamCount > 16);
+
+			var data = canvas.toDataURL('image/png');
+
+			var a = document.createElement('a');
+			a.href = data;
+			a.target = '_blank';
+			a.download = 'JSDC Tournament Bracket.png';
+			a.click();
+			return false;
+		}
+
+		var options: SimpleModalOptions = {
+			onOpen: () => {
+				optimize.chosen({ disable_search: true });
+				refresh();
+
+				optimize.change(refresh);
+				teamCount.change(refresh);
+			}
+		}
+
+		Modal.dialog({
+			title: 'Tournament setup',
+			body: body,
+			buttons: [
+				{ text: 'Save as image (Large)', action: renderToImage.bind(null, 1280, 720) },
+				{ text: 'Save as image', action: renderToImage.bind(null, null, null) },
+				{ text: 'Create', action: () => Modal.info('Not implemented', 'I\'ll do this later.') },
+				{ text: 'Cancel' },
+			],
+			options: options,
+		});
+	}
+}
+
+$(tournament.init);

@@ -623,7 +623,7 @@ html:fullscreen {
 				}
 			}
 
-			ul {
+			ul:not(.chosen-results) {
 				list-style: circle;
 				padding-left: 20px;
 				margin: 20px 0;
@@ -670,6 +670,11 @@ html:fullscreen {
 					display: block;
 				}
 			}
+		}
+
+		div.chosen-container,
+		div.chosen-container a {
+			color: @text;
 		}
 	}
 }

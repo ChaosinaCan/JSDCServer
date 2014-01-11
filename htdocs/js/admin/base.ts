@@ -1096,8 +1096,10 @@ module Modal {
 						}
 						if (item.action) {
 							button.click(function (e) {
-								$.modal.close();
-								item.action.apply(this, slice(arguments));
+								var result = item.action.apply(this, slice(arguments));
+								if (result !== false) {
+									$.modal.close();
+								}
 							});
 						} else {
 							button.addClass('simplemodal-close');

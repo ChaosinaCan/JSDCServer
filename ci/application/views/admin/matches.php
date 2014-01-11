@@ -19,7 +19,7 @@
 				<option value="0"></option>
 			</select>
 		</label>
-		
+
 		<label>
 			Filter By Status
 			<select id="filter-status">
@@ -29,9 +29,8 @@
 				<option value="finished">Finished matches</option>
 			</select>
 		</label>
-		
 	</p>
-	
+
 	<div id="table-wrap">
 		<table id="matches">
 			<thead>
@@ -40,10 +39,11 @@
 			<tbody></tbody>
 		</table>
 	</div>
-	
+
 	<p id="buttons">
-		<button id="new-match">New Match</button>
-		<button id="save">Save Changes</button>
+		<button id="tournament" class="left">Set up tournament</button>
+		<button id="new-match">New match</button>
+		<button id="save">Save changes</button>
 	</p>
-	
+
 </section>
