@@ -59,11 +59,11 @@ module teams {
 
 	export function refreshTeamList(): void {
 		console.log('refresh');
-		jsdc.team.getAll((err, teams) => {
+		jsdc.team.getAll((err, newTeams) => {
 			if (err) {
 				Modal.apiError(err, 'Failed to refresh teams');
 			} else {
-				teamlist = teams;
+				teams.teamlist = newTeams;
 				buildTeamList();
 			}
 		});
@@ -91,10 +91,21 @@ module teams {
 				$('<label for=university>').text('University name'),
 				$('<input type=text id=university name=university maxlength=45>').val(team ? team.university : '')
 			)
-		);
+			);
+
+		var submit = saveTeam.bind(null, isNewTeam, team, body.get(0));
+		var submitOnEnter = (e:JQueryKeyEventObject) => {
+			if (e.which === 13) {
+				e.preventDefault();
+				e.stopPropagation();
+				submit();
+			}
+		}
+
+		body.find('input[type=text]').keypress(submitOnEnter);
 
 		var buttons: Modal.ModalButton[] = [
-			{ text: 'Save', action: saveTeam.bind(null, isNewTeam, team, body.get(0)) },
+			{ text: 'Save', action: submit },
 			{ text: 'Cancel' },
 		];
 
@@ -104,6 +115,11 @@ module teams {
 			title: isNewTeam ? 'Create new team' : 'Edit team information',
 			body: body,
 			buttons: buttons,
+			options: {
+				onOpen: () => {
+					body.find('#team-name').focus();
+				}
+			}
 		});
 	}
 
