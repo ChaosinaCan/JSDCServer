@@ -1,10 +1,16 @@
 ﻿/// <reference path='node.d.ts'/>
+/// <reference path='socket.io.d.ts'/>
+
+//-----------------------------------------------------------------------------
+// #region Server Setup
+//-----------------------------------------------------------------------------
 
 var clc = require('cli-color'),
 	url = require('url'),
 	express = require('express'),
 	http = require('http');
 
+// Formatting functions for console output
 var fmt = {
 	error: clc.red.bold,
 	warn: clc.yellow,
@@ -19,27 +25,27 @@ process.on('uncaughtException', function (err) {
 		console.log(fmt.error(err));
 });
 
-
 import jsdc = require('./jsdc')
 import clock = require('./clock')
 import config = require('./config')
 
 var api = new jsdc.API(config.mainServer.host, config.mainServer.port, config.mainServer.path);
-api.apikey = 'JSDC4Life';
+api.apikey = config.apikey;
 
+// Create the server components
 var app = express(),
 	server = http.createServer(app),
 	game = new clock.GameClock(api),
-	io = require('socket.io').listen(server);
+	io: SocketManager = require('socket.io').listen(server);
 
 var cueServers: jsdc.CueServer[] = config.cueServers.map((host) => new jsdc.CueServer(host));
 var rules: jsdc.GameRules = new config.GameRules(game, api, cueServers);
 
+// #endregion
 
-var mimes = {
-	text: { 'Content-Type': 'text/plain' },
-	json: { 'Content-Type': 'application/json' },
-}
+//-----------------------------------------------------------------------------
+// #region Socket.io Setup
+//-----------------------------------------------------------------------------
 
 io.configure(() => {
 	//io.enable('browser client minification');
@@ -47,7 +53,7 @@ io.configure(() => {
 	//io.enable('browser client gzip');
 	//io.set('log level', 1);
 	io.set('log level', 1);
-	io.set('transports', [ 
+	io.set('transports', [
 	  'websocket',
 	  'flashsocket',
 	  'htmlfile',
@@ -56,58 +62,61 @@ io.configure(() => {
 	]);
 });
 
-io.sockets.on('connection', (socket) => {
+// Handle messages from client pages
 
+io.sockets.on('connection', (socket) => {
 	socket.on('join', (channels) => {
 		for (var i = 0; i < channels.length; i++)
 			socket.join(channels[i]);
 	});
 
-	socket.on('get audio', () =>
+	socket.on('get audio', () => {
 		socket.emit('list audio', rules.audio.files)
-	);
+	});
 
-	socket.on('sync', () =>
+	socket.on('sync', () => {
 		socket.emit('sync', game.status)
-	);
+	});
 
 	socket.on('game start', () => game.start());
 	socket.on('game pause', () => game.pause());
 	socket.on('game resume', () => game.resume());
 	socket.on('game stop', () => game.stop());
 
-	socket.on('set time', (time) => 
-		game.timeRemaining = time 
-	);
+	socket.on('set time', (time) => {
+		game.timeRemaining = time
+	});
 
-	socket.on('load match', () =>
+	socket.on('load match', () => {
 		game.loadCurrentMatch()
-	);
+	});
 
 	socket.on('emergency', () => game.startEmergency());
 
-	socket.on('reset field', () =>
+	socket.on('reset field', () => {
 		game.emit('reset field')
-	);
+	});
 
-	socket.on('game status', () =>
+	socket.on('game status', () => {
 		io.sockets.in('game').emit('game status', rules.getStatus())
-	);
+	});
 
 	socket.on('game event', (e) => game.emit('game event', e));
 });
 
-game.on('start', () =>
+// Handle game events
+
+game.on('start', () => {
 	io.sockets.in('game').emit('game start', game.status)
-);
+});
 
-game.on('pause', () =>
+game.on('pause', () => {
 	io.sockets.in('game').emit('game pause', game.status)
-);
+});
 
-game.on('resume', () =>
+game.on('resume', () => {
 	io.sockets.in('game').emit('game resume', game.status)
-);
+});
 
 game.on('stop', () => {
 	io.sockets.in('game').emit('game stop', game.status)
@@ -125,21 +134,21 @@ game.on('stop', () => {
 	});
 });
 
-game.on('gameover', () =>
+game.on('gameover', () => {
 	io.sockets.in('game').emit('game over', game.status)
-);
+});
 
-game.on('abort', () =>
+game.on('abort', () => {
 	io.sockets.in('game').emit('game abort', game.status)
-);
+});
 
-game.on('time changed', () =>
+game.on('time changed', () => {
 	io.sockets.in('game').emit('sync', game.status)
-);
+});
 
-game.on('new score', (data) =>
+game.on('new score', (data) => {
 	io.sockets.in('scoring').emit('new score', data)
-);
+});
 
 game.on('score deleted', (data) => {
 	api.post('matchresult', {
@@ -171,17 +180,17 @@ game.on('emergency', () => {
 	game.startEmergency();
 })
 
-game.on('reset field', () =>
+game.on('reset field', () => {
 	io.sockets.in('game').emit('field reset')
-);
+});
 
-rules.audio.on('play', (data) =>
+rules.audio.on('play', (data) => {
 	io.sockets.in('audio').emit('play audio', data)
-);
+});
 
-rules.audio.on('stop', (data) =>
+rules.audio.on('stop', (data) => {
 	io.sockets.in('audio').emit('stop audio', data)
-);
+});
 
 game.on('game event', (data) => {
 	if (data.channel) {
@@ -191,8 +200,19 @@ game.on('game event', (data) => {
 	}
 });
 
+// #endregion
 
-// helper methods for generic responses
+//-----------------------------------------------------------------------------
+// #region HTTP Interface
+//-----------------------------------------------------------------------------
+
+// Helper methods for generic responses
+
+var mimes = {
+	text: { 'Content-Type': 'text/plain' },
+	json: { 'Content-Type': 'application/json' },
+}
+
 http.ServerResponse.prototype.badRequest = function() {
 	this.send('Bad Request', mimes.text, 400);
 }
@@ -209,7 +229,7 @@ http.ServerResponse.prototype.serverError = function(data) {
 	this.send(data || 'Internal Server Error', mimes.text, 500);
 }
 
-
+// Handle HTTP requests
 
 app.use(express.bodyParser());
 
@@ -247,9 +267,9 @@ app.get('/match/status', (req, res) => {
 });
 
 app.post('/match', (req, res) => {
-	if (req.body.method === undefined)
+	if (req.body.method === undefined) {
 		res.badRequest();
-	else switch (req.body.method) {
+	} else switch (req.body.method) {
 		case 'load':
 			game.loadCurrentMatch((err, data) => {
 				if (err)
@@ -258,15 +278,16 @@ app.post('/match', (req, res) => {
 					res.ok();
 			});
 			break;
+
 		default:
 			res.badRequest();
 	}
 });
 
 app.post('/clock', (req, res) => {
-	if (req.body.method === undefined)
+	if (req.body.method === undefined) {
 		res.badRequest();
-	else switch (req.body.method) {
+	} else switch (req.body.method) {
 			case 'start':
 				res.json({ success: game.start(), status: game.status });
 				break;
@@ -285,9 +306,9 @@ app.post('/clock', (req, res) => {
 })
 
 app.post('/event', (req, res) => {
-	if (req.body.event === undefined)
+	if (req.body.event === undefined) {
 		res.badRequest()
-	else {
+	} else {
 		var event = req.body.event;
 		console.log('event:', event);
 		delete req.body.event;
@@ -297,9 +318,9 @@ app.post('/event', (req, res) => {
 });
 
 app.post('/gameevent', (req, res) => {
-	if (req.body.event === undefined)
+	if (req.body.event === undefined) {
 		res.badRequest();
-	else {
+	} else {
 		var event = req.body.event;
 		delete req.body.event;
 		game.emit('game event', { event:event, data: req.body });
@@ -307,9 +328,11 @@ app.post('/gameevent', (req, res) => {
 	}
 });
 
-/**
- * Commandline control
- */
+// #endregion
+
+//-----------------------------------------------------------------------------
+// #region Command Line Interface
+//-----------------------------------------------------------------------------
 
 game.on('start', () => console.log('Game started:', game.timeRemaining));
 game.on('pause', () => console.log('Game paused:', game.timeRemaining));
@@ -317,136 +340,137 @@ game.on('resume', () => console.log('Game resumed:', game.timeRemaining));
 game.on('stop', () => console.log('Game stopped:', game.timeRemaining));
 game.on('time changed', () => console.log('Time changed:', game.timeRemaining));
 
-function setVariable(name, value) {
-	switch (name) {
-		case 'time':
-			var time = parseFloat(value);
-			if (isNaN(time))
+// Map commands to functions. Functions are passed command parameters as arguments.
+// Function return value (if any) is printed to the console. Boolean return values
+// are interpreted as success/failure and print OK/Failed.
+
+var commands: { [key: string]: Function; } = {
+	'help': () => {
+		var keys = [];
+		for (var key in commands) {
+			if (commands.hasOwnProperty(key)) {
+				keys.push(key);
+			}
+		}
+		console.log('Command list:');
+		keys.sort().forEach((key) => console.log(key));
+	},
+	'start': () => game.start(),
+	'stop': () => game.stop(),
+	'pause': () => game.pause(),
+	'resume': () => game.resume(),
+	'reset': () => game.reset(),
+	'status': () => game.status,
+	'time': () => game.timeRemaining,
+	'emergency': () => {
+		if (game.pause()) {
+			console.log('Game paused for emergency.');
+		}
+		game.emit('emergency');
+	},
+	'quit': process.exit,
+	'exit': process.exit,
+	'cue': () => {
+		if (arguments.length === 0) {
+			return 'Usage: cue [server#] command';
+		} else {
+			var server = 0;
+			var cue: any = null;
+			if (arguments.length === 1) {
+				cue = arguments[0];
+			} else {
+				server = parseInt(arguments[0]);
+				cue = arguments[1];
+			}
+
+			// If the cue is a cue number, cast it to a number
+			try {
+				cue = parseInt(cue);
+			} catch (e) { }
+
+			cueServers[server].send(cue, (err, result?) => {
+				if (err) {
+					console.log('Failed to send cue.');
+				} else {
+					console.log('Cue sent.');
+				}
+			});
+			return 'Sending...';
+		}
+	},
+	'set': (name, value) => {
+		switch (name) {
+			case 'time':
+				var time = parseFloat(value);
+				if (isNaN(time)) {
+					return false;
+				}
+				game.timeRemaining = time;
+				return true;
+
+			default:
 				return false;
-			game.timeRemaining = time;
-			return true;
-	}
-	return false;
-}
+		}
+	},
+	'event': () => {
+		if (arguments.length === 0) {
+			return 'Usage: event event-name = json-data';
+		} else {
+			var params = partition(Array.prototype.join.call(arguments, ' '), '=');
+			var event = params[0].trim();
+			var data = params[2] || null;
+			if (data) {
+				try {
+					data = JSON.parse(data.trim());
+				} catch (e) {
+					return 'Event data must be valid JSON data.';
+				}
+			}
+			console.log('emitting', event, data);
+			game.emit(event, data);
+		}
+	},
+};
 
 process.stdin.resume();
 process.stdin.setEncoding('utf-8');
 process.stdin.on('data', (line) => {
 	var input = line.match(/(\w+)(?:\s+(.+))?/);
-	if (!input)
+	if (!input) {
 		return;
+	}
 
 	var cmd = input[1];
 	var params = input[2];
-	if (params)
+	if (params) {
 		params = params.split(' ');
-	else
+	} else {
 		params = [];
-
-	switch (cmd) {
-		case 'start':
-			if (game.start())
-				console.log('OK');
-			break;
-
-		case 'stop':
-			if (game.stop())
-				console.log('OK')
-			break;
-
-		case 'pause':
-			if (game.pause())
-				console.log('OK')
-			break;
-		
-		case 'resume':
-			if (game.resume())
-				console.log('OK')
-			break;
-
-		case 'reset':
-			if (game.reset())
-				console.log('OK')
-			break;
-
-		case 'status':
-			console.log(game.status);
-			break;
-
-		case 'time':
-			console.log(game.timeRemaining);
-			break;
-
-		case 'emergency':
-			if (game.pause())
-				console.log('OK');
-			game.emit('emergency');
-			break;
-
-		case 'quit':
-		case 'exit':
-			process.exit();
-			break;
-
-		case 'cue':
-			if (params.length == 0)
-				console.log('Usage: cue [server#] command')
-			else {
-				var server = 0;
-				var cue: any = null;
-				if (params.length == 1) {
-					server = 0;
-					cue = params[0];
-				} else {
-					server = parseInt(params[0]);
-					cue = params[0];
-				}
-				try {
-					cue = parseInt(cue);
-				} catch (e) { }
-
-				cueServers[server].send(cue, (err, result?) => {
-					if (err)
-						console.log('Failed to send cue.')
-					else
-						console.log('Cue sent.');
-				});
-			break;
-		}
-
-		case 'set': 
-			var name = params[0] || null;
-			var value = params[1] || null;
-			if (setVariable(name, value))
-				console.log('OK');
-			break;
-		
-		case 'event': 
-			var p = partition(params.join(' '), '=');
-			var name = p[0];
-			var data = p[2] || null;
-			if (data) {
-				try {
-					data = JSON.parse(data);
-				} catch(e) {
-					console.log(fmt.error('Event parameter must be valid JSON.'));
-					data = null;
-				}
-			}
-			console.log('emitting', name, data);
-			game.emit(name, data);
-			break;
-		
-		default:
-			console.log('Unknown command');
 	}
-})
 
+	if (cmd in commands) {
+		var result = commands[cmd].apply(null, params);
+		if (typeof result === 'boolean') {
+			if (result) {
+				console.log('OK');
+			} else {
+				console.log('Failed');
+			}
+		} else if (typeof result !== 'undefined') {
+			console.log(result);
+		}
+	} else {
+		console.log('Unknown command. Type \'help\' for command list.');
+	}
+});
+
+// Start the server
+server.listen(config.nodeServer.port);
 console.log('JSDC Server Started');
 
-server.listen(config.nodeServer.port);
+// Utility Functions
 
-function partition(str: string, sep: string) {
+function partition(str: string, sep: string): string[] {
 	var i = str.indexOf(sep);
 	if (i < 0) {
 		return [str, '', ''];
@@ -454,4 +478,3 @@ function partition(str: string, sep: string) {
 		return [str.substr(0, i), sep, str.substr(i + sep.length)];
 	}
 }
-

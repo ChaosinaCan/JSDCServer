@@ -5,28 +5,24 @@ var events = require('events');
 class BaseEventEmitter implements EventEmitter {
 	private emitter = new events.EventEmitter();
 
-	addListener(event: string, listener: Function) {
+	addListener(event: string, listener: Function): EventEmitter {
 		return this.emitter.addListener(event, listener);
 	}
 
-	on(event: string, listener: Function) {
+	on(event: string, listener: Function): EventEmitter {
 		return this.emitter.on(event, listener);
 	}
 
-	once(event: string, listener: Function): void {
-		this.emitter.once(event, listener);
-	}
-	
-	removeAllListeners(event?: string): void {
-		this.emitter.removeAllListeners(event);
+	once(event: string, listener: Function): EventEmitter {
+		return this.emitter.once(event, listener);
 	}
 
-	removeListener(event: string, listener: Function): void {
-		this.emitter.removeListener(event, listener);
+	removeAllListeners(event?: string): EventEmitter {
+		return this.emitter.removeAllListeners(event);
 	}
 
-	removeAllListener(event: string): void {
-		this.emitter.removeAll(event);
+	removeListener(event: string, listener: Function): EventEmitter {
+		return this.emitter.removeListener(event, listener);
 	}
 
 	setMaxListeners(n: number): void {
@@ -37,8 +33,8 @@ class BaseEventEmitter implements EventEmitter {
 		return this.emitter.listeners();
 	}
 
-	emit(event: string, arg1?: any, arg2?: any): void {
-		this.emitter.emit.apply(this.emitter, Array.prototype.slice.apply(arguments));
+	emit(event: string, arg1?: any, arg2?: any): boolean {
+		return this.emitter.emit.apply(this.emitter, Array.prototype.slice.apply(arguments));
 	}
 }
 
