@@ -65,3 +65,5 @@ _old
 /node/*/*.js
 /node/*/*.js.map
 !/node/compile.js
+
+Thumbs.db
