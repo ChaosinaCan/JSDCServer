@@ -21,6 +21,114 @@ namespace ConsoleControlAPI
 	public class ProcessInterface
 	{
 		/// <summary>
+		/// The error reader.
+		/// </summary>
+		private TextReader errorReader;
+
+		/// <summary>
+		/// The error worker.
+		/// </summary>
+		private BackgroundWorker errorWorker = new BackgroundWorker();
+
+		/// <summary>
+		/// The input writer.
+		/// </summary>
+		private StreamWriter inputWriter;
+
+		/// <summary>
+		/// The output reader.
+		/// </summary>
+		private TextReader outputReader;
+
+		/// <summary>
+		/// The output worker.
+		/// </summary>
+		private BackgroundWorker outputWorker = new BackgroundWorker();
+
+		/// <summary>
+		/// The current process.
+		/// </summary>
+		private Process process;
+
+		/// <summary>
+		/// Arguments sent to the current process.
+		/// </summary>
+		private string processArguments;
+
+		/// <summary>
+		/// Current process file name.
+		/// </summary>
+		private string processFileName;
+
+		/// <summary>
+		/// Occurs when process error output is produced.
+		/// </summary>
+		public event ProcessEventHandler OnProcessError;
+
+		/// <summary>
+		/// Occurs when the process ends.
+		/// </summary>
+		public event ProcessEventHandler OnProcessExit;
+
+		/// <summary>
+		/// Occurs when process input is produced.
+		/// </summary>
+		public event ProcessEventHandler OnProcessInput;
+
+		/// <summary>
+		/// Occurs when process output is produced.
+		/// </summary>
+		public event ProcessEventHandler OnProcessOutput;
+
+		/// <summary>
+		/// Gets a value indicating whether this instance is process running.
+		/// </summary>
+		/// <value>
+		/// 	<c>true</c> if this instance is process running; otherwise, <c>false</c>.
+		/// </value>
+		public bool IsProcessRunning
+		{
+			get
+			{
+				try
+				{
+					return (process != null && process.HasExited == false);
+				}
+				catch
+				{
+					return false;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets the internal process.
+		/// </summary>
+		public Process Process
+		{
+			get { return process; }
+		}
+
+		/// <summary>
+		/// Gets the process arguments.
+		/// </summary>
+		public string ProcessArguments
+		{
+			get { return processArguments; }
+		}
+
+		/// <summary>
+		/// Gets the name of the process.
+		/// </summary>
+		/// <value>
+		/// The name of the process.
+		/// </value>
+		public string ProcessFileName
+		{
+			get { return processFileName; }
+		}
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="ProcessInterface"/> class.
 		/// </summary>
 		public ProcessInterface()
@@ -36,84 +144,6 @@ namespace ConsoleControlAPI
 			errorWorker.WorkerSupportsCancellation = true;
 			errorWorker.DoWork += errorWorker_DoWork;
 			errorWorker.ProgressChanged += errorWorker_ProgressChanged;
-		}
-
-		/// <summary>
-		/// Handles the ProgressChanged event of the outputWorker control.
-		/// </summary>
-		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="System.ComponentModel.ProgressChangedEventArgs"/> instance containing the event data.</param>
-		void outputWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-		{
-			//  We must be passed a string in the user state.
-			if (e.UserState is string)
-			{
-				//  Fire the output event.
-				FireProcessOutputEvent(e.UserState as string);
-			}
-		}
-
-		/// <summary>
-		/// Handles the DoWork event of the outputWorker control.
-		/// </summary>
-		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="System.ComponentModel.DoWorkEventArgs"/> instance containing the event data.</param>
-		void outputWorker_DoWork(object sender, DoWorkEventArgs e)
-		{
-			while (outputWorker.CancellationPending == false)
-			{
-				//  Any lines to read?
-				int count;
-				var buffer = new char[1024];
-				do
-				{
-					var builder = new StringBuilder();
-					count = outputReader.Read(buffer, 0, 1024);
-					builder.Append(buffer, 0, count);
-					outputWorker.ReportProgress(0, builder.ToString());
-				} while (count > 0);
-
-				System.Threading.Thread.Sleep(200);
-			}
-		}
-
-		/// <summary>
-		/// Handles the ProgressChanged event of the errorWorker control.
-		/// </summary>
-		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="System.ComponentModel.ProgressChangedEventArgs"/> instance containing the event data.</param>
-		void errorWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-		{
-			//  The userstate must be a string.
-			if (e.UserState is string)
-			{
-				//  Fire the error event.
-				FireProcessErrorEvent(e.UserState as string);
-			}
-		}
-
-		/// <summary>
-		/// Handles the DoWork event of the errorWorker control.
-		/// </summary>
-		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="System.ComponentModel.DoWorkEventArgs"/> instance containing the event data.</param>
-		void errorWorker_DoWork(object sender, DoWorkEventArgs e)
-		{
-			while (errorWorker.CancellationPending == false)
-			{
-				//  Any lines to read?
-				int count;
-				var buffer = new char[1024];
-				do
-				{
-					var builder = new StringBuilder();
-					count = errorReader.Read(buffer, 0, 1024);
-					builder.Append(buffer, 0, count);
-					errorWorker.ReportProgress(0, builder.ToString());
-				} while (count > 0);
-
-				System.Threading.Thread.Sleep(200);
-			}
 		}
 
 		/// <summary>
@@ -194,11 +224,24 @@ namespace ConsoleControlAPI
 		}
 
 		/// <summary>
+		/// Writes the input.
+		/// </summary>
+		/// <param name="input">The input.</param>
+		public void WriteInput(string input)
+		{
+			if (IsProcessRunning)
+			{
+				inputWriter.WriteLine(input);
+				inputWriter.Flush();
+			}
+		}
+
+		/// <summary>
 		/// Handles the Exited event of the currentProcess control.
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
 		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-		void currentProcess_Exited(object sender, EventArgs e)
+		private void currentProcess_Exited(object sender, EventArgs e)
 		{
 			//  Fire process exited.
 			FireProcessExitEvent(process.ExitCode);
@@ -215,15 +258,42 @@ namespace ConsoleControlAPI
 		}
 
 		/// <summary>
-		/// Fires the process output event.
+		/// Handles the DoWork event of the errorWorker control.
 		/// </summary>
-		/// <param name="content">The content.</param>
-		private void FireProcessOutputEvent(string content)
+		/// <param name="sender">The source of the event.</param>
+		/// <param name="e">The <see cref="System.ComponentModel.DoWorkEventArgs"/> instance containing the event data.</param>
+		private void errorWorker_DoWork(object sender, DoWorkEventArgs e)
 		{
-			//  Get the event and fire it.
-			var theEvent = OnProcessOutput;
-			if (theEvent != null)
-				theEvent(this, new ProcessEventArgs(content));
+			while (errorWorker.CancellationPending == false)
+			{
+				//  Any lines to read?
+				int count;
+				var buffer = new char[1024];
+				do
+				{
+					var builder = new StringBuilder();
+					count = errorReader.Read(buffer, 0, 1024);
+					builder.Append(buffer, 0, count);
+					errorWorker.ReportProgress(0, builder.ToString());
+				} while (count > 0);
+
+				System.Threading.Thread.Sleep(200);
+			}
+		}
+
+		/// <summary>
+		/// Handles the ProgressChanged event of the errorWorker control.
+		/// </summary>
+		/// <param name="sender">The source of the event.</param>
+		/// <param name="e">The <see cref="System.ComponentModel.ProgressChangedEventArgs"/> instance containing the event data.</param>
+		private void errorWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+		{
+			//  The userstate must be a string.
+			if (e.UserState is string)
+			{
+				//  Fire the error event.
+				FireProcessErrorEvent(e.UserState as string);
+			}
 		}
 
 		/// <summary>
@@ -234,18 +304,6 @@ namespace ConsoleControlAPI
 		{
 			//  Get the event and fire it.
 			var theEvent = OnProcessError;
-			if (theEvent != null)
-				theEvent(this, new ProcessEventArgs(content));
-		}
-
-		/// <summary>
-		/// Fires the process input event.
-		/// </summary>
-		/// <param name="content">The content.</param>
-		private void FireProcessInputEvent(string content)
-		{
-			//  Get the event and fire it.
-			var theEvent = OnProcessInput;
 			if (theEvent != null)
 				theEvent(this, new ProcessEventArgs(content));
 		}
@@ -263,124 +321,66 @@ namespace ConsoleControlAPI
 		}
 
 		/// <summary>
-		/// Writes the input.
+		/// Fires the process input event.
 		/// </summary>
-		/// <param name="input">The input.</param>
-		public void WriteInput(string input)
+		/// <param name="content">The content.</param>
+		private void FireProcessInputEvent(string content)
 		{
-			if (IsProcessRunning)
+			//  Get the event and fire it.
+			var theEvent = OnProcessInput;
+			if (theEvent != null)
+				theEvent(this, new ProcessEventArgs(content));
+		}
+
+		/// <summary>
+		/// Fires the process output event.
+		/// </summary>
+		/// <param name="content">The content.</param>
+		private void FireProcessOutputEvent(string content)
+		{
+			//  Get the event and fire it.
+			var theEvent = OnProcessOutput;
+			if (theEvent != null)
+				theEvent(this, new ProcessEventArgs(content));
+		}
+
+		/// <summary>
+		/// Handles the DoWork event of the outputWorker control.
+		/// </summary>
+		/// <param name="sender">The source of the event.</param>
+		/// <param name="e">The <see cref="System.ComponentModel.DoWorkEventArgs"/> instance containing the event data.</param>
+		private void outputWorker_DoWork(object sender, DoWorkEventArgs e)
+		{
+			while (outputWorker.CancellationPending == false)
 			{
-				inputWriter.WriteLine(input);
-				inputWriter.Flush();
+				//  Any lines to read?
+				int count;
+				var buffer = new char[1024];
+				do
+				{
+					var builder = new StringBuilder();
+					count = outputReader.Read(buffer, 0, 1024);
+					builder.Append(buffer, 0, count);
+					outputWorker.ReportProgress(0, builder.ToString());
+				} while (count > 0);
+
+				System.Threading.Thread.Sleep(200);
 			}
 		}
 
 		/// <summary>
-		/// The current process.
+		/// Handles the ProgressChanged event of the outputWorker control.
 		/// </summary>
-		private Process process;
-		
-		/// <summary>
-		/// The input writer.
-		/// </summary>
-		private StreamWriter inputWriter;
-		
-		/// <summary>
-		/// The output reader.
-		/// </summary>
-		private TextReader outputReader;
-		
-		/// <summary>
-		/// The error reader.
-		/// </summary>
-		private TextReader errorReader;
-		
-		/// <summary>
-		/// The output worker.
-		/// </summary>
-		private BackgroundWorker outputWorker = new BackgroundWorker();
-		
-		/// <summary>
-		/// The error worker.
-		/// </summary>
-		private BackgroundWorker errorWorker = new BackgroundWorker();
-
-		/// <summary>
-		/// Current process file name.
-		/// </summary>
-		private string processFileName;
-
-		/// <summary>
-		/// Arguments sent to the current process.
-		/// </summary>
-		private string processArguments;
-		
-		/// <summary>
-		/// Occurs when process output is produced.
-		/// </summary>
-		public event ProcessEventHandler OnProcessOutput;
-
-		/// <summary>
-		/// Occurs when process error output is produced.
-		/// </summary>
-		public event ProcessEventHandler OnProcessError;
-
-		/// <summary>
-		/// Occurs when process input is produced.
-		/// </summary>
-		public event ProcessEventHandler OnProcessInput;
-
-		/// <summary>
-		/// Occurs when the process ends.
-		/// </summary>
-		public event ProcessEventHandler OnProcessExit;
-		
-		/// <summary>
-		/// Gets a value indicating whether this instance is process running.
-		/// </summary>
-		/// <value>
-		/// 	<c>true</c> if this instance is process running; otherwise, <c>false</c>.
-		/// </value>
-		public bool IsProcessRunning
+		/// <param name="sender">The source of the event.</param>
+		/// <param name="e">The <see cref="System.ComponentModel.ProgressChangedEventArgs"/> instance containing the event data.</param>
+		private void outputWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
 		{
-			get
+			//  We must be passed a string in the user state.
+			if (e.UserState is string)
 			{
-				try
-				{
-					return (process != null && process.HasExited == false);
-				}
-				catch
-				{
-					return false;
-				}
+				//  Fire the output event.
+				FireProcessOutputEvent(e.UserState as string);
 			}
-		}
-
-		/// <summary>
-		/// Gets the internal process.
-		/// </summary>
-		public Process Process
-		{
-			get { return process; }
-		}
-
-		/// <summary>
-		/// Gets the name of the process.
-		/// </summary>
-		/// <value>
-		/// The name of the process.
-		/// </value>
-		public string ProcessFileName
-		{
-			get { return processFileName; }
-		}
-
-		/// <summary>
-		/// Gets the process arguments.
-		/// </summary>
-		public string ProcessArguments
-		{
-			get { return processArguments; }
 		}
 	}
 }

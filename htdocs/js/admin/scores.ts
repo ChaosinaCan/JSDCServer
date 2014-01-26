@@ -1,10 +1,6 @@
 ﻿/// <reference path="base.ts" />
 /// <reference path="score-listener.ts" />
 
-module game {
-	
-}
-
 module scores {
 	// Public Variables
 	export var colors: Color[];
@@ -53,7 +49,7 @@ module scores {
 		}
 	}
 
-	export function init(): void {	
+	export function init(): void {
 		colors = jsdc.color.parse(colors);
 		actions = jsdc.action.parse(actions);
 		fouls = jsdc.foul.parse(fouls);
@@ -83,7 +79,6 @@ module scores {
 			disable_search: true,
 		})
 
-		
 		$('#open').change(changeMatchOpen);
 		$('#action').change(deselectFoul);
 		$('#foul').change(deselectAction);
@@ -104,7 +99,6 @@ module scores {
 		loadCurrentMatch();
 	}
 
-	
 	export function resetForm(): void {
 		$('#from-team, #on-team, #action, #foul').val('0').trigger('chosen:update');
 		$('#disable, #disqualify').prop('checked', false);
@@ -180,7 +174,6 @@ module scores {
 	}
 
 	export function loadMatch(match: Match): void {
-		
 		if (!scores.match || !match || scores.match.matchId !== match.matchId) {
 			fillTeamSelects(match);
 			scoreDisplay.init(match);
@@ -212,7 +205,6 @@ module scores {
 			if (match.open && ['running', 'paused'].contains(match.status)) {
 				$('#open').prop('disabled', true);
 			}
-
 		} else {
 			$('section.controls h2').addClass('no-match');
 			$('#match-status').html('&nbsp;');
@@ -336,7 +328,7 @@ module scores {
 	function updateTeamSelectClass(e: JQueryEventObject): void {
 		var select = $(this);
 		var chznSpan = select.siblings('.chzn-container').find('.chzn-single span');
-		
+
 		chznSpan.removeClass();
 		if (select.val() != 0) {
 			chznSpan.addClass(getColor(select.val()));
@@ -358,13 +350,13 @@ module scores {
 
 		if (match) {
 			$('#from-team, #on-team').append(
-				match.teams.map((team) => 
+				match.teams.map((team) =>
 					$('<option>').attr('value', team.teamId).text(team.name).addClass(getColor(team.colorId))
 				)
 			)
 		}
 
-		$('#from-team, #on-team').trigger('chosen:update');	
+		$('#from-team, #on-team').trigger('chosen:update');
 	}
 
 	function validateScoreEntry(): void {
@@ -377,7 +369,7 @@ module scores {
 			valid = false;
 		}
 
-		if ($('#action').val() == 0 && $('#foul').val() == 0 
+		if ($('#action').val() == 0 && $('#foul').val() == 0
 			&& !$('#disable').prop('checked') && !$('#disqualify').prop('checked')) {
 			valid = false;
 		}
@@ -386,9 +378,7 @@ module scores {
 	}
 }
 
-
 module scoreDisplay {
-
 	var template = $('<li>').append(
 		$('<div class=primary>').append(
 			$('<span class=team>'),
@@ -405,7 +395,7 @@ module scoreDisplay {
 	export function init(match: Match) {
 		var list = $('#results').empty();
 		rowsByTeamId = {};
-		
+
 		if (match) {
 			match.teams.forEach((team, i) => {
 				var row = createStatus(team);
@@ -414,7 +404,6 @@ module scoreDisplay {
 			});
 		}
 	}
-
 
 	function createStatus(team: Team) {
 		var item = template.clone(true);
@@ -437,8 +426,6 @@ module scoreDisplay {
 		item.find('.status').text(status);
 	}
 
-
-	
 	export function update(result: ScoreInfo) {
 		var row = rowsByTeamId[result.team.teamId.toString()];
 		if (row) {

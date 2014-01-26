@@ -1,8 +1,8 @@
 <section class="column">
-	
+
 	<div id="api-request">
 		<h2>API Request</h2>
-		
+
 		<p id="request-type">
 			<label>
 				Datatype
@@ -18,16 +18,16 @@
 					<option value="user">User</option>
 				</select>
 			</label>
-			
+
 			<label>
-				<input type="radio" name="method" id="method-get" value="get" checked="true">
+				<input type="radio" name="method" id="method-get" value="get" checked>
 				Get
 			</label>
 			<label>
 				<input type="radio" name="method" id="method-post" value="post">
 				Post
 			</label>
-			
+
 			<label id="post-fields">
 				Method
 				<select name="post-method" id="post-method">
@@ -37,11 +37,8 @@
 					<option value="reset">Reset</option>
 				</select>
 			</label>
-			
-			
-		</p>	
+		</p>
 
-		
 		<label for="params">Request Parameters</label>
 		<div class="autoexpand" id="params-container">
 			<pre><span></span><br></pre>
@@ -64,7 +61,6 @@
 			<output><pre id="response">No Request Sent</pre></output>
 		</p>
 	</div>
-
 </section>
 
 <section class="column">
@@ -78,7 +74,7 @@
 				<dd>Filters to the action with the specified ID</dd>
 			</dl>
 		</div>
-		
+
 		<div id="post-action">
 			<h2>POST Action</h2>
 			<h3>Create</h3>
@@ -113,7 +109,7 @@
 				<dd>The ID of the action to delete</dd>
 			</dl>
 		</div>
-		
+
 		<div id="get-color">
 			<h2>GET Color</h2>
 			<dl>
@@ -123,7 +119,7 @@
 				<dd>Filters to the color with the specified ID</dd>
 			</dl>
 		</div>
-		
+
 		<div id="post-color">
 			<h2>POST Color</h2>
 			<h3>Create</h3>
@@ -150,7 +146,7 @@
 				<dd>The ID of the color to delete</dd>
 			</dl>
 		</div>
-		
+
 		<div id="get-foul">
 			<h2>GET Foul</h2>
 			<dl>
@@ -160,7 +156,7 @@
 				<dd>Filters to the foul with the specified ID</dd>
 			</dl>
 		</div>
-		
+
 		<div id="post-foul">
 			<h2>POST Foul</h2>
 			<h3>Create</h3>
@@ -191,7 +187,7 @@
 				<dd>The ID of the foul to delete</dd>
 			</dl>
 		</div>
-		
+
 		<div id="get-match">
 			<h2>GET Match</h2>
 			<dl>
@@ -227,7 +223,7 @@
 				<dd>Returns the results of each match in the response</dd>
 			</dl>
 		</div>
-		
+
 		<div id="post-match">
 			<h2>POST Match</h2>
 			<h3>Create</h3>
@@ -241,7 +237,7 @@
 				<dt>match = number</dt>
 				<dd>The match's match number</dd>
 				<dt>teams = array</dt>
-				<dd>The teams playing in the match and their colors. Each array element 
+				<dd>The teams playing in the match and their colors. Each array element
 					is an object with the following format:</dd>
 				<dd>
 					<dl>
@@ -267,7 +263,7 @@
 				<dt>match = number</dt>
 				<dd>The new match number</dd>
 				<dt>teams = array</dt>
-				<dd>The new teams playing in the match and their colors. 
+				<dd>The new teams playing in the match and their colors.
 					The format is the same as above</dd>
 				<dt class="resp">Response</dt>
 				<dd>The data of the updated match</dd>
@@ -278,7 +274,7 @@
 				<dd>The ID of the match to delete</dd>
 			</dl>
 		</div>
-		
+
 		<div id="get-matchresult">
 			<h2>GET Match Results</h2>
 			<dl>
@@ -293,7 +289,7 @@
 					specified ID plays</dd>
 			</dl>
 		</div>
-		
+
 		<div id="post-matchresult">
 			<h2>POST Match</h2>
 			<h3>Update</h3>
@@ -316,7 +312,7 @@
 				<dd>The data of the reset match results</dd>
 			</dl>
 		</div>
-		
+
 		<div id="get-score">
 			<h2>GET Score</h2>
 			<dl>
@@ -330,7 +326,7 @@
 				<dd>Filters to score records for the team with the specified ID</dd>
 			</dl>
 		</div>
-		
+
 		<div id="post-score">
 			<h2>POST Match</h2>
 			<h3>Create</h3>
@@ -384,7 +380,7 @@
 				<dd>The ID of the match for which all scores should be deleted</dd>
 			</dl>
 		</div>
-		
+
 		<div id="get-permissions">
 			<h2>GET Permissions</h2>
 			<dl>
@@ -394,13 +390,11 @@
 				<dd>Filters to the permissions object with the specified ID</dd>
 			</dl>
 		</div>
-		
+
 		<div id="post-permissions">
 			<h2>POST Permissions</h2>
 		</div>
-		
-		
-		
+
 		<div id="get-team">
 			<h2>GET Team</h2>
 			<dl>
@@ -410,7 +404,7 @@
 				<dd>Filters to the team with the specified ID</dd>
 			</dl>
 		</div>
-		
+
 		<div id="post-team">
 			<h2>POST Team</h2>
 			<h3>Create</h3>
@@ -429,11 +423,11 @@
 				<dd>A base 64 encoded data URI containing an image to upload</dd>
 			</dl>
 			<h3>Update</h3>
+			<dl>
 				<dt>id = number</dt>
 				<dd>The ID of the team to update</dd>
 				<dt class="resp">Response</dt>
 				<dd>The data of the updated team</dd>
-			<dl>
 			</dl>
 			<h3>Delete</h3>
 			<dl>
@@ -441,7 +435,7 @@
 				<dd>The ID of the team to delete</dd>
 			</dl>
 		</div>
-		
+
 		<div id="get-user">
 			<h2>GET User</h2>
 			<dl>
@@ -457,7 +451,7 @@
 				<dd>Returns the user's permissions and API objects with the response</dd>
 			</dl>
 		</div>
-		
+
 		<div id="post-user">
 			<h2>POST Match</h2>
 			<h3>Create</h3>
@@ -476,6 +470,5 @@
 				<dd>The ID of the user to delete</dd>
 			</dl>
 		</div>
-		
 	</div>
 </section>

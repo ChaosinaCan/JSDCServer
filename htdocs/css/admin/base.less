@@ -2,7 +2,6 @@
 @import "font.less";
 @import "reset.less";
 
-
 html {
 	padding: 0 40px 20px;
 
@@ -105,8 +104,7 @@ p.error {
 }
 
 // Text input controls
-
-input[type=text], input[type=password], input[type=email], 
+input[type=text], input[type=password], input[type=email],
 input[type=number], input[type=url], input[type=search], textarea {
 	min-height: 28px;
 	min-width: 64px;
@@ -136,7 +134,6 @@ textarea {
 	padding: 4px 8px;
 	padding-right: 17px;
 }
-
 
 // buttons
 button, input[type=button], input[type=reset], input[type=submit] {
@@ -176,7 +173,6 @@ button, input[type=button], input[type=reset], input[type=submit] {
 }
 
 // select controls
-
 select {
 	min-height: 32px;
 	min-width: 80px;
@@ -194,7 +190,6 @@ select {
 }
 
 // radio buttons and checkboxes
-
 input[type=radio] {
 	width: 23px;
 	margin-top: 0;
@@ -271,7 +266,6 @@ input[type=checkbox].toggle {
 		}
 	}
 
-
 	&.yesno {
 		& + span:before {
 			content: 'No';
@@ -283,10 +277,7 @@ input[type=checkbox].toggle {
 	}
 }
 
-
-
 // Command button styles
-
 button.command {
 	background: none;
 	height: auto; /* height is 88px (label) or 68px (no label) */
@@ -316,12 +307,12 @@ button.command {
 		/* Default font for glyphs. */
 		font-family: "Segoe Command";
 		letter-spacing: 0;
-	
+
 		/* Applications provide their own content, like &#xE0D5;. */
 		vertical-align: middle;
 		font-size: 14pt;
 		margin: -2px;
-		line-height: 40px; /* line-height must match the content box height */    
+		line-height: 40px; /* line-height must match the content box height */
 		display: inline-block;
 		/* Still 40px */
 		width: 40px;
@@ -352,17 +343,13 @@ button.command {
 		word-break: keep-all;
 		box-sizing: content-box;
 	}
-	
+
 	&:hover .commandring {
 		background-color: rgba(0, 0, 0, 0.13);
 	}
-
 }
 
-
-
 // Header styles
-
 header#branding {
 	overflow: hidden;
 
@@ -408,12 +395,11 @@ header#branding {
 			background: @fade-right;
 		}
 
-		.scroll-left.disabled, 
+		.scroll-left.disabled,
 		.scroll-right.disabled {
 			color: rgba(0, 0, 0, 0) !important;
 		}
 	}
-
 
 	ul {
 		position: relative;
@@ -447,11 +433,9 @@ header#branding {
 	li.current a {
 		color: @accent;
 	}
-	
 }
 
 // Appbar styles
-
 #toolbar {
 	position: fixed;
 	left: 0;
@@ -497,10 +481,6 @@ header#branding {
 	display: none;
 }
 
-
-
-
-
 #content {
 	margin-top: 10px;
 }
@@ -510,7 +490,7 @@ body.columns #content {
 	flex-flow: row wrap;
 	align-items: stretch;
 	justify-content: flex-start;
-	
+
 	margin-right: -40px;
 
 	section.column {
@@ -519,11 +499,8 @@ body.columns #content {
 	}
 }
 
-
-
 // Fullscreen Styles
 html:fullscreen {
-
 	header#branding {
 		position: fixed;
 		top: -64px;
@@ -550,10 +527,7 @@ html:fullscreen {
 	#restore {
 		display: inherit;
 	}
-
 }
-
-
 
 // Modal dialogs
 .simplemodal-overlay {
@@ -609,7 +583,6 @@ html:fullscreen {
 				color: @light;
 
 				&:hover {
-
 				}
 			}
 
@@ -678,7 +651,6 @@ html:fullscreen {
 		}
 	}
 }
-
 
 div.spinner {
 	height: 40px;

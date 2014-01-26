@@ -191,7 +191,7 @@ class ScoreListener implements EventTarget {
 
 	private _onScore(data) {
 		console.log('new score', data);
-		
+
 		var score = jsdc.score.parseOne(data);
 		this._addScore(score);
 		this._event('score', score);
@@ -221,14 +221,11 @@ class ScoreListener implements EventTarget {
 		this._event('matchchanged', this.match);
 	}
 
-
 	private _event(type: string, detail: any) {
 		var event = <CustomEvent>document.createEvent('CustomEvent');
 		event.initCustomEvent(type, true, false, detail);
 		this.dispatchEvent(event);
 	}
-
-	
 
 	addEventListener(type: string, listener: EventListener) {
 		if (!(type in this._listeners)) {
@@ -253,9 +250,8 @@ class ScoreListener implements EventTarget {
 			});
 		}
 		return true;
-	} 
+	}
 }
-
 
 class ScoreList {
 	private _scores: ScoreListener = null;
@@ -310,7 +306,7 @@ class ScoreList {
 		//console.log('loadscores', e.detail);
 		this._table.hide();
 		var loading = $('<p class=x-large>').text('Loading...').insertBefore(this._table);
-		
+
 		var scores: Score[] = <any>e.detail;
 		scores.forEach(this._addScore);
 		this._table.show();

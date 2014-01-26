@@ -61,15 +61,13 @@ body.yellow > h1 {
 table.field {
 	min-width: 700px;
 	min-height: 700px;
-	
+
 	-webkit-transition: -webkit-transform 0.5s;
 	transition: transform 0.5s;
 
 	td:not(.out):not(.source):not(.spin):hover {
 		background-color: @active !important;
 	}
-
-	
 }
 
 #batteries {
@@ -83,7 +81,7 @@ table.field {
 	h2, div {
 		float: left;
 	}
-	
+
 	.battery + h2 {
 		margin-left: 20px;
 	}
@@ -133,7 +131,6 @@ body.yellow #batteries  .battery.colored.owned {
 
 	&:hover { background-color: fade(@yellow, 50); }
 }
-
 
 #buttons {
 	overflow: auto;
@@ -195,8 +192,6 @@ body.red a.take:before { background: @red; }
 body.blue a.take:before { background: @blue; }
 body.green a.take:before { background: @green; }
 body.yellow a.take:before { background: @yellow; }
-
-
 
 @media (min-height: 990px) {
 	body {

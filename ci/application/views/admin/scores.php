@@ -1,10 +1,9 @@
-
 <script>
 	$(document).ready(function() {
 		scores.colors = <?= json_encode($colors) ?>;
 		scores.actions = <?= json_encode($actions) ?>;
 		scores.fouls = <?= json_encode($fouls) ?>;
-		
+
 		scores.init();
 	});
 </script>
@@ -13,7 +12,7 @@
 	<div>
 		<h2 class="no-match">
 			<span class="match-loaded">
-				Round <span class="round">0</span>, 
+				Round <span class="round">0</span>,
 				Match <span class="match">0</span>
 			</span>
 			<span class="no-match">No match loaded.</span>
@@ -24,7 +23,7 @@
 			<input type="checkbox" id="open" class="toggle yesno">
 		</p>
 	</div>
-	
+
 	<div>
 		<div class="x-large" id="match-status">&nbsp;</div>
 		<div id="score-buttons">
@@ -34,16 +33,16 @@
 			<button id="clear-all">Delete all scores</button>
 		</div>
 	</div>
-	
+
 	<p id="state-warning" class="error" style="display: none">
 		This match is in a non-standard state. Make sure to disallow scoring
 		changes when you are done modifying scores.
 	</p>
-	
+
 	<div id="new-score">
 		<h2>New score entry</h2>
 		<div class="twocol">
-			
+
 			<p>
 				<label class="block">Action</label>
 				<select id="action">
@@ -82,20 +81,16 @@
 			<button id="create">Create score entry</button>
 		</p>
 	</div>
-	
 </section>
 
 <section class="column results">
 	<h2>Results</h2>
 	<ul id="results">
-		
 	</ul>
 </section>
 
 <section class="column history">
 	<h2>Score history</h2>
 	<div id="history-wrap">
-		
 	</div>
 </section>
-

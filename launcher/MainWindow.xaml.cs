@@ -13,11 +13,10 @@ namespace JSDC.Launcher
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		const double UnexpandedHeight = 205;
-		const double ExpandedMinHeight = 300;
-
-		List<ApplicationHandler> Handlers = new List<ApplicationHandler>();
-		double expandedHeight = 420;
+		private const double ExpandedMinHeight = 300;
+		private const double UnexpandedHeight = 205;
+		private double expandedHeight = 420;
+		private List<ApplicationHandler> Handlers = new List<ApplicationHandler>();
 
 		public MainWindow()
 		{
@@ -45,31 +44,6 @@ namespace JSDC.Launcher
 			}
 		}
 
-		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-		{
-			foreach (var handler in Handlers)
-			{
-				handler.Stop();
-			}
-		}
-
-		private void input_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.Key == Key.Enter)
-			{
-				console.WriteInput(input.Text + Environment.NewLine, true, Colors.MediumOrchid);
-				input.Text = "";
-			}
-		}
-
-		private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
-		{
-			if (this.expander.IsExpanded && e.HeightChanged)
-			{
-				expandedHeight = e.NewSize.Height;
-			}
-		}
-
 		private void Expander_Collapsed(object sender, RoutedEventArgs e)
 		{
 			this.MinHeight = UnexpandedHeight;
@@ -84,6 +58,31 @@ namespace JSDC.Launcher
 
 			// MinHeight must be changed last to prevent it from triggering Window_SizeChanged()
 			this.MinHeight = ExpandedMinHeight;
+		}
+
+		private void input_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Enter)
+			{
+				console.WriteInput(input.Text + Environment.NewLine, true, Colors.MediumOrchid);
+				input.Text = "";
+			}
+		}
+
+		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+		{
+			foreach (var handler in Handlers)
+			{
+				handler.Stop();
+			}
+		}
+
+		private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+		{
+			if (this.expander.IsExpanded && e.HeightChanged)
+			{
+				expandedHeight = e.NewSize.Height;
+			}
 		}
 	}
 }

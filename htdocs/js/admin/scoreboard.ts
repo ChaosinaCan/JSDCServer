@@ -5,7 +5,7 @@
 module scoreboard {
 	// Public Variables
 	export var maxTeams: number;
-	
+
 	export var colors: Color[];
 	export var actions: Action[];
 	export var fouls: Foul[];
@@ -22,10 +22,8 @@ module scoreboard {
 	export var field: Field;
 	export var fieldScores: FieldScoringListener;
 
-
 	// Public Methods
 	export function init(): void {
-		
 		colors = jsdc.color.parse(colors);
 		actions = jsdc.action.parse(actions);
 		fouls = jsdc.foul.parse(fouls);
@@ -140,7 +138,6 @@ module scoreboard {
 		jsdc.clock.emit('game status');
 	}
 
-
 	// Private Methods
 	function onconnect(error: string) {
 		if (error) {
@@ -221,7 +218,6 @@ module scoreboard {
 	}
 }
 
-
 module scheduleDisplay {
 	var template = $('<li>').append(
 		$('<div class=primary>').append(
@@ -242,7 +238,7 @@ module scheduleDisplay {
 	var pregameTemplate = $('<div class=teamcard>').append(
 		$('<header>').append(
 			$('<h1 class=thin>'),
-			$('<h2>')	
+			$('<h2>')
 		),
 		$('<img>')
 	);
@@ -253,7 +249,7 @@ module scheduleDisplay {
 		var list = $('#teams ul').empty();
 		var cards = $('#teamcards').empty();
 		rowsByTeamId = {};
-		
+
 		if (match) {
 			match.teams.forEach((team, i) => {
 				var row = createStatus(team);
@@ -284,7 +280,7 @@ module scheduleDisplay {
 
 	function updateStatus(item: JQuery, result: ScoreInfo) {
 		item.find('.score').text(Math.max(0, result.score).toString());
-		
+
 		var status = '';
 		if (result.disqualified) {
 			status = 'disqualified';
@@ -295,7 +291,7 @@ module scheduleDisplay {
 		}
 		item.find('.status').text(status);
 	}
-	
+
 	export function update(result: ScoreInfo) {
 		var row = rowsByTeamId[result.team.teamId.toString()];
 		if (row) {
@@ -324,8 +320,6 @@ module scheduleDisplay {
 	}
 }
 
-
-
 module VideoPlayer {
 	export var thumbnailWidth = 100;
 	export var thumbnailHeight = 64;
@@ -340,7 +334,7 @@ module VideoPlayer {
 			);
 		});
 	}
-	
+
 	export function changeVideo(url: string) {
 		$('#video').attr('src', url);
 	}
@@ -358,7 +352,7 @@ module VideoPlayer {
 			.get(0);
 
 		var ctx = canvas.getContext('2d');
-		
+
 		function draw() {
 			// preserve aspect ratio
 			var aspect = video.videoWidth / video.videoHeight;
@@ -384,7 +378,7 @@ module VideoPlayer {
 		video.addEventListener('loadedmetadata', function () {
 			video.currentTime = seek;
 		}, false);
-		
+
 		return canvas;
 	}
 }

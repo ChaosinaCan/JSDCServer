@@ -35,6 +35,5 @@
 			</nav>
 		</section>
 	</div>
-		
 </body>
 </html>

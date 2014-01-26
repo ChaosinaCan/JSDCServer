@@ -1,4 +1,3 @@
-
 <h2>JSDC Control System Developed By</h2>
 <ul class="main">
 	<li><a href="http://chaosinacan.com">Joel Spadin</a></li>
@@ -51,8 +50,7 @@
 		The scoring pages are designed to work with the BlackBerry Playbook browser.
 	</li>
 </ul>
-	
 
 <p class="copyright">
-	&copy; 2011&ndash;2013 Jerry Sanders Creative Design Competition Committee
+	&copy; 2011&ndash;2014 Jerry Sanders Creative Design Competition Committee
 </p>

@@ -6,7 +6,7 @@ module game {
 	export var maxRounds: number;
 	export var maxMatches: number;
 	export var maxTeams: number;
-	
+
 	export var colors: Color[];
 	export var actions: Action[];
 	export var fouls: Foul[];
@@ -94,7 +94,7 @@ module game {
 			$('#history-wrap').append(new ScoreList(scores, game.colors, true).table);
 		}
 	}
-	
+
 	function onScoreChange(e: CustomEvent) {
 		//console.log('game score change', e.detail);
 	}
@@ -150,7 +150,6 @@ module game {
 		//		'You should synchronize the servers. If a match is currently running, it will be stopped.',
 		//		{ yes: 'Resync Matches', no: 'Do Nothing' },
 		//		(result) => {
-
 		//		});
 		//}
 	}
@@ -203,11 +202,10 @@ module game {
 		});
 	}
 
-
 	export function startMatch(): void {
 		if (match) {
 			jsdc.clock.emit('game start');
-			jsdc.match.update({ 
+			jsdc.match.update({
 				id: match.matchId,
 				status: 'running',
 				open: true,
@@ -260,11 +258,10 @@ module game {
 	}
 
 	export function changeMatchTimeDialog(): void {
-	
 		if (game.clock.running) {
 			return;
 		}
-		
+
 		var minutes: number = Math.floor(game.clock.time / 60);
 		var seconds: number = Math.floor(game.clock.time % 60);
 
@@ -292,7 +289,7 @@ module game {
 			title: 'Change match time',
 			body: content,
 			buttons: [
-				{ text: 'Change time', action: setTime }, 
+				{ text: 'Change time', action: setTime },
 				{ text: 'Cancel' }
 			],
 			options: Modal.CancellableOptions(),
@@ -399,9 +396,7 @@ module game {
 	}
 }
 
-
 module gameDisplay {
-
 	var template = $('<li>').append(
 		$('<div class=primary>').append(
 			$('<span class=team>'),
@@ -418,7 +413,7 @@ module gameDisplay {
 	export function init(match: Match) {
 		var list = $('#teams').empty();
 		rowsByTeamId = {};
-		
+
 		if (match) {
 			match.teams.forEach((team, i) => {
 				var row = createStatus(team);
@@ -427,7 +422,6 @@ module gameDisplay {
 			});
 		}
 	}
-
 
 	function createStatus(team: Team) {
 		var item = template.clone(true);
@@ -450,8 +444,6 @@ module gameDisplay {
 		item.find('.status').text(status);
 	}
 
-
-	
 	export function update(result: ScoreInfo) {
 		var row = rowsByTeamId[result.team.teamId.toString()];
 		if (row) {

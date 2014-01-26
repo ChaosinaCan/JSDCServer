@@ -6,7 +6,6 @@
 </script>
 
 <section>
-	
 	<table id="teams" class="x-large">
 		<thead>
 			<tr>
@@ -16,10 +15,9 @@
 			</tr>
 		</thead>
 		<tbody>
-			
 		</tbody>
 	</table>
-	
+
 	<p>
 		<button id="new">Create new team</button>
 	</p>

@@ -11,7 +11,7 @@
 		<label for="password">Password</label>
 		<input type="password" name="password" id="password">
 	</p>
-	
+
 	<p>
 		<input type="submit" value="Connect to MYSQL">
 	</p>

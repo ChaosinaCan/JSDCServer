@@ -1,4 +1,3 @@
-
 <script>
 	$(function() {
 		matches.maxRounds = <?= $max_rounds ?>;
@@ -45,5 +44,4 @@
 		<button id="new-match">New match</button>
 		<button id="save">Save changes</button>
 	</p>
-
 </section>

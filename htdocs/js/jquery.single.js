@@ -1,5 +1,4 @@
 ﻿(function($) {
-
 	var executing = {};
 
 	function startExecution(guid) {
@@ -54,5 +53,4 @@
 			completeExecution(callback.guid);
 		}
 	}
-
 })($ || jQuery);

@@ -44,7 +44,7 @@ interface MediaElementPlayer extends HTMLElement {
 	volume: number;
 	currentTime: number;
 	src: string;
-	
+
 	setMuted(mute: boolean);
 	setVolume(volume: number);
 	setCurrentTime(time: number);
@@ -54,7 +54,6 @@ interface MediaElementPlayer extends HTMLElement {
 	pause();
 	load();
 	stop();
-
 }
 
 interface JQuery {

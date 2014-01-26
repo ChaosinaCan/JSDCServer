@@ -1,7 +1,6 @@
 ﻿/// <reference path="../admin/base.ts" />
 
 window.addEventListener('DOMContentLoaded', () => {
-
 	var row = document.getElementById('javascript');
 	row.lastElementChild.textContent = 'Passed';
 	row.className = 'passed';
@@ -13,7 +12,6 @@ window.addEventListener('DOMContentLoaded', () => {
 }, false);
 
 module TestRunner {
-
 	export function runAll(): void {
 		var tests: Test[] = [
 			new Test('data-* attributes', () => {
@@ -60,8 +58,6 @@ module TestRunner {
 		});
 	}
 }
-
-
 
 class Test {
 	name: string;

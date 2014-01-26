@@ -10,9 +10,9 @@ namespace JSDC.Launcher
 	/// </summary>
 	public class ConsoleColorizer : ITextColorizer
 	{
+		public static readonly Color ErrorColor = Colors.DarkRed;
 		public static readonly Color InfoColor = Colors.MediumOrchid;
 		public static readonly Color WarnColor = Colors.OrangeRed;
-		public static readonly Color ErrorColor = Colors.DarkRed;
 
 		public IEnumerable<Tuple<string, Brush>> Colorize(string text, Brush defaultBrush)
 		{

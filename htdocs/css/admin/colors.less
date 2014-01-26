@@ -1,5 +1,4 @@
-﻿
-@background: #eaeaea;
+﻿@background: #eaeaea;
 @shade: #9da7b2;
 
 @text: #222;
@@ -39,9 +38,9 @@
 @fadeout-left: linear-gradient(to right, fade(@background, 0%) 0%, @background 20px, @background 100%);
 
 .outline (@color, @width: 1px, @blur: 0) {
-	text-shadow: @width @width @blur @color, 
-		@width -@width @blur @color, 
-		-@width -@width @blur @color, 
+	text-shadow: @width @width @blur @color,
+		@width -@width @blur @color,
+		-@width -@width @blur @color,
 		-@width @width @blur @color,
 		@width 0 @blur @color,
 		-@width 0 @blur @color,
@@ -50,12 +49,12 @@
 }
 
 .ring (@width: 5px, @color: #000) {
-	background-image: 
+	background-image:
 		-webkit-linear-gradient(bottom, @color 0%, @color @width, transparent @width, transparent 100%),
 		-webkit-linear-gradient(right, @color 0%, @color @width, transparent @width, transparent 100%),
 		-webkit-linear-gradient(left, @color 0%, @color @width, transparent @width, transparent 100%),
 		-webkit-linear-gradient(top, @color 0%, @color @width, transparent @width, transparent 100%);
-	background-image: 
+	background-image:
 		linear-gradient(to top, @color 0%, @color @width, transparent @width, transparent 100%),
 		linear-gradient(to left, @color 0%, @color @width, transparent @width, transparent 100%),
 		linear-gradient(to right, @color 0%, @color @width, transparent @width, transparent 100%),
@@ -66,11 +65,11 @@
 }
 
 .u-up (@width: 5px, @color: #000) {
-	background-image: 
+	background-image:
 		-webkit-linear-gradient(bottom, @color 0%, @color @width, transparent @width, transparent 100%),
 		-webkit-linear-gradient(right, @color 0%, @color @width, transparent @width, transparent 100%),
 		-webkit-linear-gradient(left, @color 0%, @color @width, transparent @width, transparent 100%);
-	background-image: 
+	background-image:
 		linear-gradient(to top, @color 0%, @color @width, transparent @width, transparent 100%),
 		linear-gradient(to left, @color 0%, @color @width, transparent @width, transparent 100%),
 		linear-gradient(to right, @color 0%, @color @width, transparent @width, transparent 100%);
@@ -80,11 +79,11 @@
 }
 
 .u-down (@width: 5px, @color: #000) {
-	background-image: 
+	background-image:
 		-webkit-linear-gradient(right, @color 0%, @color @width, transparent @width, transparent 100%),
 		-webkit-linear-gradient(left, @color 0%, @color @width, transparent @width, transparent 100%),
 		-webkit-linear-gradient(top, @color 0%, @color @width, transparent @width, transparent 100%);
-	background-image: 
+	background-image:
 		linear-gradient(to left, @color 0%, @color @width, transparent @width, transparent 100%),
 		linear-gradient(to right, @color 0%, @color @width, transparent @width, transparent 100%),
 		linear-gradient(to bottom, @color 0%, @color @width, transparent @width, transparent 100%);
@@ -94,11 +93,11 @@
 }
 
 .u-left (@width: 5px, @color: #000) {
-	background-image: 
+	background-image:
 		-webkit-linear-gradient(bottom, @color 0%, @color @width, transparent @width, transparent 100%),
 		-webkit-linear-gradient(right, @color 0%, @color @width, transparent @width, transparent 100%),
 		-webkit-linear-gradient(top, @color 0%, @color @width, transparent @width, transparent 100%);
-	background-image: 
+	background-image:
 		linear-gradient(to top, @color 0%, @color @width, transparent @width, transparent 100%),
 		linear-gradient(to left, @color 0%, @color @width, transparent @width, transparent 100%),
 		linear-gradient(to bottom, @color 0%, @color @width, transparent @width, transparent 100%);
@@ -108,11 +107,11 @@
 }
 
 .u-right (@width: 5px, @color: #000) {
-	background-image: 
+	background-image:
 		-webkit-linear-gradient(bottom, @color 0%, @color @width, transparent @width, transparent 100%),
 		-webkit-linear-gradient(left, @color 0%, @color @width, transparent @width, transparent 100%),
 		-webkit-linear-gradient(top, @color 0%, @color @width, transparent @width, transparent 100%);
-	background-image: 
+	background-image:
 		linear-gradient(to top, @color 0%, @color @width, transparent @width, transparent 100%),
 		linear-gradient(to right, @color 0%, @color @width, transparent @width, transparent 100%),
 		linear-gradient(to bottom, @color 0%, @color @width, transparent @width, transparent 100%);
@@ -151,14 +150,14 @@
 }
 
 .team-header (@color: #000, @width: 10px, @background: @background) {
-	background-image: 
+	background-image:
 		linear-gradient(to left, @background 0%, @background 1px, transparent 1px, transparent 100%),
 		linear-gradient(to right, @background 0%, @background 1px, transparent 1px, transparent 100%),
 		linear-gradient(to top, transparent 0%, transparent 1px, @color 1px, @color (@width + 1px), transparent (@width + 1px), transparent 100%);
 }
 
 .row-indicator (@color: #000, @width: 5px) {
-	background-image: 
+	background-image:
 		linear-gradient(to top, @background 0%, @background 1px, transparent 1px, transparent 100%),
 		linear-gradient(to bottom, @background 0%, @background 1px, transparent 1px, transparent 100%),
 		linear-gradient(to right, @color 0%, @color @width, transparent @width, transparent 100%);

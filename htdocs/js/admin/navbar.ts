@@ -1,12 +1,11 @@
 ﻿/// <reference path="base.ts" />
 
-$(() => {
+$(function() {
 	NavBar.init();
 })
 
 /** Handles the top navigation bar */
 module NavBar {
-
 	var nav: JQuery;
 	var list: JQuery;
 	var current: JQuery;
@@ -106,7 +105,7 @@ module NavBar {
 		return null;
 	}
 
-	/** 
+	/**
 	 * Scrolls the navigation bar
 	 * @param x The number of links to shift by
 	 */
@@ -148,18 +147,17 @@ module NavBar {
 		var offset = navCenter - currentCenter;
 
 		var newLeft = Math.max(Math.min(getLeft() + offset, 0), nav.width() - getListWidth());
-		
+
 		list.addClass('no-anim');
 		setTimeout(() => list.css('left', newLeft + 'px'), 10);
 		setTimeout(() => {
 			list.removeClass('no-anim');
 			updateButtons();
 		}, 100);
-		
 	}
 
 	function updateButtons() {
-		if (getRight() === 0) 
+		if (getRight() === 0)
 			rightButton.addClass('disabled');
 		else
 			rightButton.removeClass('disabled');
@@ -177,5 +175,4 @@ module NavBar {
 		if (keepCurrentCentered)
 			centerCurrentElement();
 	}
-
 }

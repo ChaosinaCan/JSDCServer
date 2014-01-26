@@ -33,8 +33,6 @@ interface BatteryStatus {
 	territory: number;
 }
 
-
-
 class Field implements EventTarget {
 	field: JQuery;
 	grid: JQuery[][];
@@ -99,7 +97,6 @@ class Field implements EventTarget {
 		jsdc.clock.emit('game status');
 	}
 
-
 	getCell(id: number): JQuery {
 		if (id === 0) {
 			return null;
@@ -125,7 +122,7 @@ class Field implements EventTarget {
 		}
 		return cells;
 	}
-	
+
 	colorCell(id: number, teamId: number) {
 		var cell = this.getCell(id);
 		if (cell) {
@@ -204,8 +201,6 @@ class Field implements EventTarget {
 					territories[territory.owner] += 1;
 				}
 			}
-
-
 		});
 
 		this.teams.forEach((team) => {
@@ -236,7 +231,7 @@ class Field implements EventTarget {
 
 	private onGameEvent(data) {
 		switch (data.event) {
-			case 'field': 
+			case 'field':
 				this.onGetField(data.data);
 				jsdc.clock.emit('game status');
 				break;
@@ -274,7 +269,7 @@ class Field implements EventTarget {
 		} else {
 			this.initialized = true;
 		}
-		
+
 		var grid: number[][] = data.grid;
 		var styles: string[][] = data.styles;
 		this.neighbors = data.neighbors;
@@ -308,20 +303,20 @@ class Field implements EventTarget {
 				var classes = [];
 				switch (style) {
 					case ' ': break;
-					case 's': 
+					case 's':
 						cell.text('⚡');
 						classes.push('source');
 						break;
-					case '*': 
+					case '*':
 						cell.append($('<span>').text(''));
-						classes.push('spin'); 
+						classes.push('spin');
 						classes.push('upper');
 						break;
 					case 'o':
 					case 'a':
 					case 'j':
 						classes.push('out');
-						if (x === 0) 
+						if (x === 0)
 							classes.push('u-left');
 						else if (x === this.width - 1)
 							classes.push('u-right');
@@ -377,7 +372,6 @@ class Field implements EventTarget {
 				}
 
 				cell.addClass(classes.join(' '));
-
 			}
 		}
 
@@ -419,10 +413,8 @@ class Field implements EventTarget {
 			});
 		}
 		return true;
-	} 
+	}
 }
-
-
 
 class FieldScoringListener {
 	field: Field;
@@ -457,7 +449,6 @@ class FieldScoringListener {
 	private onTerritoryWarning(id: number) {
 		WarningIndicator.create(this.field.getCell(id));
 	}
-
 }
 
 class CellIndicator {

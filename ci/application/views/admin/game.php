@@ -1,4 +1,3 @@
-
 <script>
 	$(function() {
 		game.maxRounds = <?= $max_rounds ?>;
@@ -7,7 +6,7 @@
 		game.colors = <?= json_encode($colors) ?>;
 		game.actions = <?= json_encode($actions) ?>;
 		game.fouls = <?= json_encode($fouls) ?>;
-		
+
 		game.init();
 	});
 </script>
@@ -44,7 +43,6 @@
 			<button id="refresh-scores">Refresh scores</button>
 			<button id="emergency">Emergency</button>
 			<button id="reset-field">Reset field</button>
-			
 		</p>
 	</div>
 	<div id="display">
@@ -62,7 +60,5 @@
 <section class="column history">
 	<h2 class="xx-large light">Score History</h2>
 	<div id="history-wrap">
-		
 	</div>
 </section>
-

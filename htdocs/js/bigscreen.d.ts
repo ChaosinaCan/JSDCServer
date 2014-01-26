@@ -1,11 +1,10 @@
 ﻿// Typing for the BigScreen library
 
 interface BigScreenStatic {
-
 	request(element?: Element);
 	exit();
 	toggle(element?: Element);
-	
+
 	onenter: Function;
 	onexit: Function;
 

@@ -7,12 +7,11 @@
 /// <reference path="../socket.io-client.d.ts" />
 /// <reference path="../jquery.simplemodal.d.ts" />
 
-/*-----------------------------------------------------------------------------
- * Common page logic
- *---------------------------------------------------------------------------*/
+//-----------------------------------------------------------------------------
+// #region Common page logic
+//-----------------------------------------------------------------------------
 
 $(function () {
-
 	// Map F11 or #fullscreen and #restore buttons to toggle fullscreen
 	if (typeof BigScreen !== 'undefined') {
 		window.addEventListener('keydown', (e: KeyboardEvent) => {
@@ -43,7 +42,7 @@ $(function () {
 	});
 
 	$('input[type=checkbox].toggle').each((i, elem: HTMLInputElement) => {
-		var replacement = $('<span>').click((e) => { 
+		var replacement = $('<span>').click((e) => {
 			if (!$(elem).prop('disabled')) {
 				$(elem).click()
 			}
@@ -53,17 +52,49 @@ $(function () {
 	});
 });
 
-/*-----------------------------------------------------------------------------
- * Modules and Types
- *---------------------------------------------------------------------------*/
+// #endregion
+
+//-----------------------------------------------------------------------------
+// #region Modules
+//-----------------------------------------------------------------------------
 
 /** Provides methods for communicating with the REST and clock servers */
 module jsdc {
+	//-------------------------------------------------------------------------
+	// #region Types and Interfaces
+	//-------------------------------------------------------------------------
+
+	/** Game status object sent by "game *" and "sync" events */
+	export interface GameStatus {
+		timestamp: number;
+		match: number;
+		running: boolean;
+		paused: boolean;
+		aborted: boolean;
+		finished: boolean;
+		emergency: boolean;
+		timeElapsed: number;
+		timeRemaining: number;
+	}
+
+	// #endregion
+
+	//-------------------------------------------------------------------------
+	// #region Variables
+	//-------------------------------------------------------------------------
+
 	/** The root REST server endpoint */
 	export var baseUrl: string = '/';
+
 	var apikey: string = '';
 
-	/** 
+	// #endregion
+
+	//-------------------------------------------------------------------------
+	// #region Functions
+	//-------------------------------------------------------------------------
+
+	/**
 	 * Sets the API key for authentication with the REST server
 	 * @param key The API key
 	 */
@@ -83,7 +114,7 @@ module jsdc {
 			return baseUrl + 'api/' + method + '/?' + serialize(params);
 		else
 			return baseUrl + 'api/' + method + '/';
-	} 
+	}
 
 	/**
 	 * Sends a GET request to the REST server
@@ -99,6 +130,64 @@ module jsdc {
 				'X-API-KEY': apikey,
 			}
 		});
+	}
+
+	/**
+	 * Gets the URL of a team's image from the image name
+	 * @param name The team's imageName property
+	 * @param thumb Use "true" to get the thumbnail version of the image
+	 */
+	export function getTeamImage(name: string, thumb?: boolean): string {
+		if (name == null || name == "")
+			return null;
+
+		var parts = name.split('.');
+		var filetype = '.' + parts.pop();
+		name = parts.join('.');
+		var filename = name.substr(0, name.length - filetype.length);
+		return baseUrl + 'uploads/' + name + (thumb ? '-thumb' : '') + filetype;
+	}
+
+	/**
+	 * Parses the response of an API call
+	 * @param call The result of a jsdc.get() or jsdc.post() call
+	 * @param parser A function which converts API response objects to the associated TypeScript type
+	 * @param callback A function to call when the request is done.
+	 */
+	export function handleResponse(call: JQueryPromise<any>, parser: (response: any[]) => any[], callback: (error: APIError, data: any[]) => any) {
+		call.then(
+			(res) => callback.call(null, null, parser(res)),
+			(...reasons) => callback.call(null, getError(reasons[0]), null)
+			);
+	}
+
+	/**
+	 * Parses the response of an API call. Returns the raw response object.
+	 * @param call The result of a jsdc.get() or jsdc.post() call
+	 * @param callback A function to call when the request is done.
+	 */
+	export function handleRawResponse(call: JQueryPromise<any>, callback: (error: APIError, id: number) => any) {
+		call.then(
+			(res) => callback.call(null, null, res),
+			(...reasons) => callback.call(null, getError(reasons[0]), null)
+			);
+	}
+
+	/**
+	 * Parses the response of an API call and returns only the first result
+	 * @param call The result of a jsdc.get() or jsdc.post() call
+	 * @param parser A function which converts API response objects to the associated TypeScript type
+	 * @param callback A function to call when the request is done.
+	 */
+	export function handleSingleResponse(call: JQueryPromise<any>, parser: (response: any[]) => any[], callback: (error: APIError, data: any) => any) {
+		function toSingle(items: any[]): any {
+			items = parser(items);
+			if (!Array.isArray(items))
+				return items;
+
+			return items.length > 0 ? items[0] : null;
+		}
+		handleResponse(call, toSingle, callback);
 	}
 
 	/**
@@ -118,6 +207,11 @@ module jsdc {
 		});
 	}
 
+	/**
+	 * Sends a POST request as form data
+	 * @param method The method or datatype to access
+	 * @param data The form data to send
+	 */
 	export function postFormData(method: string, data: FormData): JQueryPromise<any> {
 		return $.ajax(apiUrl(method), {
 			type: 'POST',
@@ -131,41 +225,6 @@ module jsdc {
 		});
 	}
 
-	/* == Individual Datatype Functions == */
-
-	function getError(xhr: JQueryXHR): APIError {
-		return {
-			status: xhr.status,
-			statusText: xhr.statusText,
-			message: xhr.responseText,
-		}
-	}
-
-	export function handleResponse(call: JQueryPromise<any>, parser: (response: any[]) => any[], callback: (error: APIError, data: any[]) => any) {
-		call.then(
-			(res) => callback.call(null, null, parser(res)),
-			(...reasons) => callback.call(null, getError(reasons[0]), null)
-		);
-	}
-
-	export function handleRawResponse(call: JQueryPromise<any>, callback: (error: APIError, id: number) => any) {
-		call.then(
-			(res) => callback.call(null, null, res),
-			(...reasons) => callback.call(null, getError(reasons[0]), null)
-		);
-	}
-
-	export function handleSingleResponse(call: JQueryPromise<any>, parser: (response: any[]) => any[], callback: (error: APIError, data: any) => any) {
-		function toSingle(items: any[]): any {
-			items = parser(items);
-			if (!Array.isArray(items))
-				return items;
-
-			return items.length > 0 ? items[0] : null;
-		}
-		handleResponse(call, toSingle, callback);
-	}
-
 	/** Converts boolean properties to 1 or 0 */
 	function fixbool(object: any) {
 		for (var key in object) {
@@ -176,21 +235,30 @@ module jsdc {
 		return object;
 	}
 
+	/** Parses a failed XHR and returns the relevant information as an APIError object */
+	function getError(xhr: JQueryXHR): APIError {
+		return {
+			status: xhr.status,
+			statusText: xhr.statusText,
+			message: xhr.responseText,
+		}
+	}
+
+	// #endregion
+
+	//-------------------------------------------------------------------------
+	// #region Modules
+	//-------------------------------------------------------------------------
+
 	/** Accesses action definitions */
 	export module action {
-		/** Converts an array of JSON objects to Actions */
-		export function parse(response: any[]): Action[] {
-			return response.map((item: any) => {
-				item.actionId = parseInt(item.actionId);
-				item.fromValue = parseInt(item.fromValue);
-				item.onValue = parseInt(item.onValue);
-				return item;
-			});
-		}
-
-		/** Converts a single JSON object to an Action */
-		export function parseOne(response: any): Action {
-			return parse([response])[0];
+		/**
+		 * Creates an action
+		 * @param params Information about the action to create
+		 */
+		export function create(params: ActionCreateParams, callback: (error: APIError, actionId: number) => any) {
+			(<any>params).method = 'create';
+			handleRawResponse(post('action', params), callback);
 		}
 
 		/** Gets all actions */
@@ -206,22 +274,19 @@ module jsdc {
 			handleSingleResponse(get('action', { id: id }), parse, callback);
 		}
 
-		/**
-		 * Creates an action
-		 * @param params Information about the action to create
-		 */
-		export function create(params: ActionCreateParams, callback: (error: APIError, actionId: number) => any) {
-			(<any>params).method = 'create';
-			handleRawResponse(post('action', params), callback);
+		/** Converts an array of JSON objects to Actions */
+		export function parse(response: any[]): Action[] {
+			return response.map((item: any) => {
+				item.actionId = parseInt(item.actionId);
+				item.fromValue = parseInt(item.fromValue);
+				item.onValue = parseInt(item.onValue);
+				return item;
+			});
 		}
 
-		/**
-		 * Changes the parameters of an existing action
-		 * @param params Information about the action to update
-		 */
-		export function update(params: ActionUpdateParams, callback: (error: APIError, action: Action) => any) {
-			(<any>params).method = 'update';
-			handleSingleResponse(post('action', params), parse, callback);
+		/** Converts a single JSON object to an Action */
+		export function parseOne(response: any): Action {
+			return parse([response])[0];
 		}
 
 		/**
@@ -253,533 +318,173 @@ module jsdc {
 				onvalue: action.onValue,
 			}
 		}
-	}
-
-	/** Accesses color definitions */
-	export module color {
-		/** Converts an array of JSON objects to Colors */
-		export function parse(response: any[]): Color[] {
-			return response.map((item: any) => {
-				item.colorId = parseInt(item.colorId);
-				return item;
-			});
-		}
-
-		/** Converts a single JSON object to a Color */
-		export function parseOne(response: any): Color {
-			return parse([response])[0];
-		}
-
-		/** Gets all colors */
-		export function getAll(callback: (error: APIError, colors: Color[]) => any) {
-			handleResponse(get('color', 'all'), parse, callback);
-		}
 
 		/**
-		 * Gets the color with a specific ID
-		 * @param id The ID of the color to find
+		 * Changes the parameters of an existing action
+		 * @param params Information about the action to update
 		 */
-		export function getById(id: number, callback: (error: APIError, color: Color) => any) {
-			handleSingleResponse(get('color', { id: id }), parse, callback);
-		}
-
-		/**
-		 * Creates a new color
-		 * @param name The name of the new color
-		 */
-		export function create(name: string, callback: (error: APIError, colorId: number) => any) {
-			handleRawResponse(post('color', {
-				method: 'create',
-				name: name
-			}), callback);
-		}
-
-		/**
-		 * Changes the parameters of an existing color
-		 * @param params Information about the color to update
-		 */
-		export function update(params: ColorUpdateParams, callback: (error: APIError, color: Color) => any) {
+		export function update(params: ActionUpdateParams, callback: (error: APIError, action: Action) => any) {
 			(<any>params).method = 'update';
-			handleSingleResponse(post('color', params), parse, callback);
+			handleSingleResponse(post('action', params), parse, callback);
 		}
-
-		/**
-		 * Deletes a color
-		 * @param id The ID of the color to delete
-		 */
-		export function remove(id: number, callback: (error: APIError) => any) {
-			handleRawResponse(post('color', {
-				method: 'delete',
-				id: id,
-			}), callback);
-		}
-
-		/** Converts a Color object to the parameters necessary to update that color */
-		export function toUpdateParams(color: Color): ColorUpdateParams {
-			return {
-				id: color.colorId,
-				name: color.name,
-			}
-		}
-	}
-
-	/** Accesses foul definitions */
-	export module foul {
-		/** Converts an array of JSON objects to Fouls */
-		export function parse(response: any[]): Foul[] {
-			return response.map((item: any) => {
-				item.foulId = parseInt(item.foulId);
-				item.value = parseInt(item.value);
-				return item;
-			});
-		}
-
-		/** Converts a single JSON object to a Foul */
-		export function parseOne(response: any): Foul {
-			return parse([response])[0];
-		}
-
-		/** Gets all colors */
-		export function getAll(callback: (error: APIError, fouls: Foul[]) => any) {
-			handleResponse(get('foul', 'all'), parse, callback);
-		}
-
-		/**
-		 * Gets the foul with a specific ID
-		 * @param id The ID of the foul to find
-		 */
-		export function getById(id: number, callback: (error: APIError, foul: Foul) => any) {
-			handleSingleResponse(get('foul', { id: id }), parse, callback);
-		}
-
-		/**
-		 * Creates a foul
-		 * @param params Information about the foul to create
-		 */
-		export function create(params: FoulCreateParams, callback: (error: APIError, foulId: number) => any) {
-			(<any>params).method = 'create';
-			handleRawResponse(post('foul', params), callback);
-		}
-
-		/**
-		 * Changes the parameters of an existing foul
-		 * @param params Information about the foul to update
-		 */
-		export function update(params: FoulUpdateParams, callback: (error: APIError, foul: Foul) => any) {
-			(<any>params).method = 'update';
-			handleSingleResponse(post('foul', params), parse, callback);
-		}
-
-		/**
-		 * Deletes a foul
-		 * @param id The ID of the foul to delete
-		 */
-		export function remove(id: number, callback: (error: APIError) => any) {
-			handleRawResponse(post('foul', {
-				method: 'delete',
-				id: id,
-			}), callback);
-		}
-
-		/** Converts a Foul object to the parameters necessary to create a foul */
-		export function toCreateParams(foul: Foul): FoulCreateParams {
-			return {
-				name: foul.name,
-				value: foul.value,
-			}
-		}
-
-		/** Converts a Foul object to the parameters necessary to update that foul */
-		export function toUpdateParams(foul: Foul): FoulUpdateParams {
-			return {
-				id: foul.foulId,
-				name: foul.name,
-				value: foul.value,
-			}
-		}
-	}
-
-	/** Accesses match definitions */
-	export module match {
-		/** Converts an array of JSON objects to Matches */
-		export function parse(response: any[]): Match[] {
-			return response.map((item: any) => {
-				item.matchId = parseInt(item.matchId);
-				item.open = parseBool(item.open);
-				item.roundNum = parseInt(item.roundNum);
-				item.matchNum = parseInt(item.matchNum);
-				if (item.teams !== undefined)
-					item.teams = jsdc.team.parse(item.teams);
-
-				return item;
-			});
-		}
-
-		/** Converts a single JSON object to a Match */
-		export function parseOne(response: any): Match {
-			return parse([response])[0];
-		}
-
-		/** Gets all matches */
-		export function getAll(callback: (error: APIError, matches: Match[]) => any) {
-			handleResponse(get('match', 'all'), parse, callback);
-		}
-
-		/** Gets the currently loaded match, if any exists */
-		export function getCurrent(callback: (error: APIError, match: Match) => any) {
-			handleSingleResponse(get('match', 'current'), parse, callback);
-		}
-
-		/** Gets all unstarted matches */
-		export function getUnstarted(callback: (error: APIError, matches: Match[]) => any) {
-			handleResponse(get('match', { status: 'none' }), parse, callback);
-		}
-
-		/** Gets all finished matches */
-		export function getFinished(callback: (error: APIError, matches: Match[]) => any) {
-			handleResponse(get('match', { status: 'finished' }), parse, callback);
-		}
-
-		/**
-		 * Gets the match with a specific ID
-		 * @param id The ID of the match to find
-		 */
-		export function getById(id: number, callback: (error: APIError, match: Match) => any) {
-			handleSingleResponse(get('match', { id: id }), parse, callback);
-		}
-
-		/**
-		 * Gets all matches in a specific round
-		 * @param round The round number to search for
-		 */
-		export function getByRound(round: number, callback: (error: APIError, matches: Match[]) => any) {
-			handleResponse(get('match', { round: round }), parse, callback);
-		}
-
-		/**
-		 * Gets the match with a specific round and match number, if any exists
-		 * @param round The round number to search for
-		 * @param match The match number to search for 
-		 */
-		export function getByMatch(round: number, match: number, callback: (error: APIError, match: Match) => any) {
-			handleSingleResponse(get('match', {
-				round: round,
-				match: match,
-			}), parse, callback);
-		}
-
-		/**
-		 * Searches for matches with given properties
-		 * @param query The properties to query for
-		 */
-		export function query(query: MatchQuery, callback: (error: APIError, matches: Match[]) => any) {
-			handleResponse(get('match', fixbool(query)), parse, callback);
-		}
-
-		/**
-		 * Creates a match
-		 * @param params Information about the match to create
-		 */
-		export function create(params: MatchCreateParams, callback: (error: APIError, matchId: number) => any) {
-			(<any>params).method = 'create';
-			handleRawResponse(post('match', fixbool(params)), callback);
-		}
-
-		/**
-		 * Changes the parameters of an existing match
-		 * @param params Information about the match to update
-		 */
-		export function update(params: MatchUpdateParams, callback: (error: APIError, match: Match) => any) {
-			(<any>params).method = 'update';
-			handleSingleResponse(post('match', fixbool(params)), parse, callback);
-		}
-
-		/**
-		 * Deletes a match
-		 * @param id The ID of the match to delete
-		 */
-		export function remove(id: number, callback: (error: APIError) => any) {
-			handleRawResponse(post('match', {
-				method: 'delete', 
-				id: id,
-			}), callback);
-		}
-
-		/** Converts a list of Team objects to the parameters necessary to create or update a match */
-		function teamsToTeamParams(teams: Team[]): MatchCreateTeamParams[] {
-			if (teams) 
-				return teams.map((team) => {
-					return {
-						teamId: team.teamId,
-						colorId: team.colorId,
-					}
-				});
-			else 
-				return [];
-		}
-
-		/** Converts a Match object to the parameters necessary to create a match */
-		export function toCreateParams(match: Match): MatchCreateParams {
-			return {
-				open: match.open,
-				status: match.status,
-				round: match.roundNum,
-				match: match.matchNum,
-				teams: teamsToTeamParams(match.teams),
-			}
-		}
-
-		/** Converts a Match object to the parameters necessary to update that match */
-		export function toUpdateParams(match: Match): MatchUpdateParams {
-			return {
-				id: match.matchId,
-				open: match.open,
-				status: match.status,
-				round: match.roundNum,
-				match: match.matchNum,
-				teams: teamsToTeamParams(match.teams),
-			}
-		}
-	}
-
-	/** Accesses the results of matches */
-	export module matchresult {
-		export function parse(response: any[]): MatchResult[] {
-			return response.map((item: any) => {
-				item.id = parseInt(item.id);
-				item.teamId = parseInt(item.teamId);
-				item.matchId = parseInt(item.matchId);
-				item.score = parseInt(item.score);
-				item.fouls = parseInt(item.fouls);
-				item.disabled = parseBool(item.disabled);
-				item.disqualified = parseBool(item.disqualified);
-				return item;
-			});
-		}
-
-		export function parseOne(response: any): MatchResult {
-			return parse([response])[0];
-		}
-
-		export function getAll(callback: (error: APIError, results: MatchResult[]) => any) {
-			handleResponse(get('matchresult', 'all'), parse, callback);
-		}
-
-		export function getCurrent(callback: (error: APIError, results: MatchResult[]) => any) {
-			handleResponse(get('matchresult', 'current'), parse, callback);
-		}
-
-		export function getByMatch(matchId: number, callback: (error: APIError, results: MatchResult[]) => any) {
-			handleResponse(get('matchresult', { match: matchId }), parse, callback);
-		}
-
-		export function getByTeam(teamId: number, callback: (error: APIError, results: MatchResult[]) => any) {
-			handleResponse(get('matchresult', { team: teamId }), parse, callback);
-		}
-
-		export function query(query: MatchResultQuery, callback: (error: APIError, results: MatchResult[]) => any) {
-			handleResponse(get('matchresult', query), parse, callback);
-		}
-
-		export function update(params: MatchResultUpdateParams, callback: (error: APIError, results: MatchResult[]) => any) {
-			(<any>params).method = 'update';
-			handleResponse(post('matchresult', params), parse, callback);
-		}
-
-		export function reset(matchId: number, callback: (error: APIError, results: MatchResult[]) => any) {
-			handleResponse(post('matchresult', { 
-				method: 'reset',
-				match: matchId ,
-			}), parse, callback);
-		}
-
-		export function resetAndUpdate(matchId: number, callback: (error: APIError, results: MatchResult[]) => any) {
-			handleResponse(post('matchresult', { 
-				method: 'reset',
-				match: matchId,
-				update: true,
-			}), parse, callback);
-		}
-	}
-
-	/** Accesses score entries */
-	export module score {
-		export function parse(response: any[]): Score[] {
-			return response.map((item: any) => {
-				item.id = parseInt(item.id);
-				item.matchId = parseInt(item.matchId);
-				item.fromTeamId = parseInt(item.fromTeamId);
-				item.onTeamId = parseInt(item.onTeamId);
-				item.actionId = parseInt(item.actionId);
-				item.foulId = parseInt(item.foulId);
-				item.apiId = parseInt(item.apiId);
-				item.disabled = parseBool(item.disabled);
-				item.disqualified = parseBool(item.disqualified);
-				return item;
-			});
-		}
-
-		export function parseOne(response: any): Score {
-			return parse([response])[0];
-		}
-
-		export function getAll(callback: (error: APIError, results: Score[]) => any) {
-			handleResponse(get('score', 'all'), parse, callback);
-		}
-
-		export function getCurrent(callback: (error: APIError, results: Score[]) => any) {
-			handleResponse(get('score', 'current'), parse, callback);
-		}
-
-		export function getByMatch(matchId: number, callback: (error: APIError, results: Score[]) => any) {
-			handleResponse(get('score', { match: matchId }), parse, callback);
-		}
-
-		export function getByTeam(teamId: number, callback: (error: APIError, results: Score[]) => any) {
-			handleResponse(get('score', { team: teamId }), parse, callback);
-		}
-
-		export function query(query: ScoreQuery, callback: (error: APIError, results: Score[]) => any) {
-			handleResponse(get('score', query), parse, callback);
-		}
-
-		export function create(params: ScoreCreateParams, callback: (error: APIError, scoreId: number) => any) {
-			(<any>params).method = 'create';
-			handleRawResponse(post('score', fixbool(params)), callback);
-		}
-
-		export function update(params: ScoreUpdateParams, callback: (error: APIError, score: Score) => any) {
-			(<any>params).method = 'update';
-			handleSingleResponse(post('score', fixbool(params)), parse, callback);
-		}
-
-		export function remove(id: number, callback: (error: APIError) => any) {
-			handleRawResponse(post('score', {
-				method: 'delete', 
-				id: id,
-			}), callback);
-		}
-
-		export function reset(matchId: number, callback: (error: APIError) => any) {
-			handleRawResponse(post('score', {
-				method: 'reset',
-				match: matchId,
-			}), callback);
-		}
-
-		export function toCreateParams(score: Score): ScoreCreateParams {
-			return {
-				match: score.matchId,
-				from: score.fromTeamId,
-				on: score.onTeamId,
-				action: score.actionId,
-				foul: score.foulId,
-				disqualified: score.disqualified,
-				disabled: score.disabled,
-			}
-		}
-
-		export function toUpdateParams(score: Score): ScoreUpdateParams {
-			return {
-				id: score.id,
-				match: score.matchId,
-				from: score.fromTeamId,
-				on: score.onTeamId,
-				action: score.actionId,
-				foul: score.foulId,
-				disqualified: score.disqualified,
-				disabled: score.disabled,
-			}
-		}
-	}
-
-	/** Accesses team definitions */
-	export module team {
-		export function parse(response: any[]): Team[] {
-			return response.map((item: any) => {
-				item.teamId = parseInt(item.teamId);
-				if (item.colorId !== undefined)
-					item.colorId = parseInt(item.colorId);
-				return item;
-			});
-		};
-
-		export function parseOne(response: any): Team {
-			return parse([response])[0];
-		}
-
-		export function getAll(callback: (error: APIError, teams: Team[]) => any) {
-			handleResponse(get('team', 'all'), parse, callback);
-		}
-
-		export function getById(id: number, callback: (error: APIError, team: Team) => any) {
-			handleSingleResponse(get('team', { id: id }), parse, callback);
-		}
-
-		export function create(params: TeamCreateParams, callback: (error: APIError, teamId: number) => any) {
-			(<any>params).method = 'create';
-			handleRawResponse(post('team', params), callback);
-		}
-
-		export function update(params: TeamUpdateParams, callback: (error: APIError, team: Team) => any) {
-			(<any>params).method = 'update';
-			handleSingleResponse(post('team', params), parse, callback);
-		}
-
-		export function remove(id: number, callback: (error: APIError) => any) {
-			handleRawResponse(post('team', {
-				method: 'delete', 
-				id: id,
-			}), callback);
-		}
-
-		export function toCreateParams(team: Team): TeamCreateParams {
-			return {
-				name: team.name,
-				bio: team.bio,
-				university: team.university,
-				imagename: team.imageName,
-			}
-		}
-	}
-
-	/**
-	 * Gets the URL of a team's image from the image name
-	 * @param name The team's imageName property
-	 * @param thumb Use "true" to get the thumbnail version of the image
-	 */
-	export function getTeamImage(name: string, thumb?: boolean): string {
-		if (name == null || name == "")
-			return null;
-
-		var parts = name.split('.');
-		var filetype = '.' + parts.pop();
-		name = parts.join('.');
-		var filename = name.substr(0, name.length - filetype.length);
-		return baseUrl + 'uploads/' + name + (thumb ? '-thumb' : '') + filetype;
-	}
-
-	/** Game status object sent by "game *" and "sync" events */
-	export interface GameStatus {
-		timestamp: number;
-		match: number;
-		running: boolean;
-		paused: boolean;
-		aborted: boolean;
-		finished: boolean;
-		emergency: boolean;
-		timeElapsed: number;
-		timeRemaining: number;
 	}
 
 	/** Handles communication with the clock server */
 	export module clock {
-		var socket: SocketWrapper;
+		//---------------------------------------------------------------------
+		// #region Types and Interfaces
+		//---------------------------------------------------------------------
+
+		/** Creates a timer which is synchronized with the game server's clock */
+		export class Timer {
+			//-----------------------------------------------------------------
+			// #region Variables
+			//-----------------------------------------------------------------
+
+			/** The time remaining in seconds */
+			get time() { return this._time; }
+			/** Whether the clock is running */
+			get running() { return this._running; }
+			/** Whether this timer is connected to the clock server */
+			get connected() { return this._connected; }
+			/** The last GameStatus object received from the clock server */
+			get lastStatus() { return this._lastStatus; }
+
+			private _time: number;
+			private _running: boolean;
+			private _connected: boolean;
+
+			private _lastTime: number;
+			private _lastStatus: GameStatus;
+			private _interval: number;
+			private _onupdate: (timer: Timer) => any;
+			private _onstatuschange: (timer: Timer) => any;
+
+			// #endregion
+
+			//-----------------------------------------------------------------
+			// #region Functions
+			//-----------------------------------------------------------------
+
+			/**
+			 * Creates a Timer
+			 * @param updateCallback A function to be called whenever the timer changes
+			 * @param statusChangeCallback A function to be called whenever the state of the match changes
+			 */
+			constructor(updateCallback?: (timer: Timer) => any, statusChangeCallback?: (timer: Timer) => any) {
+				bindMemberFunctions(this);
+
+				this._time = 0;
+				this._running = false;
+				this._connected = false;
+				this._onupdate = updateCallback || (() => undefined);
+				this._onstatuschange = statusChangeCallback || (() => undefined);
+
+				var clock = jsdc.clock;
+				clock.connect((err) => {
+					if (!err) {
+						this._connected = true;
+						clock.join('game');
+						['game start', 'game pause', 'game resume', 'game stop', 'game abort', 'sync'].forEach((event) => {
+							clock.on(event, this.onSync);
+						});
+						clock.emit('sync');
+					}
+				});
+			}
+
+			/** Returns the current time remaining as a string */
+			public toString(): string {
+				var minutes = Math.floor(this.time / 60).toString();
+				var seconds = Math.floor(this.time % 60).toString();
+
+				return minutes.pad(1, '0') + ':' + seconds.pad(2, '0');
+			}
+
+			/** Calls the status change callback */
+			private onStatusChange() {
+				this._onstatuschange(this);
+			}
+
+			/** Called whenever the timer receives a 'sync' message */
+			private onSync(status: GameStatus) {
+				if (status.running) {
+					this._time = status.timeRemaining;
+				} else {
+					this._time = status.timeRemaining;
+				}
+
+				if (status.running && !this.running) {
+					this.start(Date.now() / 1000);
+				} else if (!status.running && this.running) {
+					this.stop();
+				}
+
+				this._lastStatus = status;
+				this.onUpdate();
+				this.onStatusChange();
+			}
+
+			/** Calls the update callback */
+			private onUpdate() {
+				this._onupdate(this);
+			}
+
+			/** Starts the timer */
+			private start(startTime: number) {
+				clearInterval(this._interval);
+				this._interval = setInterval(this.step, 1000);
+
+				this._lastTime = startTime;
+				this._running = true;
+				this.onUpdate();
+				this.onStatusChange();
+			}
+
+			/* Updates the timer */
+			private step() {
+				var now = Date.now() / 1000;
+				this._time -= (now - this._lastTime);
+				this._lastTime = now;
+
+				if (this._time < 0)
+					this._time = 0;
+
+				this.onUpdate();
+			}
+
+			/** Stops the timer */
+			private stop() {
+				clearInterval(this._interval);
+				this._running = false;
+				this.onUpdate();
+				this.onStatusChange();
+			}
+
+			// #endregion
+		}
+
+		// #endregion
+
+		//---------------------------------------------------------------------
+		// #region Variables
+		//---------------------------------------------------------------------
+
 		/** The base URL of the clock server */
 		export var baseUrl: string;
 		/** Whether or not the page is connected to the clock server */
 		export var connected: boolean = false;
 
+		/* The connection to the game server */
+		var socket: SocketWrapper;
+
+		// #endregion
+
+		//---------------------------------------------------------------------
+		// #region Functions
+		//---------------------------------------------------------------------
+
+		/* Gets the socket connection to the game server */
 		export function _getSocket(): SocketWrapper {
 			return socket;
 		}
@@ -815,6 +520,15 @@ module jsdc {
 		}
 
 		/**
+		 * Sends a message to the clock server
+		 * @event The message type
+		 * @data Any JSON serializable data to send with the message
+		 */
+		export function emit(event: string, data?: any) {
+			socket.emit(event, data);
+		}
+
+		/**
 		 * Joins one or more message channels
 		 * @param channels A list of channels to join
 		 *		game: General game events
@@ -842,129 +556,444 @@ module jsdc {
 			socket.once(event, callback);
 		}
 
+		// #endregion
+	}
+
+	/** Accesses color definitions */
+	export module color {
 		/**
-		 * Sends a message to the clock server
-		 * @event The message type
-		 * @data Any JSON serializable data to send with the message
+		 * Creates a new color
+		 * @param name The name of the new color
 		 */
-		export function emit(event: string, data?: any) {
-			socket.emit(event, data);
+		export function create(name: string, callback: (error: APIError, colorId: number) => any) {
+			handleRawResponse(post('color', {
+				method: 'create',
+				name: name
+			}), callback);
 		}
 
-		/** Synchronizes a local timer with the clock server's game timer */
-		export class Timer {
-			private _time: number;
-			private _running: boolean;
-			private _connected: boolean;
+		/** Gets all colors */
+		export function getAll(callback: (error: APIError, colors: Color[]) => any) {
+			handleResponse(get('color', 'all'), parse, callback);
+		}
 
-			private _lastTime: number;
-			private _lastStatus: GameStatus;
-			private _interval: number;
-			private _onupdate: (timer: Timer) => any;
-			private _onstatuschange: (timer: Timer) => any;
+		/**
+		 * Gets the color with a specific ID
+		 * @param id The ID of the color to find
+		 */
+		export function getById(id: number, callback: (error: APIError, color: Color) => any) {
+			handleSingleResponse(get('color', { id: id }), parse, callback);
+		}
 
-			/** The time remaining in seconds */
-			get time() { return this._time; }
-			/** Whether the clock is running */
-			get running() { return this._running; }
-			/** Whether this timer is connected to the clock server */
-			get connected() { return this._connected; }
-			/** The last GameStatus object received from the clock server */
-			get lastStatus() { return this._lastStatus; }
+		/** Converts an array of JSON objects to Colors */
+		export function parse(response: any[]): Color[] {
+			return response.map((item: any) => {
+				item.colorId = parseInt(item.colorId);
+				return item;
+			});
+		}
 
-			/**
-			 * Creates a Timer
-			 * @param updateCallback A function to be called whenever the timer changes
-			 * @param statusChangeCallback A function to be called whenever the state of the match changes
-			 */
-			constructor(updateCallback?: (timer: Timer) => any, statusChangeCallback?: (timer: Timer) => any) {
-				bindMemberFunctions(this);
+		/** Converts a single JSON object to a Color */
+		export function parseOne(response: any): Color {
+			return parse([response])[0];
+		}
 
-				this._time = 0;
-				this._running = false;
-				this._connected = false;
-				this._onupdate = updateCallback || (() => undefined);
-				this._onstatuschange = statusChangeCallback || (() => undefined);
+		/**
+		 * Deletes a color
+		 * @param id The ID of the color to delete
+		 */
+		export function remove(id: number, callback: (error: APIError) => any) {
+			handleRawResponse(post('color', {
+				method: 'delete',
+				id: id,
+			}), callback);
+		}
 
-				var clock = jsdc.clock;
-				clock.connect((err) => {
-					if (!err) {
-						this._connected = true;
-						clock.join('game');
-						['game start', 'game pause', 'game resume', 'game stop', 'game abort', 'sync'].forEach((event) => {
-							clock.on(event, this.onSync);
-						});
-						clock.emit('sync');
+		/** Converts a Color object to the parameters necessary to update that color */
+		export function toUpdateParams(color: Color): ColorUpdateParams {
+			return {
+				id: color.colorId,
+				name: color.name,
+			}
+		}
+
+		/**
+		 * Changes the parameters of an existing color
+		 * @param params Information about the color to update
+		 */
+		export function update(params: ColorUpdateParams, callback: (error: APIError, color: Color) => any) {
+			(<any>params).method = 'update';
+			handleSingleResponse(post('color', params), parse, callback);
+		}
+	}
+
+	/** Accesses foul definitions */
+	export module foul {
+		/**
+		 * Creates a foul
+		 * @param params Information about the foul to create
+		 */
+		export function create(params: FoulCreateParams, callback: (error: APIError, foulId: number) => any) {
+			(<any>params).method = 'create';
+			handleRawResponse(post('foul', params), callback);
+		}
+
+		/** Gets all colors */
+		export function getAll(callback: (error: APIError, fouls: Foul[]) => any) {
+			handleResponse(get('foul', 'all'), parse, callback);
+		}
+
+		/**
+		 * Gets the foul with a specific ID
+		 * @param id The ID of the foul to find
+		 */
+		export function getById(id: number, callback: (error: APIError, foul: Foul) => any) {
+			handleSingleResponse(get('foul', { id: id }), parse, callback);
+		}
+
+		/** Converts an array of JSON objects to Fouls */
+		export function parse(response: any[]): Foul[] {
+			return response.map((item: any) => {
+				item.foulId = parseInt(item.foulId);
+				item.value = parseInt(item.value);
+				return item;
+			});
+		}
+
+		/** Converts a single JSON object to a Foul */
+		export function parseOne(response: any): Foul {
+			return parse([response])[0];
+		}
+
+		/**
+		 * Deletes a foul
+		 * @param id The ID of the foul to delete
+		 */
+		export function remove(id: number, callback: (error: APIError) => any) {
+			handleRawResponse(post('foul', {
+				method: 'delete',
+				id: id,
+			}), callback);
+		}
+
+		/** Converts a Foul object to the parameters necessary to create a foul */
+		export function toCreateParams(foul: Foul): FoulCreateParams {
+			return {
+				name: foul.name,
+				value: foul.value,
+			}
+		}
+
+		/** Converts a Foul object to the parameters necessary to update that foul */
+		export function toUpdateParams(foul: Foul): FoulUpdateParams {
+			return {
+				id: foul.foulId,
+				name: foul.name,
+				value: foul.value,
+			}
+		}
+
+		/**
+		 * Changes the parameters of an existing foul
+		 * @param params Information about the foul to update
+		 */
+		export function update(params: FoulUpdateParams, callback: (error: APIError, foul: Foul) => any) {
+			(<any>params).method = 'update';
+			handleSingleResponse(post('foul', params), parse, callback);
+		}
+	}
+
+	/** Accesses match definitions */
+	export module match {
+		/**
+		 * Creates a match
+		 * @param params Information about the match to create
+		 */
+		export function create(params: MatchCreateParams, callback: (error: APIError, matchId: number) => any) {
+			(<any>params).method = 'create';
+			handleRawResponse(post('match', fixbool(params)), callback);
+		}
+
+		/** Gets all matches */
+		export function getAll(callback: (error: APIError, matches: Match[]) => any) {
+			handleResponse(get('match', 'all'), parse, callback);
+		}
+
+		/**
+		 * Gets the match with a specific ID
+		 * @param id The ID of the match to find
+		 */
+		export function getById(id: number, callback: (error: APIError, match: Match) => any) {
+			handleSingleResponse(get('match', { id: id }), parse, callback);
+		}
+
+		/**
+		 * Gets the match with a specific round and match number, if any exists
+		 * @param round The round number to search for
+		 * @param match The match number to search for
+		 */
+		export function getByMatch(round: number, match: number, callback: (error: APIError, match: Match) => any) {
+			handleSingleResponse(get('match', {
+				round: round,
+				match: match,
+			}), parse, callback);
+		}
+
+		/**
+		 * Gets all matches in a specific round
+		 * @param round The round number to search for
+		 */
+		export function getByRound(round: number, callback: (error: APIError, matches: Match[]) => any) {
+			handleResponse(get('match', { round: round }), parse, callback);
+		}
+
+		/** Gets the currently loaded match, if any exists */
+		export function getCurrent(callback: (error: APIError, match: Match) => any) {
+			handleSingleResponse(get('match', 'current'), parse, callback);
+		}
+
+		/** Gets all finished matches */
+		export function getFinished(callback: (error: APIError, matches: Match[]) => any) {
+			handleResponse(get('match', { status: 'finished' }), parse, callback);
+		}
+
+		/** Gets all unstarted matches */
+		export function getUnstarted(callback: (error: APIError, matches: Match[]) => any) {
+			handleResponse(get('match', { status: 'none' }), parse, callback);
+		}
+
+		/** Converts an array of JSON objects to Matches */
+		export function parse(response: any[]): Match[] {
+			return response.map((item: any) => {
+				item.matchId = parseInt(item.matchId);
+				item.open = parseBool(item.open);
+				item.roundNum = parseInt(item.roundNum);
+				item.matchNum = parseInt(item.matchNum);
+				if (item.teams !== undefined)
+					item.teams = jsdc.team.parse(item.teams);
+
+				return item;
+			});
+		}
+
+		/** Converts a single JSON object to a Match */
+		export function parseOne(response: any): Match {
+			return parse([response])[0];
+		}
+
+		/**
+		 * Searches for matches with given properties
+		 * @param query The properties to query for
+		 */
+		export function query(query: MatchQuery, callback: (error: APIError, matches: Match[]) => any) {
+			handleResponse(get('match', fixbool(query)), parse, callback);
+		}
+
+		/**
+		 * Deletes a match
+		 * @param id The ID of the match to delete
+		 */
+		export function remove(id: number, callback: (error: APIError) => any) {
+			handleRawResponse(post('match', {
+				method: 'delete',
+				id: id,
+			}), callback);
+		}
+
+		/** Converts a list of Team objects to the parameters necessary to create or update a match */
+		function teamsToTeamParams(teams: Team[]): MatchCreateTeamParams[] {
+			if (teams)
+				return teams.map((team) => {
+					return {
+						teamId: team.teamId,
+						colorId: team.colorId,
 					}
 				});
+			else
+				return [];
+		}
+
+		/** Converts a Match object to the parameters necessary to create a match */
+		export function toCreateParams(match: Match): MatchCreateParams {
+			return {
+				open: match.open,
+				status: match.status,
+				round: match.roundNum,
+				match: match.matchNum,
+				teams: teamsToTeamParams(match.teams),
 			}
+		}
 
-			private onUpdate() {
-				this._onupdate(this);
+		/** Converts a Match object to the parameters necessary to update that match */
+		export function toUpdateParams(match: Match): MatchUpdateParams {
+			return {
+				id: match.matchId,
+				open: match.open,
+				status: match.status,
+				round: match.roundNum,
+				match: match.matchNum,
+				teams: teamsToTeamParams(match.teams),
 			}
+		}
 
-			private onStatusChange() {
-				this._onstatuschange(this);
+		/**
+		 * Changes the parameters of an existing match
+		 * @param params Information about the match to update
+		 */
+		export function update(params: MatchUpdateParams, callback: (error: APIError, match: Match) => any) {
+			(<any>params).method = 'update';
+			handleSingleResponse(post('match', fixbool(params)), parse, callback);
+		}
+	}
+
+	/** Accesses the results of matches */
+	export module matchresult {
+		export function getAll(callback: (error: APIError, results: MatchResult[]) => any) {
+			handleResponse(get('matchresult', 'all'), parse, callback);
+		}
+
+		export function getByMatch(matchId: number, callback: (error: APIError, results: MatchResult[]) => any) {
+			handleResponse(get('matchresult', { match: matchId }), parse, callback);
+		}
+
+		export function getByTeam(teamId: number, callback: (error: APIError, results: MatchResult[]) => any) {
+			handleResponse(get('matchresult', { team: teamId }), parse, callback);
+		}
+
+		export function getCurrent(callback: (error: APIError, results: MatchResult[]) => any) {
+			handleResponse(get('matchresult', 'current'), parse, callback);
+		}
+
+		export function parse(response: any[]): MatchResult[] {
+			return response.map((item: any) => {
+				item.id = parseInt(item.id);
+				item.teamId = parseInt(item.teamId);
+				item.matchId = parseInt(item.matchId);
+				item.score = parseInt(item.score);
+				item.fouls = parseInt(item.fouls);
+				item.disabled = parseBool(item.disabled);
+				item.disqualified = parseBool(item.disqualified);
+				return item;
+			});
+		}
+
+		export function parseOne(response: any): MatchResult {
+			return parse([response])[0];
+		}
+
+		export function query(query: MatchResultQuery, callback: (error: APIError, results: MatchResult[]) => any) {
+			handleResponse(get('matchresult', query), parse, callback);
+		}
+
+		export function reset(matchId: number, callback: (error: APIError, results: MatchResult[]) => any) {
+			handleResponse(post('matchresult', {
+				method: 'reset',
+				match: matchId,
+			}), parse, callback);
+		}
+
+		export function resetAndUpdate(matchId: number, callback: (error: APIError, results: MatchResult[]) => any) {
+			handleResponse(post('matchresult', {
+				method: 'reset',
+				match: matchId,
+				update: true,
+			}), parse, callback);
+		}
+
+		export function update(params: MatchResultUpdateParams, callback: (error: APIError, results: MatchResult[]) => any) {
+			(<any>params).method = 'update';
+			handleResponse(post('matchresult', params), parse, callback);
+		}
+	}
+
+	/** Accesses score entries */
+	export module score {
+		export function create(params: ScoreCreateParams, callback: (error: APIError, scoreId: number) => any) {
+			(<any>params).method = 'create';
+			handleRawResponse(post('score', fixbool(params)), callback);
+		}
+
+		export function getAll(callback: (error: APIError, results: Score[]) => any) {
+			handleResponse(get('score', 'all'), parse, callback);
+		}
+
+		export function getByMatch(matchId: number, callback: (error: APIError, results: Score[]) => any) {
+			handleResponse(get('score', { match: matchId }), parse, callback);
+		}
+
+		export function getByTeam(teamId: number, callback: (error: APIError, results: Score[]) => any) {
+			handleResponse(get('score', { team: teamId }), parse, callback);
+		}
+
+		export function getCurrent(callback: (error: APIError, results: Score[]) => any) {
+			handleResponse(get('score', 'current'), parse, callback);
+		}
+
+		export function parse(response: any[]): Score[] {
+			return response.map((item: any) => {
+				item.id = parseInt(item.id);
+				item.matchId = parseInt(item.matchId);
+				item.fromTeamId = parseInt(item.fromTeamId);
+				item.onTeamId = parseInt(item.onTeamId);
+				item.actionId = parseInt(item.actionId);
+				item.foulId = parseInt(item.foulId);
+				item.apiId = parseInt(item.apiId);
+				item.disabled = parseBool(item.disabled);
+				item.disqualified = parseBool(item.disqualified);
+				return item;
+			});
+		}
+
+		export function parseOne(response: any): Score {
+			return parse([response])[0];
+		}
+
+		export function query(query: ScoreQuery, callback: (error: APIError, results: Score[]) => any) {
+			handleResponse(get('score', query), parse, callback);
+		}
+
+		export function remove(id: number, callback: (error: APIError) => any) {
+			handleRawResponse(post('score', {
+				method: 'delete',
+				id: id,
+			}), callback);
+		}
+
+		export function reset(matchId: number, callback: (error: APIError) => any) {
+			handleRawResponse(post('score', {
+				method: 'reset',
+				match: matchId,
+			}), callback);
+		}
+
+		export function toCreateParams(score: Score): ScoreCreateParams {
+			return {
+				match: score.matchId,
+				from: score.fromTeamId,
+				on: score.onTeamId,
+				action: score.actionId,
+				foul: score.foulId,
+				disqualified: score.disqualified,
+				disabled: score.disabled,
 			}
+		}
 
-			private onSync(status: GameStatus) {
-				//console.log(status.running)
-				if (status.running) {
-					var delay = 0;//(Date.now() / 1000) - status.timestamp;
-					this._time = status.timeRemaining - delay;
-					//console.log(this._time, this._time + delay);
-				} else {
-					this._time = status.timeRemaining;
-					//console.log(this._time);
-				}
-
-				if (status.running && !this.running) {
-					//this.start(status.timestamp);
-					this.start(Date.now() / 1000);
-				} else if (!status.running && this.running) {
-					this.stop();
-				}
-
-				this._lastStatus = status;
-				this.onUpdate();
-				this.onStatusChange();
+		export function toUpdateParams(score: Score): ScoreUpdateParams {
+			return {
+				id: score.id,
+				match: score.matchId,
+				from: score.fromTeamId,
+				on: score.onTeamId,
+				action: score.actionId,
+				foul: score.foulId,
+				disqualified: score.disqualified,
+				disabled: score.disabled,
 			}
+		}
 
-			private start(startTime: number) {
-				clearInterval(this._interval);
-				this._interval = setInterval(this.step, 1000);
-
-				this._lastTime = startTime;
-				this._running = true;
-				this.onUpdate();
-				this.onStatusChange();
-			}
-
-			private stop() {
-				clearInterval(this._interval);
-				this._running = false;
-				this.onUpdate();
-				this.onStatusChange();
-			}
-
-			private step() {
-				var now = Date.now() / 1000;
-				this._time -= (now - this._lastTime);
-				this._lastTime = now;
-
-				if (this._time < 0)
-					this._time = 0;
-
-				this.onUpdate();
-			}
-
-			/** Returns the current time remaining as a string */
-			toString(): string {
-				var minutes = Math.floor(this.time / 60).toString();
-				var seconds = Math.floor(this.time % 60).toString();
-
-				return minutes.pad(1, '0') + ':' + seconds.pad(2, '0');
-			}
+		export function update(params: ScoreUpdateParams, callback: (error: APIError, score: Score) => any) {
+			(<any>params).method = 'update';
+			handleSingleResponse(post('score', fixbool(params)), parse, callback);
 		}
 	}
 
@@ -991,18 +1020,71 @@ module jsdc {
 
 		delete options;
 	}
-}
 
+	/** Accesses team definitions */
+	export module team {
+		export function create(params: TeamCreateParams, callback: (error: APIError, teamId: number) => any) {
+			(<any>params).method = 'create';
+			handleRawResponse(post('team', params), callback);
+		}
+
+		export function getAll(callback: (error: APIError, teams: Team[]) => any) {
+			handleResponse(get('team', 'all'), parse, callback);
+		}
+
+		export function getById(id: number, callback: (error: APIError, team: Team) => any) {
+			handleSingleResponse(get('team', { id: id }), parse, callback);
+		}
+
+		export function parse(response: any[]): Team[] {
+			return response.map((item: any) => {
+				item.teamId = parseInt(item.teamId);
+				if (item.colorId !== undefined)
+					item.colorId = parseInt(item.colorId);
+				return item;
+			});
+		};
+
+		export function parseOne(response: any): Team {
+			return parse([response])[0];
+		}
+
+		export function remove(id: number, callback: (error: APIError) => any) {
+			handleRawResponse(post('team', {
+				method: 'delete',
+				id: id,
+			}), callback);
+		}
+
+		export function toCreateParams(team: Team): TeamCreateParams {
+			return {
+				name: team.name,
+				bio: team.bio,
+				university: team.university,
+				imagename: team.imageName,
+			}
+		}
+
+		export function update(params: TeamUpdateParams, callback: (error: APIError, team: Team) => any) {
+			(<any>params).method = 'update';
+			handleSingleResponse(post('team', params), parse, callback);
+		}
+	}
+
+	// #endregion
+}
 
 /** Displays modal dialogs */
 module Modal {
-
-	export var mobile = false;
+	/*-------------------------------------------------------------------------
+	 * Types
+	 *-----------------------------------------------------------------------*/
 
 	/** Defines a button on a modal dialog */
 	export interface ModalButton {
 		text: string;
 		className?: string;
+		/** Action may return 'false' to prevent button from closing dialog. */
 		action?: (event: JQueryEventObject) => any;
 	}
 
@@ -1043,20 +1125,107 @@ module Modal {
 		}
 	};
 
+	/*-------------------------------------------------------------------------
+	 * Variables
+	 *-----------------------------------------------------------------------*/
+
+	/** Set 'true' to reduce animations for mobile devices */
+	export var mobile = false;
+
+	/** List of dialogs which are queued to start once the current dialog closes. */
 	var queue: ModalOptions[] = [];
+	/** Is there a dialog open? */
 	var dialogOpen = false;
 
-	function queueDialog(options: ModalOptions) {
-		queue.push(options);
+	/*-------------------------------------------------------------------------
+	 * Functions
+	 *-----------------------------------------------------------------------*/
+
+	/**
+	 * Displays an error message for a failed AJAX request
+	 * @param xhr The xhr object
+	 * @param message A description of the error (what request failed?)
+	 * @param onclose A function to call when the dialog is closed
+	 */
+	export function ajaxError(xhr: JQueryXHR, message: string, onclose?: SimpleModalCallback) {
+		error('Request Error', ajaxErrorContents(xhr, message), onclose);
 	}
 
-	function dequeueDialog(): ModalOptions {
-		return queue.shift();
+	/**
+	 * Displays an error message for a failed API call
+	 * @param err The APIError object
+	 * @param message A description of the error (what API call failed?)
+	 * @param onclose A function to call when the dialog is closed
+	 */
+	export function apiError(err: APIError, message: string, onclose?: SimpleModalCallback) {
+		error(message, apiErrorContents(err), onclose);
 	}
 
-	/** Returns "true" if a dialog is open */
-	export function isOpen() {
-		return dialogOpen;
+	/**
+	 * Displays a question and waits for the user to respond
+	 * @param title The title of the dialog
+	 * @param message The content of the dialog
+	 * @param callback A function to call with the user's response
+	 */
+	export function confirm(title: string, message: string, callback: ConfirmCallback);
+	/**
+	 * Displays a question and waits for the user to respond
+	 * @param title The title of the dialog
+	 * @param message The content of the dialog
+	 * @param callback A function to call with the user's response
+	 */
+	export function confirm(title: string, message: JQuery, callback: ConfirmCallback);
+	/**
+	 * Displays a question and waits for the user to respond
+	 * @param title The title of the dialog
+	 * @param message The content of the dialog
+	 * @param buttons The text of the yes/no buttons
+	 * @param callback A function to call with the user's response
+	 */
+	export function confirm(title: string, message: string, buttons: ConfirmButtons, callback: ConfirmCallback);
+	/**
+	 * Displays a question and waits for the user to respond
+	 * @param title The title of the dialog
+	 * @param message The content of the dialog
+	 * @param buttons The text of the yes/no buttons
+	 * @param callback A function to call with the user's response
+	 */
+	export function confirm(title: string, message: JQuery, buttons: ConfirmButtons, callback: ConfirmCallback);
+	export function confirm(title: string, message: any, _buttons: any) {
+		if (arguments.length >= 4) {
+			var callback: ConfirmCallback = arguments[3];
+			var buttons: ConfirmButtons = arguments[2];
+		} else {
+			var callback: ConfirmCallback = arguments[2];
+			var buttons: ConfirmButtons = Modal.Buttons.OkCancel;
+		}
+
+		var result = null;
+		dialog({
+			title: title,
+			body: message,
+			className: 'prompt',
+			buttons: [
+				{
+					text: buttons.yes,
+					className: 'yes',
+					action: () => (result = true)
+				},
+				{
+					text: buttons.no,
+					className: 'no',
+					action: () => (result = false)
+				}
+			],
+			options: {
+				close: false,
+				overlayClose: false,
+				escClose: false,
+				onClose: () => {
+					callback(result);
+				}
+			}
+		});
 	}
 
 	/** Displays a modal dialog */
@@ -1128,7 +1297,7 @@ module Modal {
 						left: '-100%',
 						opacity: 0,
 					})
-					.animate({ 
+					.animate({
 						left: '0%',
 						opacity: 1,
 					}, 250, 'easeOutQuint')
@@ -1141,11 +1310,11 @@ module Modal {
 			options.options.onClose = (dialog) => {
 				var _args = slice(arguments);
 
-				dialog.container.animate({ 
+				dialog.container.animate({
 						left: '100%',
 						opacity: 0,
 					}, 250, 'easeInQuint');
-				
+
 				dialog.overlay.fadeOut(300, () => {
 					$.modal.close();
 					dialogOpen = false;
@@ -1164,116 +1333,14 @@ module Modal {
 		}
 	}
 
-	/** 
-	 * Displays an informational dialog 
-	 * @param title The title of the dialog
-	 * @param message The content of the dialog
-	 * @param onclose A function to call when the dialog is closed
-	 */
-	export function info(title: string, message: JQuery, onclose?: SimpleModalCallback);
-	/** 
-	 * Displays an informational dialog 
-	 * @param title The title of the dialog
-	 * @param message The content of the dialog
-	 * @param onclose A function to call when the dialog is closed
-	 */
-	export function info(title: string, message: string, onclose?: SimpleModalCallback); 
-	export function info(title: string, message: any, onclose?: SimpleModalCallback) {
-		var options: ModalOptions = {
-			title: title,
-			body: message,
-			className: 'info',
-			buttons: [
-				{ text: 'OK' },
-			],
-			options: {
-				close: true,
-				overlayClose: true,
-				escClose: true,
-			}
-		};
-
-		if (typeof onclose !== 'undefined')
-			options.options = { onClose: onclose };
-
-		dialog(options);
-	}
-
 	/**
-	 * Displays a question and waits for the user to respond
-	 * @param title The title of the dialog
-	 * @param message The content of the dialog
-	 * @param callback A function to call with the user's response
-	 */
-	export function confirm(title: string, message: string, callback: ConfirmCallback);
-	/**
-	 * Displays a question and waits for the user to respond
-	 * @param title The title of the dialog
-	 * @param message The content of the dialog
-	 * @param callback A function to call with the user's response
-	 */
-	export function confirm(title: string, message: JQuery, callback: ConfirmCallback);
-	/**
-	 * Displays a question and waits for the user to respond
-	 * @param title The title of the dialog
-	 * @param message The content of the dialog
-	 * @param buttons The text of the yes/no buttons
-	 * @param callback A function to call with the user's response
-	 */
-	export function confirm(title: string, message: string, buttons: ConfirmButtons, callback: ConfirmCallback);
-	/**
-	 * Displays a question and waits for the user to respond
-	 * @param title The title of the dialog
-	 * @param message The content of the dialog
-	 * @param buttons The text of the yes/no buttons
-	 * @param callback A function to call with the user's response
-	 */
-	export function confirm(title: string, message: JQuery, buttons: ConfirmButtons, callback: ConfirmCallback);
-	export function confirm(title: string, message: any, _buttons: any) {
-		if (arguments.length >= 4) {
-			var callback: ConfirmCallback = arguments[3];
-			var buttons: ConfirmButtons = arguments[2];
-		} else {
-			var callback: ConfirmCallback = arguments[2];
-			var buttons: ConfirmButtons = Modal.Buttons.OkCancel;
-		}
-
-		var result = null;
-		dialog({
-			title: title,
-			body: message,
-			className: 'prompt',
-			buttons: [
-				{
-					text: buttons.yes,
-					className: 'yes',
-					action: () => (result = true)
-				},
-				{
-					text: buttons.no,
-					className: 'no',
-					action: () => (result = false)
-				}
-			],
-			options: {
-				close: false,
-				overlayClose: false,
-				escClose: false,
-				onClose: () => {
-					callback(result);
-				}
-			}
-		});
-	}
-
-	/** 
 	 * Displays an error message
 	 * @param title The title of the dialog
 	 * @param message The content of the dialog
 	 * @param onclose A function to call when the dialog is closed
 	 */
 	export function error(title: string, message: JQuery, onclose?: SimpleModalCallback);
-	/** 
+	/**
 	 * Displays an error message
 	 * @param title The title of the dialog
 	 * @param message The content of the dialog
@@ -1301,13 +1368,87 @@ module Modal {
 		dialog(options);
 	}
 
-	/** 
+	/**
+	 * Displays a dialog with a message and an OK button
+	 * @param title The title of the dialog
+	 * @param message The content of the dialog
+	 * @param onclose A function to call when the dialog is closed
+	 */
+	export function info(title: string, message: JQuery, onclose?: SimpleModalCallback);
+	/**
+	 * Displays a dialog with a message and an OK button
+	 * @param title The title of the dialog
+	 * @param message The content of the dialog
+	 * @param onclose A function to call when the dialog is closed
+	 */
+	export function info(title: string, message: string, onclose?: SimpleModalCallback);
+	export function info(title: string, message: any, onclose?: SimpleModalCallback) {
+		var options: ModalOptions = {
+			title: title,
+			body: message,
+			className: 'info',
+			buttons: [
+				{ text: 'OK' },
+			],
+			options: {
+				close: true,
+				overlayClose: true,
+				escClose: true,
+			}
+		};
+
+		if (typeof onclose !== 'undefined')
+			options.options = { onClose: onclose };
+
+		dialog(options);
+	}
+
+	/** Returns 'true' if a dialog is open */
+	export function isOpen() {
+		return dialogOpen;
+	}
+
+	/**
+	 * Creates a function to use as a callback to an API call.
+	 * The function displays an error if the call fails, or does nothing otherwise.
+	 * @param message A description of the error (what API call failed?)
+	 */
+	export function makeErrorHandler(message: string) {
+		return function (err) {
+			if (err)
+				apiError(err, message);
+		}
+	}
+
+	/**
+	 * Displays an error message for multiple failed AJAX requests in a single dialog
+	 * @param xhr The xhr objects
+	 * @param message Descriptions of the errors (what requests failed?)
+	 * @param onclose A function to call when the dialog is closed
+	 */
+	export function multiAjaxError(xhrs: JQueryXHR[], messages: string[], onclose?: SimpleModalCallback) {
+		var contents = xhrs.map((xhr, i) => ajaxErrorContents(xhr, messages[i]));
+		multiError(contents, onclose);
+	}
+
+	/**
+	 * Displays multiple error messages for failed API calls in a single dialog
+	 * @param errors The APIError objects
+	 * @param messages Descriptions of the errors (what API calls failed?)
+	 * @param onclose A function to call when the dialog is closed
+	 */
+	export function multiApiError(errors: APIError[], messages: string[], onclose?: SimpleModalCallback) {
+		var contents = errors.map((err, i) => apiErrorContents(err, messages[i]));
+		multiError(contents, onclose);
+	}
+
+	/**
 	 * Displays multiple error messages in a single dialog
 	 * @param messages The error messages
 	 * @param onclose A function to call when the dialog is closed
 	 */
 	export function multiError(messages: JQuery[], onclose?: SimpleModalCallback);
-	/** 
+	/**
 	 * Displays multiple error messages in a single dialog
 	 * @param messages The error messages
 	 * @param onclose A function to call when the dialog is closed
@@ -1318,14 +1459,14 @@ module Modal {
 			messages.map((msg, i) => {
 				var item = $('<li>').append(
 					$('<button>').text((i + 1).toString()).click(changeTab.bind(null, i))
-				);
+					);
 
 				if (i === 0)
 					item.addClass('current');
 
 				return item;
 			})
-		)
+			)
 
 		var bodies = $('<ul class=messages>').append(
 			messages.map((msg, i) => {
@@ -1340,12 +1481,12 @@ module Modal {
 
 				return item;
 			})
-		)
+			)
 
 		function changeTab(tab: number) {
 			tabs.find('li.current').removeClass('current');
 			bodies.find('li.current').removeClass('current');
-			
+
 			$(tabs.find('li').get(tab)).addClass('current');
 			$(bodies.find('li').get(tab)).addClass('current');
 		}
@@ -1381,39 +1522,6 @@ module Modal {
 			.add($('<p>').append($('<pre>').append(response)));
 	}
 
-	/** 
-	 * Displays an error message for a failed API call
-	 * @param err The APIError object
-	 * @param message A description of the error (what API call failed?)
-	 * @param onclose A function to call when the dialog is closed
-	 */
-	export function apiError(err: APIError, message: string, onclose?: SimpleModalCallback) {
-		error(message, apiErrorContents(err), onclose);
-	}
-
-	/** 
-	 * Displays multiple error messages for failed API calls in a single dialog
-	 * @param errors The APIError objects
-	 * @param messages Descriptions of the errors (what API calls failed?)
-	 * @param onclose A function to call when the dialog is closed
-	 */
-	export function multiApiError(errors: APIError[], messages: string[], onclose?: SimpleModalCallback) {
-		var contents = errors.map((err, i) => apiErrorContents(err, messages[i]));
-		multiError(contents, onclose);
-	}
-
-	/**
-	 * Creates a function to use as a callback to an API call.
-	 * The function displays an error if the call fails, or does nothing otherwise.
-	 * @param message A description of the error (what API call failed?)
-	 */
-	export function makeErrorHandler(message: string) {
-		return function(err) {
-			if (err)
-				apiError(err, message);
-		}
-	}
-
 	function ajaxErrorContents(xhr: JQueryXHR, message: string): JQuery {
 		var response: any = xhr.responseText;
 		if (xhr.getResponseHeader('Content-Type').indexOf('json') >= 0) {
@@ -1427,32 +1535,200 @@ module Modal {
 			.add($('<p>').append($('<pre>').append(response)));
 	}
 
-	/** 
-	 * Displays an error message for a failed AJAX request
-	 * @param xhr The xhr object
-	 * @param message A description of the error (what request failed?)
-	 * @param onclose A function to call when the dialog is closed
-	 */
-	export function ajaxError(xhr: JQueryXHR, message: string, onclose?: SimpleModalCallback) {
-		error('Request Error', ajaxErrorContents(xhr, message), onclose);
+	/** Gets the next dialog in the queue */
+	function dequeueDialog(): ModalOptions {
+		return queue.shift();
 	}
 
-	/** 
-	 * Displays an error message for multiple failed AJAX requests in a single dialog
-	 * @param xhr The xhr objects
-	 * @param message Descriptions of the errors (what requests failed?)
-	 * @param onclose A function to call when the dialog is closed
-	 */
-	export function multiAjaxError(xhrs: JQueryXHR[], messages: string[], onclose?: SimpleModalCallback) {
-		var contents = xhrs.map((xhr, i) => ajaxErrorContents(xhr, messages[i]));
-		multiError(contents, onclose);
+	/** Adds a dialog to the queue */
+	function queueDialog(options: ModalOptions) {
+		queue.push(options);
 	}
 }
 
+// #endregion
 
-/*-----------------------------------------------------------------------------
- * Global Functions
- *---------------------------------------------------------------------------*/
+//-----------------------------------------------------------------------------
+// #region Type Extensions
+//-----------------------------------------------------------------------------
+
+interface Array {
+	indexByProperty(prop: string): any[];
+	remove(object: any): boolean;
+	contains(object: any): boolean;
+}
+
+/** Gets whether the array contains an object */
+Array.prototype.contains = function (object: any): boolean {
+	return this.indexOf(object) >= 0;
+}
+
+/**
+ * Converts an array to an object of key-value pairs indexed by a property on each item
+ * e.g. [{ a: 'foo' }, { a: 'bar' }].indexByProperty('a') => { foo: { a: 'foo' }, bar: { a: 'bar' } }
+ * @param prop The name of the property to index by
+ */
+Array.prototype.indexByProperty = function (prop: string): any {
+	var obj = {};
+	this.forEach((item) => obj[item[prop]] = item);
+	return obj;
+}
+
+/** Removes the first instance of an object from the array */
+Array.prototype.remove = function (object: any) {
+	var i = this.indexOf(object);
+	if (i >= 0) {
+		this.splice(i, 1);
+		return true;
+	} else {
+		return false;
+	}
+}
+
+/** The result of a string partition call */
+interface PartitionResult {
+	success: boolean;
+	before: string;
+	after: string;
+}
+
+interface String {
+	indent(level?: number): string;
+	dedent(level?: number): string;
+	pad(length: number, char?: string);
+	partition(sep: string): PartitionResult;
+	rpartition(sep: string): PartitionResult;
+	startswith(str: string): boolean;
+	endswith(str: string): boolean;
+	capitalize(): string;
+}
+
+/** Capitalizes the first letter of the string */
+String.prototype.capitalize = function (): string {
+	return this.substr(0, 1).toUpperCase() + this.substr(1);
+}
+
+/**
+ * Removes one tab or 4 spaces from the beginning of the string
+ * @param level The number of 4-space indents to remove (default: 1)
+ */
+String.prototype.dedent = function (level?: number): string {
+	level = (typeof level === 'undefined') ? 1 : level;
+	var newstring = this;
+	for (var i = level; i > 0; i--)
+		newstring = newstring.replace(/^(\t| {1,4})/, '');
+	return newstring;
+}
+
+/** Returns true if the string ends with a search string */
+String.prototype.endswith = function (str: string): boolean {
+	return (this.lastIndexOf(str) === this.length - str.length) && (this.length >= str.length);
+}
+
+/**
+ * Adds 4 spaces to the beginning of the string
+ * @param level The number of 4-space indents to add (default: 1)
+ */
+String.prototype.indent = function (level?: number): string {
+	level = (typeof level === 'undefined') ? 1 : level;
+	var indent = '';
+	for (var i = level; i > 0; i--)
+		indent += '    ';
+	return indent + this;
+}
+
+/** Left-pads a string to a given length. If it is already the desired length or longer, nothing is done */
+String.prototype.pad = function(length: number, char?: string) {
+	char = char || ' ';
+	var pad = (length - this.length) / char.length;
+	var padstr = '';
+	for (var i = pad; i > 0; i--)
+		padstr += char;
+	return padstr + this;
+}
+
+/** Splits the string into the parts before and after the first instance of a separator */
+String.prototype.partition = function(sep: string): PartitionResult {
+	var i = this.indexOf(sep);
+	if (i >= 0) {
+		return {
+			success: true,
+			before: this.substr(0, i),
+			after: this.substr(i + sep.length),
+		}
+	} else {
+		return { success: false, before: this, after: '' }
+	}
+}
+
+/** Splits the string into the parts before and after the last instance of a separator */
+String.prototype.rpartition = function(sep: string): PartitionResult {
+	var i = this.lastIndexOf(sep);
+	if (i >= 0) {
+		return {
+			success: true,
+			before: this.substr(0, i),
+			after: this.substr(i + sep.length),
+		}
+	} else {
+		return { success: false, before: '', after: this }
+	}
+}
+
+/** Returns true if the string starts with a search string */
+String.prototype.startswith = function(str: string): boolean {
+	return this.indexOf(str) === 0;
+}
+
+// jQuery easings
+$.extend($.easing, {
+	easeInQuad: function (x, t, b, c, d) {
+		return c*(t/=d)*t + b;
+	},
+	easeOutQuad: function (x, t, b, c, d) {
+		return -c *(t/=d)*(t-2) + b;
+	},
+	easeInCubic: function (x, t, b, c, d) {
+		return c*(t/=d)*t*t + b;
+	},
+	easeOutCubic: function (x, t, b, c, d) {
+		return c*((t=t/d-1)*t*t + 1) + b;
+	},
+	easeInQuart: function (x, t, b, c, d) {
+		return c*(t/=d)*t*t*t + b;
+	},
+	easeOutQuart: function (x, t, b, c, d) {
+		return -c * ((t=t/d-1)*t*t*t - 1) + b;
+	},
+	easeInQuint: function (x, t, b, c, d) {
+		return c*(t/=d)*t*t*t*t + b;
+	},
+	easeOutQuint: function (x, t, b, c, d) {
+		return c*((t=t/d-1)*t*t*t*t + 1) + b;
+	},
+	easeInOutQuint: function (x, t, b, c, d) {
+		if ((t/=d/2) < 1) return c/2*t*t*t*t*t + b;
+		return c/2*((t-=2)*t*t*t*t + 2) + b;
+	},
+	easeInExpo: function (x, t, b, c, d) {
+		return (t==0) ? b : c * Math.pow(2, 10 * (t/d - 1)) + b;
+	},
+	easeOutExpo: function (x, t, b, c, d) {
+		return (t==d) ? b+c : c * (-Math.pow(2, -10 * t/d) + 1) + b;
+	},
+	easeInCirc: function (x, t, b, c, d) {
+		return -c * (Math.sqrt(1 - (t/=d)*t) - 1) + b;
+	},
+	easeOutCirc: function (x, t, b, c, d) {
+		return c * Math.sqrt(1 - (t=t/d-1)*t) + b;
+	},
+});
+
+// #endregion
+
+//-----------------------------------------------------------------------------
+// #region Global Functions
+//-----------------------------------------------------------------------------
 
 /** Ensures that "this" will always be correct for all of an object's functions */
 function bindMemberFunctions(obj: any) {
@@ -1551,7 +1827,7 @@ function parseBool(value: any): boolean {
 	return !!parseInt(value);
 }
 
-/** 
+/**
  * Generates an array containing a range of integers in increasing order
  * @param start The first number in the list
  * @param end The last number in the list
@@ -1589,7 +1865,7 @@ function serialize(obj: any): string {
 /** Converts an array-like object to an array */
 var slice = Function.prototype.call.bind(Array.prototype.slice);
 
-/** Converts an object with numeric keys to an array 
+/** Converts an object with numeric keys to an array
  * e.g. { 0: 'foo', 1: 'bar' } => ['foo', 'bar'] */
 function toArray(object: any) {
 	var array = [];
@@ -1683,179 +1959,4 @@ function writeObject(object: any, maxLevel?: number): string {
 	return write(object, null, 0, []);
 }
 
-/*-----------------------------------------------------------------------------
- * Type Extensions
- *---------------------------------------------------------------------------*/
-
-interface Array {
-	indexByProperty(prop: string): any[];
-	remove(object: any): boolean;
-	contains(object: any): boolean;
-}
-
-/** Gets whether the array contains an object */
-Array.prototype.contains = function (object: any): boolean {
-	return this.indexOf(object) >= 0;
-}
-
-/** 
- * Converts an array to an object of key-value pairs indexed by a property on each item
- * e.g. [{ a: 'foo' }, { a: 'bar' }].indexByProperty('a') => { foo: { a: 'foo' }, bar: { a: 'bar' } }
- * @param prop The name of the property to index by
- */
-Array.prototype.indexByProperty = function (prop: string): any {
-	var obj = {};
-	this.forEach((item) => obj[item[prop]] = item);
-	return obj;
-}
-
-/** Removes the first instance of an object from the array */
-Array.prototype.remove = function (object: any) {
-	var i = this.indexOf(object);
-	if (i >= 0) {
-		this.splice(i, 1);
-		return true;
-	} else {
-		return false;
-	}
-}
-
-/** The result of a string partition call */
-interface PartitionResult {
-	success: boolean;
-	before: string;
-	after: string;
-}
-
-interface String {
-	indent(level?: number): string;
-	dedent(level?: number): string;
-	pad(length: number, char?: string);
-	partition(sep: string): PartitionResult;
-	rpartition(sep: string): PartitionResult;
-	startswith(str: string): boolean;
-	endswith(str: string): boolean;
-	capitalize(): string;
-}
-
-/** Capitalizes the first letter of the string */
-String.prototype.capitalize = function (): string {
-	return this.substr(0, 1).toUpperCase() + this.substr(1);
-}
-
-/** 
- * Removes one tab or 4 spaces from the beginning of the string 
- * @param level The number of 4-space indents to remove (default: 1)
- */
-String.prototype.dedent = function (level?: number): string {
-	level = (typeof level === 'undefined') ? 1 : level;
-	var newstring = this;
-	for (var i = level; i > 0; i--)
-		newstring = newstring.replace(/^(\t| {1,4})/, '');
-	return newstring;
-}
-
-/** Returns true if the string ends with a search string */
-String.prototype.endswith = function (str: string): boolean {
-	return (this.lastIndexOf(str) === this.length - str.length) && (this.length >= str.length);
-}
-
-/**
- * Adds 4 spaces to the beginning of the string 
- * @param level The number of 4-space indents to add (default: 1)
- */
-String.prototype.indent = function (level?: number): string {
-	level = (typeof level === 'undefined') ? 1 : level;
-	var indent = '';
-	for (var i = level; i > 0; i--)
-		indent += '    ';
-	return indent + this;
-}
-
-/** Left-pads a string to a given length. If it is already the desired length or longer, nothing is done */
-String.prototype.pad = function(length: number, char?: string) {
-	char = char || ' ';
-	var pad = (length - this.length) / char.length;
-	var padstr = '';
-	for (var i = pad; i > 0; i--)
-		padstr += char;
-	return padstr + this;
-}
-
-/** Splits the string into the parts before and after the first instance of a separator */
-String.prototype.partition = function(sep: string): PartitionResult {
-	var i = this.indexOf(sep);
-	if (i >= 0) {
-		return {
-			success: true,
-			before: this.substr(0, i),
-			after: this.substr(i + sep.length),
-		}
-	} else {
-		return { success: false, before: this, after: '' }
-	}
-}
-
-/** Splits the string into the parts before and after the last instance of a separator */
-String.prototype.rpartition = function(sep: string): PartitionResult {
-	var i = this.lastIndexOf(sep);
-	if (i >= 0) {
-		return {
-			success: true,
-			before: this.substr(0, i),
-			after: this.substr(i + sep.length),
-		}
-	} else {
-		return { success: false, before: '', after: this }
-	}
-}
-
-/** Returns true if the string starts with a search string */
-String.prototype.startswith = function(str: string): boolean {
-	return this.indexOf(str) === 0;
-}
-
-// jQuery easings
-$.extend($.easing,
-{
-	easeInQuad: function (x, t, b, c, d) {
-		return c*(t/=d)*t + b;
-	},
-	easeOutQuad: function (x, t, b, c, d) {
-		return -c *(t/=d)*(t-2) + b;
-	},
-	easeInCubic: function (x, t, b, c, d) {
-		return c*(t/=d)*t*t + b;
-	},
-	easeOutCubic: function (x, t, b, c, d) {
-		return c*((t=t/d-1)*t*t + 1) + b;
-	},
-	easeInQuart: function (x, t, b, c, d) {
-		return c*(t/=d)*t*t*t + b;
-	},
-	easeOutQuart: function (x, t, b, c, d) {
-		return -c * ((t=t/d-1)*t*t*t - 1) + b;
-	},
-	easeInQuint: function (x, t, b, c, d) {
-		return c*(t/=d)*t*t*t*t + b;
-	},
-	easeOutQuint: function (x, t, b, c, d) {
-		return c*((t=t/d-1)*t*t*t*t + 1) + b;
-	},
-	easeInOutQuint: function (x, t, b, c, d) {
-		if ((t/=d/2) < 1) return c/2*t*t*t*t*t + b;
-		return c/2*((t-=2)*t*t*t*t + 2) + b;
-	},
-	easeInExpo: function (x, t, b, c, d) {
-		return (t==0) ? b : c * Math.pow(2, 10 * (t/d - 1)) + b;
-	},
-	easeOutExpo: function (x, t, b, c, d) {
-		return (t==d) ? b+c : c * (-Math.pow(2, -10 * t/d) + 1) + b;
-	},
-	easeInCirc: function (x, t, b, c, d) {
-		return -c * (Math.sqrt(1 - (t/=d)*t) - 1) + b;
-	},
-	easeOutCirc: function (x, t, b, c, d) {
-		return c * Math.sqrt(1 - (t=t/d-1)*t) + b;
-	},
-});
+// #endregion

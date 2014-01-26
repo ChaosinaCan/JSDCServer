@@ -19,6 +19,22 @@ namespace JSDC.Launcher
 	/// </summary>
 	public partial class ApplicationStatus : UserControl
 	{
+		// Using a DependencyProperty as the backing store for ApplicationName.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty ApplicationNameProperty =
+			DependencyProperty.Register("ApplicationName", typeof(string), typeof(ApplicationStatus), new PropertyMetadata(String.Empty));
+
+		// Using a DependencyProperty as the backing store for CurrentState.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty CurrentStateProperty =
+			DependencyProperty.Register("CurrentState", typeof(ApplicationState), typeof(ApplicationStatus), new PropertyMetadata(ApplicationState.Stopped));
+
+		// Using a DependencyProperty as the backing store for Handler.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty HandlerProperty =
+			DependencyProperty.Register("Handler", typeof(ApplicationHandler), typeof(ApplicationStatus), new PropertyMetadata(null));
+
+		// Using a DependencyProperty as the backing store for Running.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty RunningProperty =
+			DependencyProperty.Register("IsRunning", typeof(bool), typeof(ApplicationStatus), new PropertyMetadata(false));
+
 		/// <summary>
 		/// The display name of the application
 		/// </summary>
@@ -27,23 +43,6 @@ namespace JSDC.Launcher
 			get { return (string)GetValue(ApplicationNameProperty); }
 			set { SetValue(ApplicationNameProperty, value); }
 		}
-
-		// Using a DependencyProperty as the backing store for ApplicationName.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty ApplicationNameProperty =
-			DependencyProperty.Register("ApplicationName", typeof(string), typeof(ApplicationStatus), new PropertyMetadata(String.Empty));
-
-		/// <summary>
-		/// true if the application is currently running
-		/// </summary>
-		public bool IsRunning
-		{
-			get { return (bool)GetValue(RunningProperty); }
-			private set { SetValue(RunningProperty, value); }
-		}
-
-		// Using a DependencyProperty as the backing store for Running.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty RunningProperty =
-			DependencyProperty.Register("IsRunning", typeof(bool), typeof(ApplicationStatus), new PropertyMetadata(false));
 
 		/// <summary>
 		/// The current state of the application
@@ -54,10 +53,6 @@ namespace JSDC.Launcher
 			set { SetValue(CurrentStateProperty, value); }
 		}
 
-		// Using a DependencyProperty as the backing store for CurrentState.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty CurrentStateProperty =
-			DependencyProperty.Register("CurrentState", typeof(ApplicationState), typeof(ApplicationStatus), new PropertyMetadata(ApplicationState.Stopped));
-
 		/// <summary>
 		/// The ApplicationHandler in charge of starting and stopping the application
 		/// </summary>
@@ -67,10 +62,14 @@ namespace JSDC.Launcher
 			set { SetValue(HandlerProperty, value); }
 		}
 
-		// Using a DependencyProperty as the backing store for Handler.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty HandlerProperty =
-			DependencyProperty.Register("Handler", typeof(ApplicationHandler), typeof(ApplicationStatus), new PropertyMetadata(null));
-
+		/// <summary>
+		/// true if the application is currently running
+		/// </summary>
+		public bool IsRunning
+		{
+			get { return (bool)GetValue(RunningProperty); }
+			private set { SetValue(RunningProperty, value); }
+		}
 
 		public ApplicationStatus()
 		{
@@ -81,25 +80,6 @@ namespace JSDC.Launcher
 
 			var desc = DependencyPropertyDescriptor.FromProperty(HandlerProperty, typeof(ApplicationStatus));
 			desc.AddValueChanged(this, OnHandlerChanged);
-		}
-
-		/// <summary>
-		/// Called when the ApplicationHandler property changes
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		protected void OnHandlerChanged(object sender, EventArgs e)
-		{
-			if (Handler == null)
-			{
-				IsRunning = false;
-			}
-			else
-			{
-				IsRunning = Handler.IsRunning;
-				Handler.Started += Handler_Started;
-				Handler.Stopped += Handler_Stopped;
-			}
 		}
 
 		/// <summary>
@@ -124,6 +104,25 @@ namespace JSDC.Launcher
 			IsRunning = false;
 			controlButton.IsEnabled = true;
 			CurrentState = ApplicationState.Stopped;
+		}
+
+		/// <summary>
+		/// Called when the ApplicationHandler property changes
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		protected void OnHandlerChanged(object sender, EventArgs e)
+		{
+			if (Handler == null)
+			{
+				IsRunning = false;
+			}
+			else
+			{
+				IsRunning = Handler.IsRunning;
+				Handler.Started += Handler_Started;
+				Handler.Stopped += Handler_Stopped;
+			}
 		}
 
 		/// <summary>
@@ -155,6 +154,5 @@ namespace JSDC.Launcher
 			// Re-enable the button
 			(sender as Button).IsEnabled = true;
 		}
-
 	}
 }

@@ -417,7 +417,7 @@ class TournamentNode implements INodeDepth {
 		for (var i = 0; i < this.children.length; i++) {
 			if (this.children[i] instanceof TournamentNode) {
 				var child = <TournamentNode>this.children[i];
-				
+
 				// If the child is a leaf node, it can be removed.
 				if (child.isLeafMatch()) {
 					// Replace this match with (this.teamsProgress) team slots
@@ -485,7 +485,7 @@ class TournamentNode implements INodeDepth {
 						for (var j = 0; j < child.children.length; j++) {
 							this.children.push(new TournamentTeamSlot());
 						}
-						
+
 						i -= 1;
 						removed = true;
 					}

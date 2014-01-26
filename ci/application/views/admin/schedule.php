@@ -2,7 +2,7 @@
 	$(function() {
 		schedule.maxTeams = <?= $max_teams ?>;
 		schedule.colors = <?= json_encode($colors) ?>;
-		
+
 		schedule.init();
 	});
 </script>
@@ -33,7 +33,7 @@
 </section>
 
 <section class="bottom x-large">
-	
+
 	<table id="match-header">
 		<tr></tr>
 	</table>
@@ -41,7 +41,6 @@
 		<table id="matches"></table>
 	</div>
 </section>
-
 
 <div id="toolbar">
 	<div class="appbar">

@@ -3,7 +3,7 @@
 module schedule {
 	// Public Variables
 	export var maxTeams: number;
-	
+
 	export var colors: Color[];
 	export var colorsById: ColorMap = {};
 
@@ -64,7 +64,6 @@ module schedule {
 
 	export function loadMatches(): void {
 		jsdc.match.getAll((err, matches) => {
-
 			if (err) {
 				Modal.apiError(err, 'Failed to get match list');
 				return;
@@ -75,7 +74,7 @@ module schedule {
 				row.data('match', match);
 				row.find('.round').text(match.roundNum.toString());
 				row.find('.match').text(match.matchNum.toString());
-				
+
 				match.teams.forEach((team) => {
 					var color = schedule.colorsById[team.colorId.toString()];
 					row.find('.' + color.name).text(team.name);
@@ -122,7 +121,6 @@ module schedule {
 			if (rowsInRound > 1) {
 				firstRow.find('.round').attr('rowspan', rowsInRound);
 			}
-
 
 			$('#matches').empty().append(rows);
 			markCurrentMatch();
@@ -216,6 +214,5 @@ module schedule {
 				elem.addClass('no-match');
 			}
 		});
-
 	}
 }

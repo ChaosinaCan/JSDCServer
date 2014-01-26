@@ -1,11 +1,8 @@
-﻿
-interface APIError {
+﻿interface APIError {
 	status: number;
 	statusText: string;
 	message: string;
 }
-
-
 
 interface Action {
 	actionId: number;
@@ -28,8 +25,6 @@ interface ActionUpdateParams {
 	onvalue?: number;
 }
 
-
-
 interface Color {
 	colorId: number;
 	name: string;
@@ -40,8 +35,6 @@ interface ColorUpdateParams {
 	newid?: number;
 	name?: string;
 }
-
-
 
 interface Foul {
 	foulId: number;
@@ -60,8 +53,6 @@ interface FoulUpdateParams {
 	name?: string;
 	value?: number;
 }
-
-
 
 interface Match {
 	matchId: number;
@@ -104,8 +95,6 @@ interface MatchUpdateParams {
 	teams?: MatchCreateTeamParams[];
 }
 
-
-
 interface MatchResult {
 	id: number;
 	teamId: number;
@@ -127,8 +116,6 @@ interface MatchResultUpdateParams {
 	match?: number;
 	team?: number;
 }
-
-
 
 interface Score {
 	id: number;
@@ -173,8 +160,6 @@ interface ScoreUpdateParams {
 	disqualified?: boolean;
 }
 
-
-
 interface Team {
 	teamId: number;
 	colorId?: number;
@@ -195,9 +180,7 @@ interface TeamCreateParams {
 
 interface TeamUpdateParams {
 	id: number;
-	
 }
-
 
 interface User {
 	userId: number;
@@ -208,9 +191,6 @@ interface User {
 	ip?: string;
 	pId: number;
 }
-
-
-
 
 interface ColorMap {
 	[key: string]: Color;

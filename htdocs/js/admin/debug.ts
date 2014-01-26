@@ -7,7 +7,7 @@ $(function() {
 	$('#send').click(debug.sendRequest);
 	$('#api-request input, #api-request select, #api-request textarea').change(debug.updateFields);
 	$('#api-request textarea').keydown((e: KeyboardEvent) => {
-		if (e.which === 13 && e.ctrlKey) 
+		if (e.which === 13 && e.ctrlKey)
 			debug.sendRequest();
 	}).bind('input', (e) => {
 		debug.updateFields();
@@ -39,7 +39,6 @@ module Debug {
 	enum parsemode { name, value, multiline }
 
 	export class DebugHandler {
-
 		private _lastDatatype: string = null;
 		private _lastMethod: string = null;
 
@@ -150,7 +149,7 @@ module Debug {
 		}
 
 		getQueryBody() {
-			if (this.method === 'get') 
+			if (this.method === 'get')
 				return null;
 			else {
 				try {
@@ -181,7 +180,6 @@ module Debug {
 				url = decoded = e.toString();
 			}
 
-
 			$('#queryurl').text(decoded);
 			$('#queryurl-encoded').html(url == decoded ? '' : highlighted);
 
@@ -207,7 +205,6 @@ module Debug {
 				this._lastMethod = method;
 			}
 		}
-
 	}
 }
 

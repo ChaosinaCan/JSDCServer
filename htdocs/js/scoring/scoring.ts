@@ -25,7 +25,6 @@ module scoring {
 
 	// Public Methods
 	export function init(): void {
-		
 		colors = jsdc.color.parse(colors);
 		team = jsdc.team.parseOne(team);
 		match = jsdc.match.parseOne(match);
@@ -143,7 +142,7 @@ module scoring {
 		}
 		return null;
 	}
-	
+
 	export function getAction(id: number) {
 		return scoring.actionsById[id.toString()] || null;
 	}
@@ -155,7 +154,7 @@ module scoring {
 	export function canTakeTerritory(territoryId: number) {
 		var cell = field.getCell(territoryId);
 		var status: TerritoryStatus = cell.data('status');
-		
+
 		// can't take if already owned
 		if (status.owner === scoring.team.teamId) {
 			return false;
@@ -251,7 +250,6 @@ module scoring {
 		updateFieldRotation();
 	}
 
-
 	// Private Methods
 	function updateFieldRotation(): void {
 		$('table.field').css('-webkit-transform', 'rotate(' + fieldRotation + 'deg)');
@@ -302,7 +300,7 @@ module scoring {
 			e.complete();
 		});
 	}
-	
+
 	function foulDialog(foulId: number): void {
 		var body: JQuery = $('<ul class=colorselect>').append(
 			scoring.match.teams.filter((team) => team.teamId !== scoring.team.teamId)
@@ -318,7 +316,7 @@ module scoring {
 							.text(team.name)
 							.click(() => {
 								// display a message while the foul is being sent
-								body.replaceWith(								
+								body.replaceWith(
 									$('<p>').text('Sending...')
 								);
 								sendFoul(foulId, scoring.team.teamId, team.teamId, (err) => {
@@ -327,7 +325,6 @@ module scoring {
 									}
 									$.modal.close();
 								});
-								
 							})
 					)
 				}
@@ -428,7 +425,6 @@ module scoring {
 	}
 }
 
-
 /** Handles touch events on BlackBerry Playbook tablets */
 module touch {
 	export var SCROLL_THRESHOLD = 15;
@@ -509,7 +505,7 @@ module touch {
 				document.body.scrollTop -= dy;
 				field.scrollLeft -= dx;
 			}
-			
+
 			scrollPoint.x += dx;
 			scrollPoint.y += dy;
 		}
@@ -554,7 +550,7 @@ module touch {
 
 		target.dispatchEvent(e);
 	}
-	
+
 	function click(target): void {
 		mouseevent('click', target);
 	}
@@ -563,7 +559,6 @@ module touch {
 		mouseevent('mousedown', target);
 	}
 }
-
 
 interface TouchPoint {
 	clientX: number;

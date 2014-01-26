@@ -29,7 +29,6 @@ module matches {
 	var _template: JQuery;
 	var _columnsByColor: { [key: string]: number; } = {};
 
-
 	// Public Methods
 	export function init(): void {
 		matches.colors = jsdc.color.parse(matches.colors);
@@ -44,7 +43,6 @@ module matches {
 		});
 		matches.teams.forEach((team) => matches.teamsById[team.teamId.toString()] = team);
 
-		
 		// enhance <select> inputs
 		$('#filter-round').append(
 			range(1, matches.maxRounds).map((index) =>
@@ -60,7 +58,7 @@ module matches {
 			})
 			.change(filterMatches);
 
-		//$('select').chosen({ disable_search: true });		
+		//$('select').chosen({ disable_search: true });
 
 		// build the table of matches
 		var header = $('#matches thead tr');
@@ -88,19 +86,19 @@ module matches {
 		_template = $('<tr>').append(
 			$('<td class=round>').append(
 				$('<select>').append(
-					range(1, matches.maxRounds).map((index) => 
+					range(1, matches.maxRounds).map((index) =>
 						$('<option>').attr('value', index).text(index.toString()))
 				)
 			),
 			$('<td class=match>').append(
 				$('<select>').append(
-					range(1, matches.maxMatches).map((index) => 
+					range(1, matches.maxMatches).map((index) =>
 						$('<option>').attr('value', index).text(index.toString()))
 				)
 			),
 			$('<td class=status>').append(
 				$('<select>').append(
-					keys(statuses).map((key) => 
+					keys(statuses).map((key) =>
 						$('<option>').attr('value', statusToString(statuses[key]))
 							.text(key.capitalize()))
 				)
@@ -158,7 +156,7 @@ module matches {
 	export function getTableBody(): JQuery {
 		return $('#matches tbody');
 	}
-	
+
 	export function getRows(): JQuery {
 		return $('#matches tbody tr');
 	}
@@ -178,7 +176,7 @@ module matches {
 	}
 
 	export function resetRow(row: JQuery) {
-		if (row.data('delete')) 
+		if (row.data('delete'))
 			undeleteRow(row);
 
 		row.data('match', clone(row.data('original')));
@@ -198,7 +196,6 @@ module matches {
 			enableControls(row);
 			validateRow(row);
 		}
-		
 	}
 
 	export function undeleteRow(row: JQuery) {
@@ -291,8 +288,8 @@ module matches {
 							var original = row.data('original');
 							var newStatus = getStatusName(match).capitalize();
 							var oldStatus = getStatusName(original).capitalize();
-							return $('<li>').text('Match ' 
-								+ match.roundNum.toString() + '–' + match.matchNum.toString() 
+							return $('<li>').text('Match '
+								+ match.roundNum.toString() + '–' + match.matchNum.toString()
 								+ ': ' + oldStatus + ' → ' + newStatus);
 						})
 					)
@@ -443,7 +440,7 @@ module matches {
 					errorMessages.push('Failed to create match ' + params.roundNum.toString() + '–' + params.matchNum.toString() + '.');
 					errors.push(err);
 				}
-				
+
 				createMatch();
 			});
 		}
@@ -467,11 +464,11 @@ module matches {
 
 			jsdc.match.remove(params.matchId, (err) => {
 				if (err) {
-					errorMessages.push('Failed to delete match ' + params.roundNum.toString() + '–' + params.matchNum.toString() 
+					errorMessages.push('Failed to delete match ' + params.roundNum.toString() + '–' + params.matchNum.toString()
 						+ ', id: ' + params.matchId.toString() + '.');
 					errors.push(err);
 				}
-				
+
 				deleteMatch();
 			});
 		}
@@ -557,7 +554,6 @@ module matches {
 		});
 	}
 
-
 	// Private Methods
 	function getStatusName(status: { status: string; open: boolean; }) {
 		for (var key in statuses) {
@@ -598,7 +594,7 @@ module matches {
 
 	function buildRow(table: JQuery, match: Match) {
 		var row = _template.clone();
-		
+
 		// attach match data to the row
 		row.data('match', match);
 		row.data('original', clone(match));
@@ -698,7 +694,6 @@ module matches {
 		});
 
 		row.show();
-
 
 		return row;
 	}
@@ -825,7 +820,7 @@ module tournament {
 			var strategy = optimize.val() === 'reduce' ? TournamentGenerationStrategry.MinimizeMatches : TournamentGenerationStrategry.BalanceMatches;
 			var count: number = teamCount.val();
 			var teams = [];
-			
+
 			for (var i = 0; i < count; i++) {
 				teams.push(matches.teams[i]);
 			}
@@ -836,7 +831,7 @@ module tournament {
 			bracket.matchColor = '#222';
 			bracket.render(canvas, bracket.teamCount > 16);
 		}
-		
+
 		function renderToImage(width?: number, height?: number) {
 			bracket.lineColor = '#000';
 			bracket.textColor = '#000';

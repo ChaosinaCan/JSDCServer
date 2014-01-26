@@ -123,7 +123,6 @@ module teams {
 		});
 	}
 
-
 	// Private Methods
 	function teamSort(a: Team, b: Team) {
 		var uniComp = naturalSort(a.university, b.university);
@@ -174,7 +173,7 @@ module teams {
 	function newTeam(form: HTMLFormElement) {
 		var data: FormData = new FormData(form);
 		data.append('method', 'create');
-		
+
 		if (_uploadFile) {
 			data.append('imagedata', _uploadFile);
 		}
@@ -239,7 +238,6 @@ var naturalSort: {
 	(a: any, b: any): number;
 	insensitive: boolean;
 } = (() => {
-
 	var _naturalSort: any = (a, b) => {
 		var re = /(^-?[0-9]+(\.?[0-9]*)[df]?e?[0-9]?$|^0x[0-9a-f]+$|[0-9]+)/gi,
 			sre = /(^[ ]*|[ ]*$)/g,
@@ -283,6 +281,4 @@ var naturalSort: {
 
 	_naturalSort.insensitive = false;
 	return _naturalSort;
-
 })();
-

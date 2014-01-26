@@ -16,7 +16,6 @@ module audio {
 	export function add(map: { [key: string]: string; }): void;
 	export function add(name: string, path: string): void;
 	export function add(name: any, path?: any): void {
-		
 		if (typeof name === 'object') {
 			for (var key in name) {
 				if (name.hasOwnProperty(key)) {
@@ -26,7 +25,6 @@ module audio {
 		} else {
 			createPlayer(name, path);
 		}
-
 	}
 
 	export function play(name: string) {

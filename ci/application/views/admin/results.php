@@ -1,4 +1,3 @@
-
 <script>
 	$(function() {
 		matchresults.init(<?= json_encode($teams)?>);

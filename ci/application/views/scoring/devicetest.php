@@ -7,9 +7,9 @@
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="viewport" content="width=device-width, user-scalable=no">
 
-	<?php echo link_tag("css/scoring/base.css") ?>
-	<?php echo link_tag("css/scoring/devicetest.css") ?>
-	<?php echo link_tag('favicon.png', 'icon', 'image/png') ?>
+	<?= link_tag("css/scoring/base.css") ?>
+	<?= link_tag("css/scoring/devicetest.css") ?>
+	<?= link_tag('favicon.png', 'icon', 'image/png') ?>
 
 	<script src="<?= site_url("js/jquery.js") ?>"></script>
 	<script src="<?= site_url("js/jquery.single.js") ?>"></script>
@@ -17,7 +17,7 @@
 	<script src="<?= site_url("js/admin/base.js") ?>"></script>
 	<script src="<?= site_url("js/scoring/devicetest.js") ?>"></script>
 	<script src="<?= $clock_address ?>socket.io/socket.io.js"></script>
-	
+
 	<script>
 		jsdc.baseUrl = '<?= site_url() ?>';
 		jsdc.clock.baseUrl = '<?= $clock_address ?>';

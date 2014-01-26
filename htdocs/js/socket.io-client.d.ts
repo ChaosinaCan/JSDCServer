@@ -1,5 +1,4 @@
-
-/* 
+/*
 Special Events:
 	connect
 	connecting(transport_type)
@@ -54,7 +53,6 @@ interface ConnectionOptions {
 	reconnect?: boolean;
 	//'reconnection delay'?: number;
 	//'max reconnection attempts'?: number;
-
 }
 
 declare module io {
