@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 
 namespace JSDC.Launcher
@@ -40,6 +41,31 @@ namespace JSDC.Launcher
 				}
 			}
 			return null;
+		}
+		
+		public static string GetServerAddress()
+		{
+			var config = Path.Combine(FindServerRoot().FullName, "ci", "application", "config", "config.php");
+			using (var reader = new StreamReader(config))
+			{
+				string file = reader.ReadToEnd();
+				var match = Regex.Match(file, @"\$config\s*\[\s*['""]base_url['""]\s*\]\s*=\s*['""](.*?)['""]\s*;");
+				if (match.Success)
+				{
+					if (string.IsNullOrWhiteSpace(match.Groups[1].Value))
+					{
+						return "http://localhost/";
+					}
+					else
+					{
+						return match.Groups[1].Value;
+					}
+				}
+				else
+				{
+					return null;
+				}
+			}
 		}
 	}
 }

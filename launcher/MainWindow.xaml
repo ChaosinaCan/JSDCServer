@@ -7,9 +7,9 @@
         Icon="Resources/favicon.ico"
         SnapsToDevicePixels="True"
         Width="420"
-        Height="205"
+        Height="245"
         MinWidth="420"
-        MinHeight="205"
+        MinHeight="245"
         Closing="Window_Closing"
         SizeChanged="Window_SizeChanged">
     <Window.Resources>
@@ -20,15 +20,34 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <my:ApplicationStatus Grid.Row="0" x:Name="ApacheStatus" ApplicationName="Web Server (Apache)"/>
-        <my:ApplicationStatus Grid.Row="1" x:Name="MySqlStatus" ApplicationName="Database Server (MySQL)"/>
-        <my:ApplicationStatus Grid.Row="2" x:Name="NodeStatus" ApplicationName="Game Server (Node)"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <my:ApplicationStatus Grid.Row="0" Grid.ColumnSpan="2" x:Name="ApacheStatus" ApplicationName="Web Server (Apache)"/>
+        <my:ApplicationStatus Grid.Row="1" Grid.ColumnSpan="2" x:Name="MySqlStatus" ApplicationName="Database Server (MySQL)"/>
+        <my:ApplicationStatus Grid.Row="2" Grid.ColumnSpan="2" x:Name="NodeStatus" ApplicationName="Game Server (Node)"/>
+        <Button x:Name="openAdminPage"
+                Grid.Row="3"
+                Height="30"
+                Margin="5" 
+                Click="openAdminPage_Click">Admin Page</Button>
+        <Button x:Name="openPhpMyAdmin"
+                Grid.Row="3" 
+                Grid.Column="1"
+                Height="30"
+                Margin="5" 
+                Click="openPhpMyAdmin_Click">phpMyAdmin</Button>
         <Expander Header="Game Server Console"
                   x:Name="expander"
-                  Grid.Row="3"
-                  Margin="5" Collapsed="Expander_Collapsed" Expanded="Expander_Expanded">
+                  Grid.Row="4" 
+                  Grid.ColumnSpan="2"
+                  Margin="5" 
+                  Collapsed="Expander_Collapsed" 
+                  Expanded="Expander_Expanded">
             <Grid Margin="0,10,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
@@ -58,7 +77,9 @@
                              Grid.Column="1"
                              Padding="5,0"
                              FontFamily="Consolas"
-                             VerticalContentAlignment="Center" KeyDown="input_KeyDown"/>
+                             VerticalContentAlignment="Center" 
+                             KeyDown="input_KeyDown"
+                             PreviewKeyDown="input_PreviewKeyDown" />
                 </Grid>
             </Grid>
         </Expander>

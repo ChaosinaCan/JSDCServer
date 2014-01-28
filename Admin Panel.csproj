@@ -75,32 +75,86 @@
     <Content Include="htdocs\audio\start_bell.ogg" />
     <Content Include="htdocs\audio\transfer_complete.ogg" />
     <Content Include="htdocs\css\admin\about.less" />
+    <Content Include="htdocs\css\admin\about.min.css">
+      <DependentUpon>about.less</DependentUpon>
+    </Content>
     <Content Include="htdocs\css\admin\base.less" />
     <Content Include="htdocs\css\admin\base.min.css">
       <DependentUpon>base.less</DependentUpon>
     </Content>
     <Content Include="htdocs\css\admin\chosen.less" />
+    <Content Include="htdocs\css\admin\chosen.min.css">
+      <DependentUpon>chosen.less</DependentUpon>
+    </Content>
     <Content Include="htdocs\css\admin\colors.less" />
     <Content Include="htdocs\css\admin\debug.less" />
+    <Content Include="htdocs\css\admin\debug.min.css">
+      <DependentUpon>debug.less</DependentUpon>
+    </Content>
     <Content Include="htdocs\css\admin\field-display.less" />
+    <Content Include="htdocs\css\admin\field-display.min.css">
+      <DependentUpon>field-display.less</DependentUpon>
+    </Content>
     <Content Include="htdocs\css\admin\font.less" />
+    <Content Include="htdocs\css\admin\font.min.css">
+      <DependentUpon>font.less</DependentUpon>
+    </Content>
     <Content Include="htdocs\css\admin\game.less" />
+    <Content Include="htdocs\css\admin\game.min.css">
+      <DependentUpon>game.less</DependentUpon>
+    </Content>
     <Content Include="htdocs\css\admin\index.less" />
+    <Content Include="htdocs\css\admin\index.min.css">
+      <DependentUpon>index.less</DependentUpon>
+    </Content>
     <Content Include="htdocs\css\admin\install.less" />
+    <Content Include="htdocs\css\admin\install.min.css">
+      <DependentUpon>install.less</DependentUpon>
+    </Content>
     <Content Include="htdocs\css\admin\matches.less" />
     <Content Include="htdocs\css\admin\matches.min.css">
       <DependentUpon>matches.less</DependentUpon>
     </Content>
     <Content Include="htdocs\css\admin\reset.less" />
+    <Content Include="htdocs\css\admin\reset.min.css">
+      <DependentUpon>reset.less</DependentUpon>
+    </Content>
     <Content Include="htdocs\css\admin\results.less" />
+    <Content Include="htdocs\css\admin\results.min.css">
+      <DependentUpon>results.less</DependentUpon>
+    </Content>
     <Content Include="htdocs\css\admin\schedule.less" />
+    <Content Include="htdocs\css\admin\schedule.min.css">
+      <DependentUpon>schedule.less</DependentUpon>
+    </Content>
     <Content Include="htdocs\css\admin\score-list.less" />
+    <Content Include="htdocs\css\admin\score-list.min.css">
+      <DependentUpon>score-list.less</DependentUpon>
+    </Content>
     <Content Include="htdocs\css\admin\scoreboard.less" />
+    <Content Include="htdocs\css\admin\scoreboard.min.css">
+      <DependentUpon>scoreboard.less</DependentUpon>
+    </Content>
     <Content Include="htdocs\css\admin\scores.less" />
+    <Content Include="htdocs\css\admin\scores.min.css">
+      <DependentUpon>scores.less</DependentUpon>
+    </Content>
     <Content Include="htdocs\css\admin\teams.less" />
+    <Content Include="htdocs\css\admin\teams.min.css">
+      <DependentUpon>teams.less</DependentUpon>
+    </Content>
     <Content Include="htdocs\css\scoring\base.less" />
+    <Content Include="htdocs\css\scoring\base.min.css">
+      <DependentUpon>base.less</DependentUpon>
+    </Content>
     <Content Include="htdocs\css\scoring\devicetest.less" />
+    <Content Include="htdocs\css\scoring\devicetest.min.css">
+      <DependentUpon>devicetest.less</DependentUpon>
+    </Content>
     <Content Include="htdocs\css\scoring\scoring.less" />
+    <Content Include="htdocs\css\scoring\scoring.min.css">
+      <DependentUpon>scoring.less</DependentUpon>
+    </Content>
     <Content Include="htdocs\fonts\DroidSansMono.ttf" />
     <Content Include="htdocs\fonts\NOTICE" />
     <Content Include="htdocs\fonts\segoeui.ttf" />
@@ -306,9 +360,9 @@
     <Content Include="htdocs\js\scoring\devicetest.js">
       <DependentUpon>devicetest.ts</DependentUpon>
     </Content>
-	<Content Include="htdocs\js\admin\tournament.js">
-	  <DependentUpon>tournament.ts</DependentUpon>
-	</Content>
+    <Content Include="htdocs\js\admin\tournament.js">
+      <DependentUpon>tournament.ts</DependentUpon>
+    </Content>
     <TypeScriptCompile Include="htdocs\js\admin\tournament.ts" />
     <TypeScriptCompile Include="htdocs\js\scoring\devicetest.ts" />
     <Content Include="htdocs\js\scoring\scoring.js">
