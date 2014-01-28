@@ -1,6 +1,6 @@
-﻿///<reference path='node.d.ts'/>
+﻿/// <reference path='node.d.ts' />
 
-var events = require('events');
+import events = require('events');
 
 class BaseEventEmitter implements EventEmitter {
 	private emitter = new events.EventEmitter();
@@ -30,10 +30,10 @@ class BaseEventEmitter implements EventEmitter {
 	}
 
 	listeners(event: string): Function[] {
-		return this.emitter.listeners();
+		return this.emitter.listeners(event);
 	}
 
-	emit(event: string, arg1?: any, arg2?: any): boolean {
+	emit(event: string, ...args: any[]): boolean {
 		return this.emitter.emit.apply(this.emitter, Array.prototype.slice.apply(arguments));
 	}
 }
