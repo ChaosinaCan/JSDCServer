@@ -1209,12 +1209,12 @@ module Modal {
 				{
 					text: buttons.yes,
 					className: 'yes',
-					action: () => (result = true)
+					action: () => { result = true; }
 				},
 				{
 					text: buttons.no,
 					className: 'no',
-					action: () => (result = false)
+					action: () => { result = false; }
 				}
 			],
 			options: {
