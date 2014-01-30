@@ -113,12 +113,12 @@ module matches {
 				)
 			),
 			$('<td class=controls>').append(
-				$('<button class=undo>').html('&#xe10e')
+				$('<button class=undo>')
 					.attr('title', 'Undo changes')
 					.prop('disabled', true),
-				$('<button class=delete>').html('&#xe106')
+				$('<button class=delete>')
 					.attr('title', 'Delete match'),
-				$('<button class=undelete>').html('&#xe10b')
+				$('<button class=undelete>')
 					.attr('title', 'Restore match')
 			)
 		);
@@ -181,7 +181,7 @@ module matches {
 
 		row.data('match', clone(row.data('original')));
 		updateInputs(row);
-		row.find('select').trigger('chosen:update');
+		row.find('select').trigger('chosen:updated');
 		validateRow(row);
 		disableUndo(row);
 	}
@@ -780,7 +780,7 @@ module matches {
 				row.find('button.delete').prop('disabled', false);
 			}
 		}
-		row.find('select').trigger('chosen:update');
+		row.find('select').trigger('chosen:updated');
 	}
 }
 

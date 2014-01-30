@@ -4,9 +4,9 @@
 	<meta charset="utf-8">
 	<title>JSDC Administration Panel</title>
 
-	<link href="<?= site_url() ?>favicon.png" rel="icon" type="image/png"/>
-	<link rel="stylesheet" href="<?= site_url() ?>css/admin/base.css">
-	<link rel="stylesheet" href="<?= site_url() ?>css/admin/index.css">
+	<link href="/favicon.png" rel="icon" type="image/png"/>
+	<link rel="stylesheet" href="/css/admin/base.css">
+	<link rel="stylesheet" href="/css/admin/index.css">
 </head>
 <body>
 	<header id="branding">

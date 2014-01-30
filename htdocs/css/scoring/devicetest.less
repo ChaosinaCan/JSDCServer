@@ -1,4 +1,5 @@
-﻿@import "../admin/colors.less";
+﻿@import "../common/colors.less";
+@import "../common/icons.less";
 
 #tests {
 	width: 100%;
@@ -13,19 +14,49 @@
 			padding-bottom: 20px;
 		}
 
-		tr > td:last-child:before {
-			font-family: 'Segoe Command';
-			content: ' ';
+		tr > td:last-child {
+			.icon(load-c);
+
+			&:before {
+				font-size: 32px;
+				width: 32px;
+				margin-top: -(32px - 27px) / 2;
+				margin-right: 5px;
+				margin-bottom: -(32px - 27px) / 2;
+				-moz-animation: spin 1s infinite linear;
+				-o-animation: spin 1s infinite linear;
+				-webkit-animation: spin 1s infinite linear;
+				animation: spin 1s infinite linear;
+				-moz-transform-origin: 50% 50%;
+				-ms-transform-origin: 50% 50%;
+				-o-transform-origin: 50% 50%;
+				-webkit-transform-origin: 50% 50%;
+				transform-origin: 50% 50%;
+			}
 		}
 
-		tr.passed > td:last-child:before {
-			content: ' ';
+		tr.passed > td:last-child {
+			.icon(checkmark);
 			color: @success;
+
+			&:before {
+				-moz-animation: none;
+				-o-animation: none;
+				-webkit-animation: none;
+				animation: none;
+			}
 		}
 
-		tr.failed > td:last-child:before {
-			content: ' ';
+		tr.failed > td:last-child {
+			.icon(close);
 			color: @error;
+
+			&:before {
+				-moz-animation: none;
+				-o-animation: none;
+				-webkit-animation: none;
+				animation: none;
+			}
 		}
 	}
 }

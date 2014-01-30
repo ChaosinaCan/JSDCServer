@@ -1,4 +1,4 @@
-﻿@import "../admin/colors.less";
+﻿@import "../common/colors.less";
 
 html {
 	padding-top: 64px;
@@ -181,9 +181,8 @@ ul.actionselect {
 			content: '⚡';
 		}
 
-		a.drop:before {
-			font-family: 'Segoe Command';
-			content: '';
+		a.drop {
+			.icon(arrow-down-a);
 		}
 	}
 }

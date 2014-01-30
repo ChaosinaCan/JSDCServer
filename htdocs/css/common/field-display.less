@@ -1,4 +1,5 @@
 ﻿@import "colors.less";
+@import "icons.less";
 
 table.field {
 	border: 5px solid @field-border;
@@ -38,8 +39,7 @@ table.field {
 
 	td.spin {
 		span {
-			font-family: 'Segoe Command';
-			content: '';
+			.icon(loop);
 
 			display: block;
 			width: 48px;
@@ -54,7 +54,7 @@ table.field {
 	}
 
 	td.admin, td.projector {
-		font-family: 'Segoe Command';
+		
 		font-size: 30pt;
 	}
 

@@ -186,11 +186,11 @@ module Debug {
 			if (this.method === 'get') {
 				$('#querybody').text('');
 				$('#post-fields select').prop('disabled', true)
-					.trigger('chosen:update');
+					.trigger('chosen:updated');
 			} else {
 				$('#querybody').text(writeObject(this.getQueryBody(), 99));
 				$('#post-fields select').prop('disabled', false)
-					.trigger('chosen:update');
+					.trigger('chosen:updated');
 			}
 
 			var datatype = $('#datatype').val();

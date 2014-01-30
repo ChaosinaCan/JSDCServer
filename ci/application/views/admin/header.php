@@ -38,7 +38,7 @@ function get_styles($styles, $theme = NULL) {
 	}
 
 	$sheets = array_merge(
-		array('admin/base.css', 'admin/theme.css', 'admin/chosen.css', 'admin/' . $page . '.css'),
+		array('admin/base.css', 'admin/theme.css', 'common/chosen.css', 'admin/' . $page . '.css'),
 		$styles);
 
 	$files = array();
@@ -124,8 +124,8 @@ function get_scripts($scripts) {
 					</li>
 				<?php endforeach; ?>
 			</ul>
-			<div class="scroll-left symbol">&#xe096;</div>
-			<div class="scroll-right symbol">&#xe097;</div>
+			<div class="scroll-left symbol"></div>
+			<div class="scroll-right symbol"></div>
 		</nav>
 	</header>
 	<div id="content">

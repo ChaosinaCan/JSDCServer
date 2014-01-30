@@ -1,12 +1,29 @@
 ﻿@import "../admin/base.less";
-@import "../admin/colors.less";
+@import "../common/colors.less";
+@import "../common/icons.less";
 
 .back-button {
-	font-family: 'Segoe Command';
+	@size: 43px;
+	@arrow-size: 40px;
+	@baseline: 7px;
+	@height: 64px;
+	@border: 2px;
+
+	.icon(arrow-left-c);
 	float: left;
-	margin-left: -40px;
-	padding-left: 40px;
-	padding-right: 20px;
+	width: @size;
+	height: @size;
+
+	margin-top: @height - @size - @baseline;
+	margin-right: 20px;
+	margin-bottom: @baseline;
+
+	border: @border solid @text;
+	border-radius: 50%;
+
+	font-size: @arrow-size;
+	line-height: @size - 2 * @border;
+	text-align: center;
 
 	&:hover {
 		color: @text;

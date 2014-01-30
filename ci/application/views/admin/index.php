@@ -5,6 +5,7 @@
 	<title>JSDC Admin</title>
 	<?php echo link_tag('css/admin/base.css') ?>
 	<?php echo link_tag('css/admin/index.css') ?>
+	<?php echo link_tag('css/common/ionicons.css') ?>
 	<?php echo link_tag('favicon.png', 'icon', 'image/png') ?>
 </head>
 <body class="columns">
@@ -30,7 +31,7 @@
 				<a href="schedule" class="wide">Schedule</a>
 				<a href="audio">Audio</a>
 				<a href="debug">Debug</a>
-				<a href="setup">Setup</a>
+				<a href="../install">Setup</a>
 				<a href="about">About</a>
 			</nav>
 		</section>

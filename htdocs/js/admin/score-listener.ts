@@ -286,7 +286,7 @@ class ScoreList {
 		if (allowDelete) {
 			console.log('allow delete');
 			this._template.find('.name').append(
-				$('<button class=delete>').html('&#xe106')
+				$('<button class=delete>').html('&#xf12a;')
 			);
 			console.log(this._template);
 		}

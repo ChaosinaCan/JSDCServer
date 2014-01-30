@@ -1,16 +1,22 @@
-﻿@import "colors.less";
+﻿@import "../common/colors.less";
+@import "../common/icons.less";
 
 table.score-list {
-	//width: 100%;
 	font-size: 20pt;
 	font-weight: 200;
 	letter-spacing: 0.01em;
 	line-height: 1.2;
 
+	overflow: hidden;
+
 	.from span,
 	.on span {
+		display: inline-block;
+		height: 32px;
+		.icon(stop);
+
 		&:before {
-			content: '■ ';
+			margin-right: 5px;
 		}
 
 		&.red:before {
@@ -55,6 +61,7 @@ table.score-list {
 		content: '→ ';
 		position: absolute;
 		left: 0;
+		bottom: 0;
 	}
 
 	td.name {
@@ -62,14 +69,16 @@ table.score-list {
 	}
 
 	button.delete {
-		font-family: 'Segoe Command';
+		font-family: @ionicons-font-family;
 		display: none;
 		position: absolute;
-		top: 0;
+		bottom: 0;
 		right: 0;
 
 		min-width: 0;
 		width: 32px;
+		height: 32px;
+		line-height: 1;
 
 		padding: 4px;
 	}

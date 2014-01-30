@@ -1,11 +1,13 @@
-﻿@import "colors.less";
-@import "font.less";
-@import "reset.less";
+﻿@import "../common/colors.less";
+@import "../common/font.less";
+@import "../common/icons.less";
+@import "../common/animation.less";
+@import "../common/reset.less";
 
 html {
 	padding: 0 40px 20px;
 
-	font-family: 'Segoe';
+	font-family: 'Open Sans';
 	letter-spacing: 0.02em;
 
 	background: @background;
@@ -30,7 +32,6 @@ p {
 }
 
 .symbol {
-	font-family: 'Segoe Command';
 	letter-spacing: 0;
 }
 
@@ -305,7 +306,7 @@ button.command {
 	}
 	.commandimage {
 		/* Default font for glyphs. */
-		font-family: "Segoe Command";
+		font-family: @ionicons-font-family;
 		letter-spacing: 0;
 
 		/* Applications provide their own content, like &#xE0D5;. */
@@ -368,7 +369,7 @@ header#branding {
 		.symbol {
 			display: block;
 			position: absolute;
-			bottom: 2px;
+			bottom: 0px;
 			padding: 0 2px;
 
 			cursor: default;
@@ -388,11 +389,13 @@ header#branding {
 		.scroll-left {
 			left: 0;
 			background: @fade-left;
+			.icon(chevron-left);
 		}
 
 		.scroll-right {
 			right: 0;
 			background: @fade-right;
+			.icon(chevron-right);
 		}
 
 		.scroll-left.disabled,

@@ -25,7 +25,7 @@
 	</script>
 </head>
 <body class="test">
-	<a href="<?= site_url('/scoring/') ?>" class="back-button xx-large">&#xe071;</a>
+	<a href="<?= site_url('/scoring/') ?>" class="back-button"></a>
 	<h1>Device Test</h1>
 
 	<table id="tests" class="x-large">

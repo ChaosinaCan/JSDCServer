@@ -1,4 +1,5 @@
-﻿@import "colors.less";
+﻿@import "../common/colors.less";
+@import "../common/icons.less";
 
 @tile-text: #000;
 @tile-grey: #d0d0d0;
@@ -58,12 +59,12 @@ nav {
 		}
 
 		&:before {
-			font-family: 'Segoe Command';
 			float: left;
+			width: 130px;
 			margin-top: -100px;
-			margin-left: 5px;
-			font-size: 80px;
-			line-height: 1;
+			margin-left: -10px;
+			font-size: 90px;
+			text-align: center;
 		}
 	}
 
@@ -72,91 +73,69 @@ nav {
 		background-size: 310px 200px;
 	}
 
+	// Root page icons
+	a[href=scoring] {
+		.icon(clipboard);
+	}
+
+	a[href=admin] {
+		.icon(levels);
+	}
+
+	// Admin page icons
 	a[href=game] {
 		.tile-colors(@tile-purple);
-
-		&:before {
-			content: '';
-		}
+		.icon(android-clock);
 	}
 
 	a[href=matches] {
-		&:before {
-			content: '';
-		}
+		.icon(ios7-calendar-outline)
 	}
+
 	a[href=scores] {
-		&:before {
-			font-size: 65px;
-			margin-top: -90px;
-			margin-left: 12px;
-			content: '';
-		}
+		.icon(ios7-recording);
 	}
 
 	a[href=teams] {
-		&:before {
-			content: '';
-		}
+		.icon(android-friends);
 	}
 
 	a[href=users] {
-		&:before {
-			content: '';
-		}
+		.icon(android-contact);
 	}
 
-	a[href=scoring],
 	a[href=rules] {
-		&:before {
-			content: '';
-		}
+		.icon(clipboard);
 	}
 
 	a[href=results] {
-		&:before {
-			content: '';
-			transform: scaleX(-1);
-		}
+		.icon(connection-bars);
 	}
 
 	a[href=scoreboard] {
 		.tile-colors(@tile-green, 4%, 5%, 15%);
-		&:before {
-			content: '';
-		}
+		.icon(monitor);
 	}
 
 	a[href=schedule] {
 		.tile-colors(@tile-green, 4%, 5%, 15%);
-		&:before {
-			content: '';
-		}
+		.icon(android-alarm);
 	}
 
 	a[href=audio] {
-		&:before {
-			content: '';
-		}
+		.icon(volume-medium);
 	}
 
-	a[href=setup] {
-		&:before {
-			content: '';
-		}
-	}
-
-	a[href=admin],
 	a[href=debug] {
-		&:before {
-			content: '';
-		}
+		.icon(levels);
+	}
+
+	a[href$=install] {
+		.icon(android-storage);
 	}
 
 	a[href=about] {
-		&:before {
-			content: '';
-		}
+		.icon(information-circled);
 	}
 }
 

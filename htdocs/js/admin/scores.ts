@@ -100,7 +100,7 @@ module scores {
 	}
 
 	export function resetForm(): void {
-		$('#from-team, #on-team, #action, #foul').val('0').trigger('chosen:update');
+		$('#from-team, #on-team, #action, #foul').val('0').trigger('chosen:updated');
 		$('#disable, #disqualify').prop('checked', false);
 	}
 
@@ -194,7 +194,7 @@ module scores {
 			$('#open').prop('checked', match.open).prop('disabled', false);
 			$('#new-score').find('input, select, button')
 				.prop('disabled', !match.open)
-				.trigger('chosen:update');
+				.trigger('chosen:updated');
 
 			if (match.open && ['none', 'ready'].contains(match.status)) {
 				$('#state-warning').show();
@@ -213,7 +213,7 @@ module scores {
 			$('#open').prop('checked', false).prop('disabled', true);
 			$('#new-score').find('input, select, button')
 				.prop('disabled', true)
-				.trigger('chosen:update');
+				.trigger('chosen:updated');
 		}
 
 		validateScoreEntry();
@@ -313,25 +313,32 @@ module scores {
 
 	function deselectFoul(): void {
 		if ($('#action').val() != '0') {
-			$('#foul').val('0').trigger('chosen:update');
+			$('#foul').val('0').trigger('chosen:updated');
 		}
 		validateScoreEntry();
 	}
 
 	function deselectAction(): void {
 		if ($('#foul').val() != '0') {
-			$('#action').val('0').trigger('chosen:update');
+			$('#action').val('0').trigger('chosen:updated');
 		}
 		validateScoreEntry();
 	}
 
 	function updateTeamSelectClass(e: JQueryEventObject): void {
 		var select = $(this);
-		var chznSpan = select.siblings('.chzn-container').find('.chzn-single span');
+		var chznSpan = select.siblings('.chosen-container').find('.chosen-single span');
 
 		chznSpan.removeClass();
 		if (select.val() != 0) {
-			chznSpan.addClass(getColor(select.val()));
+			var teamId = select.val();
+			for (var i = 0; i < scores.match.teams.length; i++)	{
+				var team = scores.match.teams[i];
+				if (team.teamId == teamId) {
+					chznSpan.addClass(getColor(team.colorId));
+					break;
+				}
+			}
 		}
 	}
 
@@ -356,7 +363,7 @@ module scores {
 			)
 		}
 
-		$('#from-team, #on-team').trigger('chosen:update');
+		$('#from-team, #on-team').trigger('chosen:updated');
 	}
 
 	function validateScoreEntry(): void {

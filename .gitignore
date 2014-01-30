@@ -51,8 +51,11 @@ _old
 /htdocs/restricted/*
 /htdocs/xampp/*
 /htdocs/css/admin/*.css
+/htdocs/css/admin/*.min.css
+/htdocs/css/common/*.css
+/htdocs/css/common/*.min.css
 /htdocs/css/scoring/*.css
-/htdocs/fonts/seg*.ttf
+/htdocs/css/scoring/*.min.css
 /htdocs/js/admin/*.js
 /htdocs/js/admin/*.js.map
 /htdocs/js/install/*.js

@@ -1,4 +1,5 @@
-﻿@import "colors.less";
+﻿@import "../common/colors.less";
+@import "../common/icons.less";
 
 body {
 	margin-bottom: 280px;
@@ -61,7 +62,6 @@ body {
 		}
 
 		td.controls {
-			font-family: 'Segoe Command';
 			white-space: nowrap;
 
 			button {
@@ -83,7 +83,16 @@ body {
 			}
 		}
 
+		button.undo {
+			.icon(ios7-undo);
+		}
+
+		button.delete {
+			.icon(close);
+		}
+
 		button.undelete {
+			.icon(ios7-redo);
 			display: none;
 		}
 

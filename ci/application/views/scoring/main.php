@@ -39,7 +39,7 @@
 	</script>
 </head>
 <body class="main <?= $color ?>">
-	<a href="<?= site_url('/scoring/teamselect/') ?>" class="back-button xx-large">&#xe071;</a>
+	<a href="<?= site_url('/scoring/teamselect/') ?>" class="back-button xx-large"></a>
 	<h1><?= $team->name ?></h1>
 	<div id="field"></div>
 

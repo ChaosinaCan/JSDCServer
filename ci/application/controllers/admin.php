@@ -228,9 +228,6 @@ class Admin extends CI_Controller {
 		'debug' => array(
 			'view' => 'columns',
 		),
-		'setup' => array(
-			'view' => 'full',
-		),
 		'about' => array(
 			'view' => 'full',
 		),
@@ -250,7 +247,7 @@ class Admin extends CI_Controller {
 		),
 		'field-listener' => array(
 			'js' => array('admin/field-listener.js'),
-			'css' => array('admin/field-display.css'),
+			'css' => array('common/field-display.css'),
 		),
 		'tournament' => array(
 			'js' => array('admin/tournament.js'),

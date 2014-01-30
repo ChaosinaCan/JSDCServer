@@ -82,22 +82,13 @@
     <Content Include="htdocs\css\admin\base.min.css">
       <DependentUpon>base.less</DependentUpon>
     </Content>
-    <Content Include="htdocs\css\admin\chosen.less" />
-    <Content Include="htdocs\css\admin\chosen.min.css">
+    <Content Include="htdocs\css\common\chosen.css">
       <DependentUpon>chosen.less</DependentUpon>
     </Content>
-    <Content Include="htdocs\css\admin\colors.less" />
+    <Content Include="htdocs\css\common\colors.less" />
     <Content Include="htdocs\css\admin\debug.less" />
     <Content Include="htdocs\css\admin\debug.min.css">
       <DependentUpon>debug.less</DependentUpon>
-    </Content>
-    <Content Include="htdocs\css\admin\field-display.less" />
-    <Content Include="htdocs\css\admin\field-display.min.css">
-      <DependentUpon>field-display.less</DependentUpon>
-    </Content>
-    <Content Include="htdocs\css\admin\font.less" />
-    <Content Include="htdocs\css\admin\font.min.css">
-      <DependentUpon>font.less</DependentUpon>
     </Content>
     <Content Include="htdocs\css\admin\game.less" />
     <Content Include="htdocs\css\admin\game.min.css">
@@ -115,8 +106,14 @@
     <Content Include="htdocs\css\admin\matches.min.css">
       <DependentUpon>matches.less</DependentUpon>
     </Content>
-    <Content Include="htdocs\css\admin\reset.less" />
-    <Content Include="htdocs\css\admin\reset.min.css">
+    <Content Include="htdocs\css\common\field-display.css">
+      <DependentUpon>field-display.less</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\common\font.css">
+      <DependentUpon>font.less</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\common\reset.less" />
+    <Content Include="htdocs\css\common\reset.min.css">
       <DependentUpon>reset.less</DependentUpon>
     </Content>
     <Content Include="htdocs\css\admin\results.less" />
@@ -143,6 +140,18 @@
     <Content Include="htdocs\css\admin\teams.min.css">
       <DependentUpon>teams.less</DependentUpon>
     </Content>
+    <Content Include="htdocs\css\common\icon.css">
+      <DependentUpon>icons.less</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\common\icon.min.css">
+      <DependentUpon>icon.css</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\common\icons.css">
+      <DependentUpon>icons.less</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\common\icons.min.css">
+      <DependentUpon>icons.css</DependentUpon>
+    </Content>
     <Content Include="htdocs\css\scoring\base.less" />
     <Content Include="htdocs\css\scoring\base.min.css">
       <DependentUpon>base.less</DependentUpon>
@@ -155,7 +164,9 @@
     <Content Include="htdocs\css\scoring\scoring.min.css">
       <DependentUpon>scoring.less</DependentUpon>
     </Content>
+    <Content Include="htdocs\fonts\Apache License.txt" />
     <Content Include="htdocs\fonts\DroidSansMono.ttf" />
+    <Content Include="htdocs\fonts\ionicons.svg" />
     <Content Include="htdocs\fonts\NOTICE" />
     <Content Include="htdocs\fonts\segoeui.ttf" />
     <Content Include="htdocs\fonts\segoeuib.ttf" />
@@ -194,20 +205,11 @@
     <Content Include="htdocs\css\admin\base.css">
       <DependentUpon>base.less</DependentUpon>
     </Content>
-    <Content Include="htdocs\css\admin\chosen.css">
-      <DependentUpon>chosen.less</DependentUpon>
-    </Content>
-    <Content Include="htdocs\css\admin\colors.css">
+    <Content Include="htdocs\css\common\colors.css">
       <DependentUpon>colors.less</DependentUpon>
     </Content>
     <Content Include="htdocs\css\admin\debug.css">
       <DependentUpon>debug.less</DependentUpon>
-    </Content>
-    <Content Include="htdocs\css\admin\field-display.css">
-      <DependentUpon>field-display.less</DependentUpon>
-    </Content>
-    <Content Include="htdocs\css\admin\font.css">
-      <DependentUpon>font.less</DependentUpon>
     </Content>
     <Content Include="htdocs\css\admin\game.css">
       <DependentUpon>game.less</DependentUpon>
@@ -221,7 +223,7 @@
     <Content Include="htdocs\css\admin\matches.css">
       <DependentUpon>matches.less</DependentUpon>
     </Content>
-    <Content Include="htdocs\css\admin\reset.css">
+    <Content Include="htdocs\css\common\reset.css">
       <DependentUpon>reset.less</DependentUpon>
     </Content>
     <Content Include="htdocs\css\admin\results.css">
@@ -447,6 +449,34 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="htdocs\js\admin\field-style.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="htdocs\css\common\chosen.less" />
+    <Content Include="htdocs\css\common\field-display.less" />
+    <Content Include="htdocs\css\common\font.less" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="htdocs\fonts\ionicons.eot" />
+    <Content Include="htdocs\fonts\ionicons.ttf" />
+    <Content Include="htdocs\fonts\ionicons.woff" />
+    <Content Include="htdocs\fonts\OpenSans-Bold.ttf" />
+    <Content Include="htdocs\fonts\OpenSans-BoldItalic.ttf" />
+    <Content Include="htdocs\fonts\OpenSans-ExtraBold.ttf" />
+    <Content Include="htdocs\fonts\OpenSans-ExtraBoldItalic.ttf" />
+    <Content Include="htdocs\fonts\OpenSans-Italic.ttf" />
+    <Content Include="htdocs\fonts\OpenSans-Light.ttf" />
+    <Content Include="htdocs\fonts\OpenSans-LightItalic.ttf" />
+    <Content Include="htdocs\fonts\OpenSans-Regular.ttf" />
+    <Content Include="htdocs\fonts\OpenSans-Semibold.ttf" />
+    <Content Include="htdocs\fonts\OpenSans-SemiboldItalic.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="htdocs\css\common\animation.less" />
+    <Content Include="htdocs\css\common\_ionicons-icons.less" />
+    <Content Include="htdocs\css\common\_ionicons-variables.less" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="htdocs\css\common\icons.less" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TypeScript\Microsoft.TypeScript.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
