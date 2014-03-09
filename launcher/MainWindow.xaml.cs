@@ -71,10 +71,19 @@ namespace JSDC.Launcher
 		{
 			if (e.Key == Key.Enter && !string.IsNullOrWhiteSpace(input.Text))
 			{
+				if (input.Text.Trim().ToLowerInvariant() == "clear")
+				{
+					inputHistory.Clear();
+					inputHistoryIndex = -1;
+					console.ClearOutput();
+				}
+				else
+				{
+					inputHistory.Add(input.Text);
+					inputHistoryIndex = inputHistory.Count;
+					console.WriteInput(input.Text + Environment.NewLine, true, Colors.MediumOrchid);
+				}
 				currentInput = null;
-				inputHistory.Add(input.Text);
-				inputHistoryIndex = inputHistory.Count;
-				console.WriteInput(input.Text + Environment.NewLine, true, Colors.MediumOrchid);
 				input.Text = "";
 			}
 		}

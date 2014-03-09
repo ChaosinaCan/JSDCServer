@@ -3,7 +3,6 @@
 section.controls {
 	flex: 0 0 580px !important;
 	max-width: 580px;
-
 	display: flex;
 	flex-flow: row wrap;
 	align-content: flex-start;
@@ -21,9 +20,9 @@ section.controls {
 		display: none;
 	}
 
-	h2.no-match .no-match {
-		display: inline;
-	}
+		h2.no-match .no-match {
+			display: inline;
+		}
 
 	#new-score {
 		margin-top: 20px;
@@ -33,7 +32,6 @@ section.controls {
 		display: flex;
 		flex-flow: row wrap;
 		align-content: flex-end;
-
 		margin-right: -10px;
 		margin-top: 5px;
 
@@ -72,7 +70,6 @@ section.results {
 		.primary {
 			position: relative;
 			overflow: hidden;
-
 			font-size: 24pt;
 			font-weight: 200;
 			letter-spacing: 0.01em;
@@ -82,7 +79,6 @@ section.results {
 				position: absolute;
 				left: 0;
 				right: 2.5em;
-
 				overflow: hidden;
 				text-overflow: ellipsis;
 			}
@@ -97,7 +93,6 @@ section.results {
 			font-weight: 200;
 			letter-spacing: 0.01em;
 			line-height: 1.2;
-
 			display: flex;
 			flex-flow: row;
 			justify-content: space-between;
@@ -107,7 +102,6 @@ section.results {
 			content: ' ';
 			display: block;
 			float: left;
-
 			width: 20px;
 			height: 60px;
 			margin-top: 6px;
@@ -183,10 +177,21 @@ section.history {
 			content: '■ ';
 		}
 
-		&.red:before { color: @red; }
-		&.blue:before { color: @blue; }
-		&.green:before { color: @green; }
-		&.yellow:before { color: @yellow; }
+		&.red:before {
+			color: @red;
+		}
+
+		&.blue:before {
+			color: @blue;
+		}
+
+		&.green:before {
+			color: @green;
+		}
+
+		&.yellow:before {
+			color: @yellow;
+		}
 	}
 }
 
@@ -197,10 +202,8 @@ section.history {
 	div.content {
 		max-height: 660px - 32px - 32px;
 		overflow: auto;
-
 		margin-right: -20px;
 		padding-right: 20px;
-
 		columns: 4;
 
 		h2 {
@@ -220,14 +223,14 @@ section.history {
 				cursor: default;
 			}
 
-			li:not(.current):hover {
-				border-color: @light;
-				background: fade(@light, 25%);
-			}
+				li:not(.current):hover {
+					border-color: @light;
+					background: fade(@light, 25%);
+				}
 
-			li.current {
-				color: @dark-accent;
-			}
+				li.current {
+					color: @dark-accent;
+				}
 		}
 	}
 }

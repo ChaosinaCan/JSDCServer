@@ -45,6 +45,10 @@ node_modules
 /htdocs/uploads
 /htdocs/video
 
+# Generated Files
+*.css.map
+*.js.map
+
 # Untracked Files
 _old
 /htdocs/forbidden/*
@@ -57,16 +61,11 @@ _old
 /htdocs/css/scoring/*.css
 /htdocs/css/scoring/*.min.css
 /htdocs/js/admin/*.js
-/htdocs/js/admin/*.js.map
 /htdocs/js/install/*.js
-/htdocs/js/install/*.js.map
 /htdocs/js/scoring/*.js
-/htdocs/js/scoring/*.js.map
 /htdocs/xampp/.htaccess
 /node/*.js
-/node/*.js.map
 /node/*/*.js
-/node/*/*.js.map
 !/node/compile.js
 
 Thumbs.db

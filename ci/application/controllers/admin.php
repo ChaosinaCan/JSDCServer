@@ -246,8 +246,7 @@ class Admin extends CI_Controller {
 			'css' => array('admin/score-list.css'),
 		),
 		'field-listener' => array(
-			'js' => array('admin/field-listener.js'),
-			'css' => array('common/field-display.css'),
+			'js' => array('admin/field-renderer.js'),
 		),
 		'tournament' => array(
 			'js' => array('admin/tournament.js'),

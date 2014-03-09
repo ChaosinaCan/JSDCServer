@@ -20,7 +20,7 @@ export var cueServers = [
 ]
 
 // Import the game's rule set here
-import rules = require('./rules-2013/rules');
+import rules = require('./rules-2014/rules');
 
 import clock = require('clock');
 import jdsc = require('jsdc');

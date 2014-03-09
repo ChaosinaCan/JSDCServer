@@ -8,6 +8,7 @@
 		scoreboard.init();
 	});
 </script>
+<script src="/js/admin/field-renderer.js"></script>
 
 <div id="view-scoreboard" class="view current">
 	<div id="main">
@@ -25,12 +26,16 @@
 		</div>
 	</div>
 
-	<ul id="legend" class="x-large">
-		<li><span class="ion-ios7-browsers"></span> Powered Territories</li>
-		<li><span class="ion-ios7-browsers-outline"></span> Unpowered Territories</li>
-		<li><span class="ramp ion-android-arrow-up-right"></span> Ramp</li>
-		<li><span class="ion-flash"></span> Power Source</li>
-	</ul>
+	<dl id="legend" class="x-large">
+		<dt class="color">◼</dt>
+		<dd>Powered Territory</dd>
+		<dt class="color">◻</dt>
+		<dd>Unpowered Territory</dd>
+		<dt>✦</dt>
+		<dd>Control Point</dd>
+		<dt>⚡</dt>
+		<dd>Power Source</dd>
+	</dl>
 </div><!-- #view-scoreboard -->
 
 <div id="view-pregame" class="view">
@@ -51,17 +56,17 @@
 
 <div id="toolbar">
 	<div class="appbar">
-		<button id="change-view-pregame" class="command" title="Pre-game">&#xf302;</button>
-		<button id="change-view-scoreboard" class="command" title="Scoreboard">&#xf2d6;</button>
-		<button id="change-view-videos" class="command" title="Videos">&#xf18e;</button>
+		<button id="change-view-pregame" class="command" title="Pre-game">&#xe154;</button>
+		<button id="change-view-scoreboard" class="command" title="Scoreboard">&#xe121;</button>
+		<button id="change-view-videos" class="command" title="Videos">&#xe116;</button>
 
 		<hr class="split">
 
-		<button id="res768" class="command" title="1366 × 768">&#xf1fc</button>
-		<button id="res900" class="command" title="1600 × 900">&#xf1fc</button>
-		<button id="res1080" class="command" title="1920 × 1080">&#xf20a</button>
-		<button id="refresh" class="command" title="Refresh">&#xf21c;</button>
-		<button id="fullscreen" class="command" title="Fullscreen">&#xf25e;</button>
-		<button id="restore" class="command" title="Restore">&#xf267;</button>
+		<button id="res768" class="command" title="1366 × 768">&#xe1e4</button>
+		<button id="res900" class="command" title="1600 × 900">&#xe1e4</button>
+		<button id="res1080" class="command" title="1080 × 920">&#xe1e4</button>
+		<button id="refresh" class="command" title="Refresh">&#xe149;</button>
+		<button id="fullscreen" class="command" title="Fullscreen">&#xe1d9;</button>
+		<button id="restore" class="command" title="Restore">&#xe1d8;</button>
 	</div>
 </div>

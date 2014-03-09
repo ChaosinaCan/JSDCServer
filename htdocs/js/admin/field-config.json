@@ -1,0 +1,74 @@
+﻿{
+	"dimensions": {
+		"outerBorderWidth": 8,
+		"innerBorderWidth": 3,
+		"levelBorderWidth": 6,
+		"ringWidth": 20
+	},
+	"colors": {
+		"field": {
+			"fg": "#4b0082",
+			"bg": "#d7d7d7"
+		},
+		"empty": {
+			"fg": "#4b0082",
+			"bg": "#916cad"
+		},
+		"neutral": {
+			"fg": "#4b0082",
+			"bg": "transparent",
+			"select": "#a9a9a9"
+		},
+		"red": {
+			"fg": "#fff",
+			"bg": "#ff7f00",
+			"select": "#ffd678"
+		},
+		"blue": {
+			"fg": "#fff",
+			"bg": "#008",
+			"select": "#6363f2"
+		},
+		"green": {
+			"fg": "#fff",
+			"bg": "#080",
+			"select": "#3bbf3b"
+		},
+		"yellow": {
+			"fg": "#000",
+			"bg": "#ee0",
+			"select": "#cfcf0a"
+		}
+	},
+	"icons": {
+		"s": {
+			"character": "\uf15b",
+			"size": 0.7
+		},
+		"j": {
+			"character": "\uf20a",
+			"size": 0.7
+		},
+		"a": {
+			"character": "\uf127",
+			"size": 0.7
+		},
+		
+		"v": {
+			"character": "\uf2cb",
+			"size": 0.5
+		},
+		">": {
+			"character": "\uf2cc",
+			"size": 0.5
+		},
+		"<": {
+			"character": "\uf2cd",
+			"size": 0.5
+		},
+		"^": {
+			"character": "\uf2ce",
+			"size": 0.5
+		}
+	}
+}

@@ -1,11 +1,10 @@
 ﻿@import "../common/colors.less";
+@import "../common/icons.less";
 
 html {
 	padding-top: 64px;
-}
-
-body {
-	padding-bottom: 64px + 30px;
+	padding-left: 20px;
+	padding-right: 20px;
 }
 
 .back-button {
@@ -22,11 +21,9 @@ body > h1 {
 	left: 0;
 	right: 0;
 	padding-left: 100px;
-
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-
 	border-left: 10px solid @neutral;
 }
 
@@ -50,90 +47,24 @@ body.yellow > h1 {
 	.bar-left(10px, fade(@yellow, 30));
 }
 
-#field {
+#field-container {
 	padding: 20px;
-	margin-left: -40px;
-	margin-right: -40px;
-
+	margin-left: -20px;
+	margin-right: -20px;
 	overflow: auto;
 }
 
-table.field {
-	min-width: 700px;
-	min-height: 700px;
-
+div.field {
 	-webkit-transition: -webkit-transform 0.5s;
+	transition: -webkit-transform 0.5s;
 	transition: transform 0.5s;
-
-	td:not(.out):not(.source):not(.spin):hover {
-		background-color: @active !important;
-	}
-}
-
-#batteries {
-	overflow: hidden;
-	margin-bottom: 20px;
-
-	h2 {
-		color: @field-border;
-	}
-
-	h2, div {
-		float: left;
-	}
-
-	.battery + h2 {
-		margin-left: 20px;
-	}
-
-	.battery {
-		margin-left: 10px;
-		width: 48px;
-		height: 48px;
-		border: 2px dashed @field-border;
-
-		font-size: 32px;
-		line-height: 44px;
-		text-align: center;
-		color: darken(@background, 20);
-	}
-
-	.battery.owned {
-		border-style: solid;
-		color: @field-border;
-	}
-}
-
-body.red #batteries .battery.colored.owned {
-	border-color: @red;
-	color: @red;
-
-	&:hover { background-color: fade(@red, 50); }
-}
-
-body.blue #batteries  .battery.colored.owned {
-	border-color: @blue;
-	color: @blue;
-
-	&:hover { background-color: fade(@blue, 50); }
-}
-
-body.green #batteries  .battery.colored.owned {
-	border-color: @green;
-	color: @green;
-
-	&:hover { background-color: fade(@green, 50); }
-}
-
-body.yellow #batteries  .battery.colored.owned {
-	border-color: darken(@yellow, 10);
-	color: darken(@yellow, 10);
-
-	&:hover { background-color: fade(@yellow, 50); }
+	-webkit-user-select: none;
+	user-select: none;
 }
 
 #buttons {
 	overflow: auto;
+
 	button {
 		float: left;
 		margin: 0 10px 10px 0;
@@ -160,37 +91,38 @@ ul.actionselect {
 			line-height: 1.5;
 		}
 
-		a:hover {
-			background: fade(#008a66, 70%);
-		}
+			a:hover {
+				background: fade(#008a66, 70%);
+			}
 
-		a:before {
-			content: ' ';
-			display: block;
-			float: left;
-			width: 40px;
-			height: 40px;
-			margin-right: 10px;
-
-			text-align: center;
-
-			background: fade(#008a66, 70%);
-		}
-
-		a.battery:before {
-			content: '⚡';
-		}
-
-		a.drop {
-			.icon(arrow-down-a);
-		}
+			a:before {
+				content: ' ';
+				display: block;
+				float: left;
+				width: 40px;
+				height: 40px;
+				margin-right: 10px;
+				text-align: center;
+				background: fade(#008a66, 70%);
+			}
 	}
 }
 
-body.red a.take:before { background: @red; }
-body.blue a.take:before { background: @blue; }
-body.green a.take:before { background: @green; }
-body.yellow a.take:before { background: @yellow; }
+body.red a.take:before {
+	background: @red;
+}
+
+body.blue a.take:before {
+	background: @blue;
+}
+
+body.green a.take:before {
+	background: @green;
+}
+
+body.yellow a.take:before {
+	background: @yellow;
+}
 
 @media (min-height: 990px) {
 	body {

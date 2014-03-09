@@ -4,6 +4,19 @@ import http = require('http');
 import clock = require('./clock');
 import BaseEventEmitter = require('./eventbase');
 
+export interface Action {
+	actionId: number;
+	fromValue: number;
+	onValue: number;
+	name: string;
+}
+
+export interface Foul {
+	foulId: number;
+	name: string;
+	value: number;
+}
+
 export interface NodeCallback {
 	(err: any, data?: any): any;
 }
@@ -14,7 +27,7 @@ export function serialize(obj: any) {
 
 	var query = [];
 	for (var key in obj) {
-		if (!obj.hasOwnProperty(key)) 
+		if (!obj.hasOwnProperty(key))
 			continue;
 
 		if (obj[key] === null)
@@ -33,7 +46,7 @@ export function bindMemberFunctions(obj: any) {
 		for (var m in _this) {
 			var fn = _this[m];
 			if (typeof fn === 'function' && m != 'constructor') {
-				_constructor.__fn__[m] = fn;	
+				_constructor.__fn__[m] = fn;
 			}
 		}
 	}
@@ -41,12 +54,11 @@ export function bindMemberFunctions(obj: any) {
 	for (var m in _constructor.__fn__) {
 		(function (m, fn) {
 			_this[m] = function () {
-				return fn.apply(_this, Array.prototype.slice.call(arguments));						
+				return fn.apply(_this, Array.prototype.slice.call(arguments));
 			};
 		})(m, _constructor.__fn__[m]);
 	}
 }
-
 
 export class ResponseHandler extends BaseEventEmitter {
 	private callback: Function;
@@ -61,14 +73,14 @@ export class ResponseHandler extends BaseEventEmitter {
 		res.setEncoding('utf-8');
 		var data = '';
 
-		res.on('data', (chunk) => data += chunk	);
+		res.on('data', (chunk) => data += chunk);
 
 		res.on('end', () => {
 			if (res.statusCode >= 200 && res.statusCode < 300) {
 				try {
 					data = JSON.parse(data);
 				} catch (e) { }
-				
+
 				this.emitResult(data);
 			} else {
 				this.emitError(new Error(res.statusCode + ': ' + data));
@@ -91,8 +103,6 @@ export class ResponseHandler extends BaseEventEmitter {
 		if (this.callback)
 			this.callback(err);
 	}
-
-
 
 	get(options: any): ResponseHandler {
 		var req = http.get(options, this.setResponse);
@@ -134,8 +144,6 @@ export class ResponseHandler extends BaseEventEmitter {
 	}
 }
 
-
-
 export class API {
 	public apikey: string;
 
@@ -161,7 +169,6 @@ export class API {
 	}
 
 	post(method: string, params: any, callback?: NodeCallback): ResponseHandler {
-		
 		var request = {
 			host: this.host,
 			port: this.port,
@@ -187,8 +194,8 @@ export class CueServer {
 	send(cue: number, callback: NodeCallback): ResponseHandler;
 	send(cmd: any, callback: NodeCallback): ResponseHandler;
 	send(options: { cmd?: string; user?: number; def?: number; }, callback: NodeCallback): ResponseHandler {
-		var command, 
-			user = null, 
+		var command,
+			user = null,
 			def = null;
 
 		if (typeof arguments[0] === 'number') {
@@ -215,7 +222,6 @@ export class CueServer {
 		return new ResponseHandler(callback).get(request);
 	}
 }
-
 
 export class GameAudio extends BaseEventEmitter {
 	public files = {};
@@ -247,21 +253,25 @@ export class GameAudio extends BaseEventEmitter {
 	}
 }
 
-
 export class GameRules extends BaseEventEmitter {
 	public cues: any;
 	public actions: any;
-	
+
 	public api: API;
 	public cue: CueServer[];
 	public game: clock.GameClock;
 	public audio: GameAudio;
 
+	/**
+	 * Returns true if action, color and foul definitions have been loaded.
+	 */
 	get rulesLoaded() {
-		return !!this._colors;
+		return !!this._colors && !!this._actions && !!this._fouls;
 	}
 
-	private _colors: { [key: string]: string; };
+	private _actions: { [key: number]: Action; };
+	private _colors: { [key: number]: string; };
+	private _fouls: { [key: number]: Foul; };
 
 	constructor(game: clock.GameClock, api: API, cue: CueServer[]) {
 		super();
@@ -282,7 +292,7 @@ export class GameRules extends BaseEventEmitter {
 				// de-camelcase event names
 				var event = key;
 				for (var i = 0; i < event.length; i++) {
-					var e:string = event[i];
+					var e: string = event[i];
 					if (e < 'A' || e > 'Z')
 						continue;
 
@@ -301,6 +311,20 @@ export class GameRules extends BaseEventEmitter {
 				this._colors[color.colorId] = color.name;
 			});
 		});
+
+		api.get('action', 'all', (err, data?: any[]) => {
+			this._actions = {};
+			data.forEach((action) => {
+				this._actions[action.actionId] = action;
+			});
+		});
+
+		api.get('foul', 'all', (err, data?: any[]) => {
+			this._fouls = {};
+			data.forEach((foul) => {
+				this._fouls[foul.foulId] = foul;
+			});
+		});
 	}
 
 	/**
@@ -312,43 +336,71 @@ export class GameRules extends BaseEventEmitter {
 		return {};
 	}
 
-	getColor(colorId: number) {
-		return this._colors[colorId.toString()] || null;
+	/**
+	 * Gets the action with the given ID
+	 */
+	getAction(actionId: number): Action {
+		return this._actions[actionId] || null;
 	}
 
 	/**
-	 * Sends a 'game event' event with the given event name and data
+	 * Gets the name of the color with the given ID
 	 */
-	sendEvent(event: string, channel: string, data?: any): void;
+	getColor(colorId: number): string {
+		return this._colors[colorId] || null;
+	}
+
+	/**
+	 * Gets the foul with the given ID
+	 */
+	getFoul(foulId: number): Foul {
+		return this._fouls[foulId] || null;
+	}
+
+	/**
+	 * Sends a 'game event' event with the given event name and data to a particular channel
+	 * @param event The name of the event
+	 * @param channel The name of the socket channel to send to
+	 * @param data The data to send
+	 */
+	sendEvent(event: string, channel: string, data: any): void;
+	/**
+	 * Sends a 'game event' event with the given event name and data
+	 * @param event The name of the event
+	 * @param data The data to send
+	 */
 	sendEvent(event: string, data?: any): void;
 	sendEvent(event: string, data?: any): void {
-		if (typeof arguments[2] !== 'undefined') {
-			this.game.emit('game event', {
+		var message;
+		if (arguments.length === 3) {
+			message = {
 				event: arguments[0],
 				channel: arguments[1],
 				data: arguments[2],
-			});
+			};
 		} else {
-			this.game.emit('game event', { event: event, data: data });
+			message = { event: event, data: data };
 		}
+
+		this.game.emit('game event', message);
 	}
 
 	/**
 	 * Creates a new scoring event for one team
-	 * @param {string} action The name of the action in this.actions
-	 * @param {number} team The id of the team which performed the action
-	 * @param {Function} callback
-	 */
-	/**
-	 * Creates a new scoring event by one team upon another
-	 * @param {string} action The name of the action in this.actions
-	 * @param {number} fromTeam The id of the team which performed the action
-	 * @param {number} onTeam The id of the team upon which the action was performed
-	 * @param {Function} callback
+	 * @param action The name of the action in this.actions
+	 * @param team The id of the team which performed the action
+	 * @param callback
 	 */
 	sendScore(action: string, team: number, callback?: NodeCallback): void;
+	/**
+	 * Creates a new scoring event by one team upon another
+	 * @param action The name of the action in this.actions
+	 * @param fromTeam The id of the team which performed the action
+	 * @param onTeam The id of the team upon which the action was performed
+	 * @param callback
+	 */
 	sendScore(action: string, fromTeam: number, onTeam?: number, callback?: NodeCallback): void;
-	sendScore(action: string, fromTeam: number, onTeam?: number, callback?: NodeCallback) {
+	sendScore(action: string, fromTeam: number, onTeam?: any, callback?: NodeCallback) {
 		if (typeof arguments[2] !== 'number') {
 			callback = arguments[2];
 			fromTeam = arguments[1];
@@ -370,16 +422,16 @@ export class GameRules extends BaseEventEmitter {
 
 	/**
 	 * Sends a cue to the first cue server.
-	 * @param {string} name The name of the cue in this.cues
-	 * @param {Function} callback
-	 */
-	/**
-	 * Sends a cue to a cue server
-	 * @param {number} server The index of the cue server to command
-	 * @param {string} name The name of the cue in this.cues
-	 * @param {Function} callback
+	 * @param name The name of the cue in this.cues
+	 * @param callback
 	 */
 	sendCue(name: string, callback?: NodeCallback);
+	/**
+	 * Sends a cue to a cue server
+	 * @param server The index of the cue server to command
+	 * @param name The name of the cue in this.cues
+	 * @param callback
+	 */
 	sendCue(server?: number, name?: string, callback?: NodeCallback);
 	sendCue(server?: any, name?: any, callback?: NodeCallback) {
 		if (typeof arguments[0] === 'string') {
@@ -397,11 +449,10 @@ export class GameRules extends BaseEventEmitter {
 		var cmd = this.findMember(name, this.cues);
 		if (cmd != null)
 			this.cue[server].send(cmd, callback);
-		else 
+		else
 			callback(new Error('Cue "' + name + '" does not exist.'));
 	}
 
-	
 	// remap onGameEvent({ 'some event', 'data' }) to onGameSomeEvent(data)
 	onGameEvent(e: { event: string; data: any; }) {
 		var event = e.event.split(' ').map((word: string) => {

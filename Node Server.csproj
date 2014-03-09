@@ -77,6 +77,8 @@
     <Content Include="node\main.js">
       <DependentUpon>main.ts</DependentUpon>
     </Content>
+    <TypeScriptCompile Include="node\rules-2014\field.ts" />
+    <TypeScriptCompile Include="node\rules-2014\rules.ts" />
     <TypeScriptCompile Include="node\socket.io.d.ts" />
     <TypeScriptComplie Include="node\main.ts" />
     <Content Include="node\node.d.ts" />

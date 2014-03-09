@@ -34,10 +34,10 @@ $(function () {
 		$(elem).removeAttr('title')
 			.empty()
 			.append(
-				$('<span class="commandicon commandring">').append(
-					$('<span class=commandimage>').text(icon)
+			$('<span class="commandicon commandring">').append(
+				$('<span class=commandimage>').text(icon)
 				),
-				$('<span class=label>').text(label)
+			$('<span class=label>').text(label)
 			);
 	});
 
@@ -1275,7 +1275,7 @@ module Modal {
 						}
 						return button;
 					})
-				);
+					);
 				content.append(buttons);
 			}
 
@@ -1294,9 +1294,9 @@ module Modal {
 						_onOpen.apply(this, _args);
 				});
 				dialog.container.css({
-						left: '-100%',
-						opacity: 0,
-					})
+					left: '-100%',
+					opacity: 0,
+				})
 					.animate({
 						left: '0%',
 						opacity: 1,
@@ -1311,9 +1311,9 @@ module Modal {
 				var _args = slice(arguments);
 
 				dialog.container.animate({
-						left: '100%',
-						opacity: 0,
-					}, 250, 'easeInQuint');
+					left: '100%',
+					opacity: 0,
+				}, 250, 'easeInQuint');
 
 				dialog.overlay.fadeOut(300, () => {
 					$.modal.close();
@@ -1552,10 +1552,19 @@ module Modal {
 // #region Type Extensions
 //-----------------------------------------------------------------------------
 
-interface Array {
+interface TypedCustomEvent<T> extends Event {
+	detail: T;
+	initCustomEvent(typeArg: string, canBubbleArg: boolean, cancelableArg: boolean, detailArg: T): void;
+}
+
+interface CustomEventListener<T> {
+	(evt: TypedCustomEvent<T>): void;
+}
+
+interface Array<T> {
 	indexByProperty(prop: string): any[];
-	remove(object: any): boolean;
-	contains(object: any): boolean;
+	remove(object: T): boolean;
+	contains(object: T): boolean;
 }
 
 /** Gets whether the array contains an object */
@@ -1638,7 +1647,7 @@ String.prototype.indent = function (level?: number): string {
 }
 
 /** Left-pads a string to a given length. If it is already the desired length or longer, nothing is done */
-String.prototype.pad = function(length: number, char?: string) {
+String.prototype.pad = function (length: number, char?: string) {
 	char = char || ' ';
 	var pad = (length - this.length) / char.length;
 	var padstr = '';
@@ -1648,7 +1657,7 @@ String.prototype.pad = function(length: number, char?: string) {
 }
 
 /** Splits the string into the parts before and after the first instance of a separator */
-String.prototype.partition = function(sep: string): PartitionResult {
+String.prototype.partition = function (sep: string): PartitionResult {
 	var i = this.indexOf(sep);
 	if (i >= 0) {
 		return {
@@ -1662,7 +1671,7 @@ String.prototype.partition = function(sep: string): PartitionResult {
 }
 
 /** Splits the string into the parts before and after the last instance of a separator */
-String.prototype.rpartition = function(sep: string): PartitionResult {
+String.prototype.rpartition = function (sep: string): PartitionResult {
 	var i = this.lastIndexOf(sep);
 	if (i >= 0) {
 		return {
@@ -1676,51 +1685,51 @@ String.prototype.rpartition = function(sep: string): PartitionResult {
 }
 
 /** Returns true if the string starts with a search string */
-String.prototype.startswith = function(str: string): boolean {
+String.prototype.startswith = function (str: string): boolean {
 	return this.indexOf(str) === 0;
 }
 
 // jQuery easings
 $.extend($.easing, {
 	easeInQuad: function (x, t, b, c, d) {
-		return c*(t/=d)*t + b;
+		return c * (t /= d) * t + b;
 	},
 	easeOutQuad: function (x, t, b, c, d) {
-		return -c *(t/=d)*(t-2) + b;
+		return -c * (t /= d) * (t - 2) + b;
 	},
 	easeInCubic: function (x, t, b, c, d) {
-		return c*(t/=d)*t*t + b;
+		return c * (t /= d) * t * t + b;
 	},
 	easeOutCubic: function (x, t, b, c, d) {
-		return c*((t=t/d-1)*t*t + 1) + b;
+		return c * ((t = t / d - 1) * t * t + 1) + b;
 	},
 	easeInQuart: function (x, t, b, c, d) {
-		return c*(t/=d)*t*t*t + b;
+		return c * (t /= d) * t * t * t + b;
 	},
 	easeOutQuart: function (x, t, b, c, d) {
-		return -c * ((t=t/d-1)*t*t*t - 1) + b;
+		return -c * ((t = t / d - 1) * t * t * t - 1) + b;
 	},
 	easeInQuint: function (x, t, b, c, d) {
-		return c*(t/=d)*t*t*t*t + b;
+		return c * (t /= d) * t * t * t * t + b;
 	},
 	easeOutQuint: function (x, t, b, c, d) {
-		return c*((t=t/d-1)*t*t*t*t + 1) + b;
+		return c * ((t = t / d - 1) * t * t * t * t + 1) + b;
 	},
 	easeInOutQuint: function (x, t, b, c, d) {
-		if ((t/=d/2) < 1) return c/2*t*t*t*t*t + b;
-		return c/2*((t-=2)*t*t*t*t + 2) + b;
+		if ((t /= d / 2) < 1) return c / 2 * t * t * t * t * t + b;
+		return c / 2 * ((t -= 2) * t * t * t * t + 2) + b;
 	},
 	easeInExpo: function (x, t, b, c, d) {
-		return (t==0) ? b : c * Math.pow(2, 10 * (t/d - 1)) + b;
+		return (t == 0) ? b : c * Math.pow(2, 10 * (t / d - 1)) + b;
 	},
 	easeOutExpo: function (x, t, b, c, d) {
-		return (t==d) ? b+c : c * (-Math.pow(2, -10 * t/d) + 1) + b;
+		return (t == d) ? b + c : c * (-Math.pow(2, -10 * t / d) + 1) + b;
 	},
 	easeInCirc: function (x, t, b, c, d) {
-		return -c * (Math.sqrt(1 - (t/=d)*t) - 1) + b;
+		return -c * (Math.sqrt(1 - (t /= d) * t) - 1) + b;
 	},
 	easeOutCirc: function (x, t, b, c, d) {
-		return c * Math.sqrt(1 - (t=t/d-1)*t) + b;
+		return c * Math.sqrt(1 - (t = t / d - 1) * t) + b;
 	},
 });
 
@@ -1801,6 +1810,15 @@ function deepEquals(a: any, b: any): boolean {
 		return true;
 	} else {
 		return a === b;
+	}
+}
+
+/** Runs a callback function for each property of an object */
+function iterkeys(object: any, callbackfn: (key: string) => any): void {
+	for (var key in object) {
+		if (object.hasOwnProperty(key)) {
+			callbackfn(key);
+		}
 	}
 }
 

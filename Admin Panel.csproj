@@ -106,6 +106,9 @@
     <Content Include="htdocs\css\admin\matches.min.css">
       <DependentUpon>matches.less</DependentUpon>
     </Content>
+    <Content Include="htdocs\css\common\colors.min.css">
+      <DependentUpon>colors.css</DependentUpon>
+    </Content>
     <Content Include="htdocs\css\common\field-display.css">
       <DependentUpon>field-display.less</DependentUpon>
     </Content>
@@ -152,9 +155,21 @@
     <Content Include="htdocs\css\common\icons.min.css">
       <DependentUpon>icons.css</DependentUpon>
     </Content>
+    <Content Include="htdocs\css\common\_ionicons-variables.css">
+      <DependentUpon>_ionicons-variables.less</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\common\_ionicons-variables.min.css">
+      <DependentUpon>_ionicons-variables.css</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\scoring\2013\scoring.css">
+      <DependentUpon>scoring.less</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\scoring\2013\scoring.min.css">
+      <DependentUpon>scoring.less</DependentUpon>
+    </Content>
     <Content Include="htdocs\css\scoring\base.less" />
     <Content Include="htdocs\css\scoring\base.min.css">
-      <DependentUpon>base.less</DependentUpon>
+      <DependentUpon>base.css</DependentUpon>
     </Content>
     <Content Include="htdocs\css\scoring\devicetest.less" />
     <Content Include="htdocs\css\scoring\devicetest.min.css">
@@ -164,21 +179,11 @@
     <Content Include="htdocs\css\scoring\scoring.min.css">
       <DependentUpon>scoring.less</DependentUpon>
     </Content>
-    <Content Include="htdocs\fonts\Apache License.txt" />
+    <Content Include="htdocs\fonts\Droid Sans Mono License.txt" />
     <Content Include="htdocs\fonts\DroidSansMono.ttf" />
+    <Content Include="htdocs\fonts\Ionicons License.txt" />
     <Content Include="htdocs\fonts\ionicons.svg" />
-    <Content Include="htdocs\fonts\NOTICE" />
-    <Content Include="htdocs\fonts\segoeui.ttf" />
-    <Content Include="htdocs\fonts\segoeuib.ttf" />
-    <Content Include="htdocs\fonts\segoeuii.ttf" />
-    <Content Include="htdocs\fonts\segoeuil.ttf" />
-    <Content Include="htdocs\fonts\segoeuisl.ttf" />
-    <Content Include="htdocs\fonts\segoeuiz.ttf" />
-    <Content Include="htdocs\fonts\seguili.ttf" />
-    <Content Include="htdocs\fonts\seguisb.ttf" />
-    <Content Include="htdocs\fonts\seguisbi.ttf" />
-    <Content Include="htdocs\fonts\seguisli.ttf" />
-    <Content Include="htdocs\fonts\seguisym.ttf" />
+    <Content Include="htdocs\fonts\Open Sans License.txt" />
     <Content Include="htdocs\index.php" />
     <TypeScriptCompile Include="htdocs\js\admin\field-renderer.ts" />
     <Content Include="htdocs\js\admin\field-renderer.js">
@@ -266,8 +271,6 @@
     </Content>
     <Content Include="htdocs\favicon.ico" />
     <Content Include="htdocs\favicon.png" />
-    <Content Include="htdocs\fonts\FONT INSTRUCTIONS.txt" />
-    <Content Include="htdocs\fonts\README.txt" />
     <Content Include="htdocs\img\default-team.svg" />
     <Content Include="htdocs\js\admin\audio.js">
       <DependentUpon>audio.ts</DependentUpon>
@@ -281,10 +284,6 @@
       <DependentUpon>debug.ts</DependentUpon>
     </Content>
     <TypeScriptCompile Include="htdocs\js\admin\debug.ts" />
-    <Content Include="htdocs\js\admin\field-listener.js">
-      <DependentUpon>field-listener.ts</DependentUpon>
-    </Content>
-    <TypeScriptCompile Include="htdocs\js\admin\field-listener.ts" />
     <Content Include="htdocs\js\admin\game.js">
       <DependentUpon>game.ts</DependentUpon>
     </Content>
@@ -401,6 +400,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="htdocs\js\install\" />
+    <Folder Include="htdocs\js\scoring\2013\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ci\application\views\admin\about.php" />
@@ -448,7 +448,7 @@
     <Content Include="ci\application\views\admin\2012\scoreboard.php" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="htdocs\js\admin\field-style.json" />
+    <Content Include="htdocs\js\admin\field-config.json" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="htdocs\css\common\chosen.less" />
@@ -460,9 +460,6 @@
     <Content Include="htdocs\fonts\ionicons.ttf" />
     <Content Include="htdocs\fonts\ionicons.woff" />
     <Content Include="htdocs\fonts\OpenSans-Bold.ttf" />
-    <Content Include="htdocs\fonts\OpenSans-BoldItalic.ttf" />
-    <Content Include="htdocs\fonts\OpenSans-ExtraBold.ttf" />
-    <Content Include="htdocs\fonts\OpenSans-ExtraBoldItalic.ttf" />
     <Content Include="htdocs\fonts\OpenSans-Italic.ttf" />
     <Content Include="htdocs\fonts\OpenSans-Light.ttf" />
     <Content Include="htdocs\fonts\OpenSans-LightItalic.ttf" />
@@ -477,6 +474,97 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="htdocs\css\common\icons.less" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="htdocs\css\admin\about.css.map">
+      <DependentUpon>about.css</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\admin\debug.css.map">
+      <DependentUpon>debug.css</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\admin\game.css.map">
+      <DependentUpon>game.css</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\admin\install.css.map">
+      <DependentUpon>install.css</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\admin\scores.css.map">
+      <DependentUpon>scores.css</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\common\chosen.css.map">
+      <DependentUpon>chosen.css</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\common\field-display.css.map">
+      <DependentUpon>field-display.css</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\common\font.css.map">
+      <DependentUpon>font.css</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="htdocs\css\admin\score-list.css.map">
+      <DependentUpon>score-list.css</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="htdocs\css\admin\matches.css.map">
+      <DependentUpon>matches.css</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="htdocs\css\admin\index.css.map">
+      <DependentUpon>index.css</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="htdocs\css\admin\schedule.css.map">
+      <DependentUpon>schedule.css</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="htdocs\css\admin\base.css.map">
+      <DependentUpon>base.css</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\admin\teams.css.map">
+      <DependentUpon>teams.css</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="htdocs\css\admin\results.css.map">
+      <DependentUpon>results.css</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\admin\scoreboard.css.map">
+      <DependentUpon>scoreboard.css</DependentUpon>
+    </Content>
+    <Content Include="htdocs\css\common\icons.css.map">
+      <DependentUpon>icons.css</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="htdocs\css\common\reset.css.map">
+      <DependentUpon>reset.css</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="htdocs\css\scoring\base.css.map">
+      <DependentUpon>base.css</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="htdocs\css\scoring\devicetest.css.map">
+      <DependentUpon>devicetest.css</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="htdocs\css\scoring\2013\scoring.less" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ci\application\views\scoring\2013\main.php" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="htdocs\css\scoring\scoring.css.map">
+      <DependentUpon>scoring.css</DependentUpon>
+    </Content>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TypeScript\Microsoft.TypeScript.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />

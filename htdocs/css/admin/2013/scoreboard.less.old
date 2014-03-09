@@ -1,6 +1,15 @@
 ﻿@import "../common/colors.less";
 @import "../common/icons.less";
 
+.view {
+	//opacity: 0;
+	//transition: opacity 0.5s;
+}
+
+.view.current {
+	//opacity: 1;
+}
+
 #main {
 	display: flex;
 	flex-flow: row;
@@ -24,22 +33,22 @@
 	text-align: center;
 }
 
-	#clock.paused {
-		.icon-after(pause);
+#clock.paused {
+	.icon-after(pause);
 
-		&:after {
-			line-height: 1;
-			display: inline-block;
-			width: 0;
-			margin-left: 0.33em;
-		}
+	&:after {
+		line-height: 1;
+		display: inline-block;
+		width: 0;
+		margin-left: 0.33em;
 	}
+}
 
-	#clock.text {
-		font-family: 'Open Sans';
-		font-size: 42pt;
-		line-height: 1.1429;
-	}
+#clock.text {
+	font-family: 'Open Sans';
+	font-size: 42pt;
+	line-height: 1.1429;
+}
 
 table.field {
 	td.admin {
@@ -59,6 +68,7 @@ table.field {
 
 	ul {
 		flex: 1 1 auto;
+
 		display: flex;
 		flex-flow: column;
 		align-items: stretch;
@@ -71,6 +81,7 @@ table.field {
 		.primary {
 			position: relative;
 			overflow: auto;
+
 			font-size: 42pt;
 			font-weight: 200;
 			letter-spacing: 0.01em;
@@ -80,6 +91,7 @@ table.field {
 				position: absolute;
 				left: 0;
 				right: 2.5em;
+
 				overflow: hidden;
 				text-overflow: ellipsis;
 			}
@@ -94,26 +106,35 @@ table.field {
 			font-weight: 300;
 			letter-spacing: 0.01em;
 			line-height: 1.2;
+
 			display: flex;
 			flex-flow: row;
 			justify-content: space-between;
 
-			.bottom:before {
-				content: 'Low × ';
+			.territories:before {
+				content: '◻ × ';
+			}
+			.points:before {
+				content: '✦ × ';
 			}
 
-			.middle:before {
-				content: 'Mid × ';
+			.battery {
+				margin-left: 20px;
+				font-weight: 600;
+				display: none;
 			}
 
-			.top:before {
-				content: 'High × ';
+			.battery.held {
+				display: inline;
 			}
 
-			.bottom,
-			.middle,
-			.top {
+			.territories,
+			.points {
 				flex: 0 1 120px;
+			}
+
+			.batteries {
+				flex: 0 1 100px;
 			}
 
 			.status {
@@ -126,6 +147,7 @@ table.field {
 			content: ' ';
 			display: block;
 			float: left;
+
 			width: 20px;
 			height: 100px;
 			margin-top: 20px;
@@ -155,19 +177,20 @@ table.field {
 	display: flex;
 	flex-flow: row;
 	justify-content: center;
+
 	margin-top: 20px;
 
-	li {
-		flex: 1 auto;
+	dt {
+		flex: 0 auto;
 		margin-right: 20px;
-
-		span {
-			margin-right: 5px;
-		}
 	}
 
-	.ramp {
-		font-size: 85%;
+	dt.color {
+		color: @field-border;
+	}
+
+	dd {
+		flex: 1 auto;
 	}
 }
 
@@ -195,8 +218,10 @@ table.field {
 		float: left;
 		width: 50%;
 		height: 50%;
+
 		border: 0 solid @background;
 		border-width: 20px 40px;
+
 		overflow: hidden;
 
 		h2 {
@@ -209,8 +234,10 @@ table.field {
 			left: 0;
 			right: 0;
 			padding: 0 0 5px 10px;
+
 			border-left: 20px solid @accent;
 			background: fade(@background, 80%);
+
 			.outline(fade(@background, 50%), 2px, 3px);
 		}
 
@@ -232,9 +259,7 @@ table.field {
 
 		img {
 			width: 100%;
-			height: 100%;
-			//height: auto;
-			object-fit: cover;
+			height: auto;
 		}
 	}
 }
@@ -245,6 +270,7 @@ table.field {
 	left: 40px;
 	bottom: 20px;
 	right: 40px;
+
 	transition-property: top left bottom right;
 	transition-duration: 0.3s;
 
@@ -255,6 +281,7 @@ table.field {
 		right: 0;
 		bottom: 74px;
 		transition: bottom 0.3s;
+
 		background: #000;
 
 		video {
@@ -275,6 +302,7 @@ table.field {
 		height: 74px;
 		padding-top: 10px;
 		transition: bottom 0.3s;
+
 		display: flex;
 		flex-flow: row;
 		justify-content: flex-start;
@@ -282,6 +310,7 @@ table.field {
 
 		li {
 			flex: 0 1 auto;
+
 			margin-right: 10px;
 			background-color: #000;
 
@@ -313,7 +342,7 @@ table.field {
 	}
 }
 
-.fullscreen() {
+html:fullscreen {
 	#view-pregame {
 		& > h1 {
 			font-size: 32pt;
@@ -330,18 +359,16 @@ table.field {
 	}
 }
 
-:-webkit-full-screen {
-	.fullscreen;
+@supports (-o-object-fit: cover) {
+	.teamcard img {
+		height: 100% !important;
+		-o-object-fit: cover;
+	}
 }
 
-:-moz-full-screen {
-	.fullscreen;
-}
-
-:-ms-fullscreen {
-	.fullscreen;
-}
-
-:fullscreen {
-	.fullscreen;
+@supports (object-fit: cover) {
+	.teamcard img {
+		height: 100% !important;
+		-o-object-fit: cover;
+	}
 }

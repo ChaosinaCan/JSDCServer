@@ -1,5 +1,5 @@
 ﻿/// <reference path="../admin/base.ts" />
-/// <reference path="../admin/field-renderer.ts" />
+/// <reference path="../admin/field-listener.ts" />
 
 module scoring {
 	// Public Variables
@@ -14,8 +14,9 @@ module scoring {
 	export var actionsById: ActionMap;
 	export var foulsById: FoulMap;
 
-	export var field: FieldListener;
-	export var touchListener: FieldTouchListener;
+	export var field: Field;
+	export var fieldRotation = 0;
+	export var claimingBattery = -1;
 
 	export var actionIds = {
 		action: 1,
@@ -34,40 +35,21 @@ module scoring {
 
 		jsdc.clock.connect(onconnect);
 
-		scoring.field = new FieldListener(scoring.colors, scoring.match.teams, false);
-		touchListener = null;
-
-		scoring.field.addEventListener('game status', (e) => {
-			scoring.onGameStatus(e.detail);
-		});
-		scoring.field.addEventListener('load', () => {
-			touchListener = new FieldTouchListener(scoring.field.field);
-			touchListener.addEventListener('click', (e) => {
-				territoryDialog(e.detail);
-			});
-
-			var container = $('#field');
-			var size = container.width();
-
-			scoring.field.field.setSize(size, size);
-			scoring.field.field.repaint();
-			container.append(scoring.field.field.field);
-			// so many fields!
-		});
+		field = new Field(scoring.colors, scoring.match.teams);
+		field.onload = onFieldLoaded;
+		$('#field').append(field.field);
 
 		$('#action').click($.single(actionHandler));
-		$('#ramp').click($.single(rampHandler));
 		$('#foul-personal').click(foulDialog.bind(null, 1));
 		$('#foul-technical').click(foulDialog.bind(null, 2));
 		$('#foul-flagrant').click(foulDialog.bind(null, 3));
 		$('#emergency').click(confirmEmergency);
 		$('#disabled').click(confirmDisabled);
 
-		$(window).resize(() => {
-			var size = $('#field').width();
-			field.field.setSize(size, size);
-			field.field.repaint();
-		});
+		$('#battery-0').click(ownedBatteryDialog.bind(null, 0));
+		$('#battery-1').click(ownedBatteryDialog.bind(null, 1));
+		$('#battery-0-unclaimed').click(unclaimedBatteryDialog.bind(null, 0));
+		$('#battery-1-unclaimed').click(unclaimedBatteryDialog.bind(null, 1));
 
 		touch.init();
 	}
@@ -97,12 +79,50 @@ module scoring {
 			});
 	}
 
+	export function onFieldLoaded(): void {
+		field.getCells().forEach((cell) => {
+			var id: number = cell.data('id');
+			var capturable: boolean = cell.data('capturable');
+
+			if (capturable) {
+				cell.click(territoryDialog.bind(null, id));
+			}
+		});
+	}
+
 	export function onGameStatus(status: GameStatus): void {
+		updateBatteries(status.batteries);
 	}
 
 	export function onGameEvent(event): void {
 		switch (event.event) {
+			case 'battery update':
+				updateBatteries(event.data);
+				break;
 		}
+	}
+
+	export function updateBatteries(status: BatteryStatus[]) {
+		console.log('battery update', status);
+		status.forEach((battery, i) => {
+			var ownedIndicator = $('#battery-' + i);
+			var unclaimedIndicator = $('#battery-' + i + '-unclaimed');
+
+			if (battery.owner === scoring.team.teamId) {
+				ownedIndicator.addClass('owned');
+			} else {
+				ownedIndicator.removeClass('owned');
+			}
+
+			if (!battery.territory) {
+				unclaimedIndicator.addClass('owned');
+			} else {
+				unclaimedIndicator.removeClass('owned');
+				if (claimingBattery === battery.id) {
+					claimingBattery = -1;
+				}
+			}
+		});
 	}
 
 	export function getColor(id: number) {
@@ -131,38 +151,34 @@ module scoring {
 		return scoring.foulsById[id.toString()] || null;
 	}
 
-	export function getFieldStatus(territoryId: number) {
-		var statuses = scoring.field.currentStatus.field;
-		for (var i = 0; i < statuses.length; i++) {
-			if (statuses[i].id === territoryId) {
-				return statuses[i];
-			}
-		}
-		return null;
-	}
-
 	export function canTakeTerritory(territoryId: number) {
-		var status = getFieldStatus(territoryId);
+		var cell = field.getCell(territoryId);
+		var status: TerritoryStatus = cell.data('status');
 
-		// Can't take if this isn't capturable
-		if (status === null || status.id < 10) {
-			return false;
-		}
-
-		// Can't take if already owned by us
+		// can't take if already owned
 		if (status.owner === scoring.team.teamId) {
 			return false;
 		}
 
-		// Can take if a neighboring territory is powered by us
-		var neighbors = scoring.field.getNeighbors(territoryId);
+		var neighbors = field.getNeighbors(territoryId);
 		for (var i = 0; i < neighbors.length; i++) {
-			var status = getFieldStatus(neighbors[i]);
+			var status: TerritoryStatus = neighbors[i].data('status');
 			if (status.owner === scoring.team.teamId && status.powered) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	export function canPlaceBattery(territoryId: number): boolean[] {
+		var cell = field.getCell(territoryId)
+		if (cell.hasClass('battery')/* || cell.data('status').owner !== scoring.team.teamId*/) {
+			return [false, false];
+		}
+
+		return field.currentStatus.batteries.map((battery) => {
+			return battery.owner === scoring.team.teamId || battery.id === claimingBattery;
+		});
 	}
 
 	export function sendAction(fromTeam: number, callback: (err: APIError) => any) {
@@ -194,24 +210,51 @@ module scoring {
 		});
 	}
 
-	export function toggleRamp() {
+	export function placeBattery(territoryId: number, batteryId: number) {
 		jsdc.clock.emit('game event', {
-			event: 'toggle ramp',
+			event: 'place battery',
 			data: {
-				team: scoring.team.teamId
+				team: scoring.team.teamId,
+				battery: batteryId,
+				territory: territoryId,
+			}
+		});
+
+		if (claimingBattery === batteryId) {
+			claimingBattery = -1;
+		}
+	}
+
+	export function dropBattery(batteryId: number) {
+		jsdc.clock.emit('game event', {
+			event: 'place battery',
+			data: {
+				team: scoring.team.teamId,
+				battery: batteryId,
+				territory: 0
 			}
 		});
 	}
 
+	export function claimBattery(batteryId: number) {
+		claimingBattery = batteryId;
+	}
+
 	export function rotateFieldCW(): void {
-		scoring.field.rotateCW();
+		fieldRotation -= 90;
+		updateFieldRotation();
 	}
 
 	export function rotateFieldCCW(): void {
-		scoring.field.rotateCCW();
+		fieldRotation += 90;
+		updateFieldRotation();
 	}
 
-	// Private Methods}
+	// Private Methods
+	function updateFieldRotation(): void {
+		$('table.field').css('-webkit-transform', 'rotate(' + fieldRotation + 'deg)');
+	}
+
 	function confirmEmergency(): void {
 		Modal.confirm('Emergency stop',
 			'Are you sure you want to perform an emergency stop? This will pause the match and sound an alarm.',
@@ -258,26 +301,6 @@ module scoring {
 		});
 	}
 
-	function rampHandler(e: SingleEventObject) {
-		Modal.dialog({
-			title: 'Ramp',
-			className: 'action',
-			buttons: [],
-			body: 'Toggling ramp...',
-		});
-
-		try {
-			toggleRamp();
-			setTimeout(() => {
-				$.modal.close();
-				e.complete();
-			}, 2000);
-		} catch (e) {
-			Modal.error('Failed', e.toString());
-			e.complete();
-		}
-	}
-
 	function foulDialog(foulId: number): void {
 		var body: JQuery = $('<ul class=colorselect>').append(
 			scoring.match.teams.filter((team) => team.teamId !== scoring.team.teamId)
@@ -295,7 +318,7 @@ module scoring {
 								// display a message while the foul is being sent
 								body.replaceWith(
 									$('<p>').text('Sending...')
-									);
+								);
 								sendFoul(foulId, scoring.team.teamId, team.teamId, (err) => {
 									if (err) {
 										Modal.apiError(err, 'Failed to send foul');
@@ -303,12 +326,12 @@ module scoring {
 									$.modal.close();
 								});
 							})
-						)
+					)
 				}
-				));
+		));
 
 		Modal.dialog({
-			title: getFoul(foulId).name.capitalize() + ' foul against',
+			title: getFoul(foulId).name.capitalize() + ' foul',
 			className: 'foul',
 			buttons: Modal.CancelButton,
 			body: body,
@@ -318,8 +341,9 @@ module scoring {
 
 	function territoryDialog(territoryId: number): void {
 		var canTake = canTakeTerritory(territoryId);
+		var canPlace = canPlaceBattery(territoryId);
 
-		if (!canTake) {
+		if (!canTake && !canPlace.contains(true)) {
 			return;
 		}
 
@@ -330,8 +354,20 @@ module scoring {
 				.text('Take territory')
 				.click(takeTerritory.bind(null, territoryId))
 				.click($.modal.close)
-				))
+			))
 		}
+
+		canPlace.forEach((canPlace, i) => {
+			if (canPlace) {
+				var text = (i === claimingBattery) ? 'Claim and place battery ' : 'Place battery ';
+
+				body.append($('<li>').append($('<a class=battery>')
+					.text(text + String.fromCharCode(65 + i))
+					.click(placeBattery.bind(null, territoryId, i))
+					.click($.modal.close)
+				))
+			}
+		});
 
 		Modal.dialog({
 			title: 'Territory action',
@@ -340,6 +376,52 @@ module scoring {
 			body: body,
 			options: Modal.CancellableOptions(),
 		})
+	}
+
+	function ownedBatteryDialog(batteryId: number): void {
+		if (field.currentStatus.batteries[batteryId].owner !== scoring.team.teamId) {
+			return;
+		}
+
+		var body = $('<ul class=actionselect>').append(
+			$('<li>').append($('<a class=drop>')
+				.text('Drop battery ' + String.fromCharCode(65 + batteryId))
+				.click(dropBattery.bind(null, batteryId))
+				.click($.modal.close)
+			)
+		)
+
+		Modal.dialog({
+			title: 'Battery action',
+			className: 'battery',
+			buttons: Modal.CancelButton,
+			body: body,
+			options: Modal.CancellableOptions(),
+		})
+	}
+
+	function unclaimedBatteryDialog(batteryId: number): void {
+		if (field.currentStatus.batteries[batteryId].owner !== 0) {
+			return;
+		}
+
+		var body = $('<ul class=actionselect>').append(
+			$('<li>').append($('<a class=drop>')
+				.text('Take battery ' + String.fromCharCode(65 + batteryId))
+				.click(claimBattery.bind(null, batteryId))
+				.click($.modal.close)
+			)
+		).add(
+			$('<p>').text('After claiming a battery, you must place it on a territory before your team owns it.')
+		);
+
+		Modal.dialog({
+			title: 'Battery action',
+			className: 'battery',
+			buttons: Modal.CancelButton,
+			body: body,
+			options: Modal.CancellableOptions(),
+		});
 	}
 }
 
@@ -386,7 +468,6 @@ module touch {
 	function touchend(e: TouchEvent): void {
 		if (mode === 1 && !scrollActive) {
 			click(touchTarget);
-			mouseup(touchTarget);
 		}
 		touchstart(e);
 	}
@@ -476,10 +557,6 @@ module touch {
 
 	function mousedown(target): void {
 		mouseevent('mousedown', target);
-	}
-
-	function mouseup(target): void {
-		mouseevent('mouseup', target);
 	}
 }
 

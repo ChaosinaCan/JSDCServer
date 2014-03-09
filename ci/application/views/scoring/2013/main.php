@@ -40,19 +40,24 @@
 <body class="main <?= $color ?>">
 	<a href="<?= site_url('/scoring/teamselect/') ?>" class="back-button xx-large"></a>
 	<h1><?= $team->name ?></h1>
-	<div id="field-container">
-		<div id="field"></div>
+	<div id="field"></div>
+
+	<div id="batteries">
+		<h2>Owned</h2>
+		<div class="battery colored battery-0" id="battery-0">⚡</div>
+		<div class="battery colored battery-1" id="battery-1">⚡</div>
+		<h2>Unclaimed</h2>
+		<div class="battery battery-0" id="battery-0-unclaimed">⚡</div>
+		<div class="battery battery-1" id="battery-1-unclaimed">⚡</div>
 	</div>
 
 	<div id="buttons">
 		<button class="x-large" id="disabled">Disabled</button>
 		<button class="x-large" id="foul-personal">Personal foul</button>
 		<!--<button class="x-large" id="foul-technical">Tech. foul</button>-->
-		<button class="x-large" id="action">Action</button>
-
-		<button class="x-large" id="emergency">Emergency</button>
+		<button class="x-large" id="action">Drop wall</button>
 		<button class="x-large" id="foul-flagrant">Flagrant foul</button>
-		<button class="x-large" id="ramp">Ramp</button>
+		<button class="x-large" id="emergency">Emergency</button>
 	</div>
 </body>
 </html>

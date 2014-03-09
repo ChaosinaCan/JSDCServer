@@ -22,7 +22,7 @@ namespace JSDC.ConsoleControl.WPF
 		public ConsoleControl()
 		{
 			InitializeComponent();
-			
+
 			//  Handle process events.
 			processInterace.OnProcessOutput += processInterface_OnProcessOutput;
 			processInterace.OnProcessError += processInterface_OnProcessError;
@@ -38,7 +38,7 @@ namespace JSDC.ConsoleControl.WPF
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
 		/// <param name="args">The <see cref="ProcessEventArgs"/> instance containing the event data.</param>
-		void processInterface_OnProcessError(object sender, ProcessEventArgs args)
+		private void processInterface_OnProcessError(object sender, ProcessEventArgs args)
 		{
 			this.RunOnUIThread(() =>
 			{
@@ -55,7 +55,7 @@ namespace JSDC.ConsoleControl.WPF
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
 		/// <param name="args">The <see cref="ProcessEventArgs"/> instance containing the event data.</param>
-		void processInterface_OnProcessOutput(object sender, ProcessEventArgs args)
+		private void processInterface_OnProcessOutput(object sender, ProcessEventArgs args)
 		{
 			this.RunOnUIThread(() =>
 			{
@@ -72,7 +72,7 @@ namespace JSDC.ConsoleControl.WPF
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
 		/// <param name="args">The <see cref="ProcessEventArgs"/> instance containing the event data.</param>
-		void processInterface_OnProcessInput(object sender, ProcessEventArgs args)
+		private void processInterface_OnProcessInput(object sender, ProcessEventArgs args)
 		{
 			this.RunOnUIThread(() => FireProcessInputEvent(args));
 		}
@@ -82,7 +82,7 @@ namespace JSDC.ConsoleControl.WPF
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
 		/// <param name="args">The <see cref="ProcessEventArgs"/> instance containing the event data.</param>
-		void processInterface_OnProcessExit(object sender, ProcessEventArgs args)
+		private void processInterface_OnProcessExit(object sender, ProcessEventArgs args)
 		{
 			this.RunOnUIThread(() =>
 			{
@@ -105,7 +105,7 @@ namespace JSDC.ConsoleControl.WPF
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
 		/// <param name="e">The <see cref="System.Windows.Input.KeyEventArgs" /> instance containing the event data.</param>
-		void richTextBoxConsole_KeyDown(object sender, KeyEventArgs e)
+		private void richTextBoxConsole_KeyDown(object sender, KeyEventArgs e)
 		{
 			bool inReadOnlyZone = richTextBoxConsole.Selection.Start.CompareTo(inputStart) < 0;
 
@@ -173,7 +173,7 @@ namespace JSDC.ConsoleControl.WPF
 					{
 						AppendText(output, brush);
 					}
-					
+
 					inputStart = richTextBoxConsole.Selection.Start;
 
 					richTextBoxConsole.ScrollToEnd();
@@ -185,11 +185,11 @@ namespace JSDC.ConsoleControl.WPF
 		/// </summary>
 		public void ClearOutput()
 		{
-			//todo richTextBoxConsole.Clear();
+			richTextBoxConsole.Document.Blocks.Clear();
 			inputStart = null;
 		}
 
-		public void WriteInput(string input, bool echo=false)
+		public void WriteInput(string input, bool echo = false)
 		{
 			WriteInput(input, echo, richTextBoxConsole.Foreground);
 		}
@@ -245,11 +245,12 @@ namespace JSDC.ConsoleControl.WPF
 						WriteOutput("." + Environment.NewLine, Color.FromArgb(255, 0, 255, 0));
 				}
 			});
-			
+
 			//  Start the process.
 			var process = processInterace.StartProcess(fileName, arguments);
 
-			this.RunOnUIThread(() => {
+			this.RunOnUIThread(() =>
+			{
 				IsProcessRunning = true;
 			});
 
@@ -336,12 +337,12 @@ namespace JSDC.ConsoleControl.WPF
 		/// Current position that input starts at.
 		/// </summary>
 		private TextPointer inputStart;
-		
+
 		/// <summary>
 		/// The last input string (used so that we can make sure we don't echo input twice).
 		/// </summary>
 		private string lastInput;
-		
+
 		/// <summary>
 		/// Occurs when console output is produced.
 		/// </summary>
@@ -351,12 +352,10 @@ namespace JSDC.ConsoleControl.WPF
 		/// Occurs when console input is produced.
 		/// </summary>
 		public event ProcessEventHandler OnProcessInput;
-		  
-		private static readonly DependencyProperty ShowDiagnosticsProperty = 
+
+		private static readonly DependencyProperty ShowDiagnosticsProperty =
 		  DependencyProperty.Register("ShowDiagnostics", typeof(bool), typeof(ConsoleControl),
 		  new PropertyMetadata(false, OnShowDiagnosticsChanged));
-
-
 
 		public ITextColorizer TextColorizer
 		{
@@ -368,8 +367,6 @@ namespace JSDC.ConsoleControl.WPF
 		public static readonly DependencyProperty TextColorizerProperty =
 			DependencyProperty.Register("TextColorizer", typeof(ITextColorizer), typeof(ConsoleControl), new PropertyMetadata(null));
 
-
-
 		/// <summary>
 		/// Gets or sets a value indicating whether to show diagnostics.
 		/// </summary>
@@ -378,16 +375,15 @@ namespace JSDC.ConsoleControl.WPF
 		/// </value>
 		public bool ShowDiagnostics
 		{
-		  get { return (bool)GetValue(ShowDiagnosticsProperty); }
-		  set { SetValue(ShowDiagnosticsProperty, value); }
+			get { return (bool)GetValue(ShowDiagnosticsProperty); }
+			set { SetValue(ShowDiagnosticsProperty, value); }
 		}
-		
+
 		private static void OnShowDiagnosticsChanged(DependencyObject o, DependencyPropertyChangedEventArgs args)
 		{
 		}
-		
-		
-		private static readonly DependencyProperty IsInputEnabledProperty = 
+
+		private static readonly DependencyProperty IsInputEnabledProperty =
 		  DependencyProperty.Register("IsInputEnabled", typeof(bool), typeof(ConsoleControl),
 		  new PropertyMetadata(true));
 
@@ -399,10 +395,10 @@ namespace JSDC.ConsoleControl.WPF
 		/// </value>
 		public bool IsInputEnabled
 		{
-		  get { return (bool)GetValue(IsInputEnabledProperty); }
-		  set { SetValue(IsInputEnabledProperty, value); }
+			get { return (bool)GetValue(IsInputEnabledProperty); }
+			set { SetValue(IsInputEnabledProperty, value); }
 		}
-		
+
 		internal static readonly DependencyPropertyKey IsProcessRunningPropertyKey =
 		  DependencyProperty.RegisterReadOnly("IsProcessRunning", typeof(bool), typeof(ConsoleControl),
 		  new PropertyMetadata(false));

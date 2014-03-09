@@ -1,6 +1,6 @@
 ﻿/// <reference path="base.ts" />
 /// <reference path="score-listener.ts" />
-/// <reference path="field-listener.ts" />
+/// <reference path="field-renderer.ts" />
 
 module scoreboard {
 	// Public Variables
@@ -19,8 +19,9 @@ module scoreboard {
 	export var clock: jsdc.clock.Timer;
 	export var scores: ScoreListener;
 
-	export var field: Field;
-	export var fieldScores: FieldScoringListener;
+	export var field: FieldListener;
+
+	var fieldSize: number = 700;
 
 	// Public Methods
 	export function init(): void {
@@ -34,22 +35,33 @@ module scoreboard {
 
 		jsdc.clock.connect(onconnect);
 
-		field = new Field(scoreboard.colors, []);
-		fieldScores = new FieldScoringListener(field);
+		field = new FieldListener(scoreboard.colors, [], true);
 
 		field.addEventListener('territory update', onTerritoryUpdate);
-		field.addEventListener('battery update', onBatteryUpdate);
 		field.addEventListener('game status', onGameStatus);
-		$('#field').append(field.field);
+		field.addEventListener('load', () => {
+			$('#field').append(field.field.field);
+			field.field.setSize(fieldSize, fieldSize);
+			field.field.repaint();
+		});
 
 		$('#change-view-pregame').click(changeView.bind(null, 'pregame'));
 		$('#change-view-scoreboard').click(changeView.bind(null, 'scoreboard'));
 		$('#change-view-videos').click(changeView.bind(null, 'videos'));
 		$('#refresh').click(refreshScores);
 
-		$('#res768').click(() => $('body').addClass('res768').removeClass('res1080'));
-		$('#res900').click(() => $('body').removeClass('res768 res1080'));
-		$('#res1080').click(() => $('body').addClass('res1080').removeClass('res768'));
+		$('#res768').click(() => {
+			$('body').addClass('res768').removeClass('res1080');
+			setFieldSize(580);
+		});
+		$('#res900').click(() => {
+			$('body').removeClass('res768 res1080');
+			setFieldSize(700);
+		});
+		$('#res1080').click(() => {
+			$('body').addClass('res1080').removeClass('res768');
+			setFieldSize(880);
+		});
 
 		$('.view:not(.current)').hide();
 
@@ -58,10 +70,6 @@ module scoreboard {
 			console.log('view change', e, view);
 			if (view === 'videos') {
 				var videos = [
-					'/video/Darth Vader vs Japanese Police.webm',
-					'/video/Talor Mali - Teachers.webm',
-					'/video/Talor Mali - Conviction.webm',
-					'/video/Talor Mali - On Girls Lending Pens.webm',
 				];
 
 				VideoPlayer.initPlaylist(videos);
@@ -80,6 +88,14 @@ module scoreboard {
 		$('.view.current').removeClass('current').fadeOut(500);
 		$('#view-' + view).addClass('current').fadeIn(500);
 		$(document).trigger('viewchange', view);
+	}
+
+	export function setFieldSize(size: number) {
+		fieldSize = size;
+		if (field.field) {
+			field.field.setSize(size, size);
+			field.field.repaint();
+		}
 	}
 
 	export function setMatchNumber(name: string);
@@ -178,6 +194,10 @@ module scoreboard {
 	}
 
 	function onTimerStatusChange(timer: jsdc.clock.Timer) {
+		if (!timer.lastStatus) {
+			return;
+		}
+
 		if (timer.lastStatus.paused) {
 			$('#clock').addClass('paused');
 		} else {
@@ -201,10 +221,6 @@ module scoreboard {
 		updateAllGameStatuses();
 	}
 
-	function onBatteryUpdate(e: CustomEvent) {
-		updateAllGameStatuses();
-	}
-
 	function updateAllGameStatuses(): void {
 		field.currentStatus.teams.forEach(scheduleDisplay.updateGameStatus);
 	}
@@ -213,8 +229,8 @@ module scoreboard {
 		jsdc.matchresult.update({
 			match: scoreboard.match.matchId
 		}, (err, result) => {
-			scoreboard.scores.reload();
-		});
+				scoreboard.scores.reload();
+			});
 	}
 }
 
@@ -223,25 +239,22 @@ module scheduleDisplay {
 		$('<div class=primary>').append(
 			$('<span class=team>'),
 			$('<span class=score>').text('0')
-		),
-		$('<div class=secondary>').append(
-			$('<span class=territories>').text('0'),
-			$('<span class=points>').text('0'),
-			$('<span class=batteries>').append(
-				$('<span class="battery battery-0">').text('⚡'),
-				$('<span class="battery battery-1">').text('⚡')
 			),
+		$('<div class=secondary>').append(
+			$('<span class=bottom>').text('0'),
+			$('<span class=middle>').text('0'),
+			$('<span class=top>').text('0'),
 			$('<span class=status>')
-		)
-	);
+			)
+		);
 
 	var pregameTemplate = $('<div class=teamcard>').append(
 		$('<header>').append(
 			$('<h1 class=thin>'),
 			$('<h2>')
-		),
+			),
 		$('<img>')
-	);
+		);
 
 	var rowsByTeamId: { [key: string]: JQuery; } = {};
 
@@ -267,7 +280,13 @@ module scheduleDisplay {
 		card.addClass(scoreboard.colorsById[team.colorId.toString()].name);
 		card.find('h1').text(team.name);
 		card.find('h2').text(team.university);
-		card.find('img').attr('src', jsdc.getTeamImage(team.imageName) || '/img/default-team.svg');
+		var img = card.find('img');
+		var defaultImage = '/img/default-team.svg';
+		img.on('error', (e) => {
+			img.attr('src', defaultImage);
+		});
+		img.attr('src', jsdc.getTeamImage(team.imageName) || defaultImage);
+
 		return card;
 	}
 
@@ -293,29 +312,19 @@ module scheduleDisplay {
 	}
 
 	export function update(result: ScoreInfo) {
-		var row = rowsByTeamId[result.team.teamId.toString()];
+		var row = rowsByTeamId[result.team.teamId];
 		if (row) {
 			updateStatus(row, result);
 		}
 	}
 
 	export function updateGameStatus(status: TeamStatus) {
-		var row = rowsByTeamId[status.team.teamId.toString()];
+		var row = rowsByTeamId[status.team.teamId];
+		console.log(status, row);
 		if (row) {
-			row.find('.territories').text(status.territories.toString());
-			row.find('.points').text(status.controlPoints.toString());
-
-			if (status.batteries[0]) {
-				row.find('.battery-0').addClass('held');
-			} else {
-				row.find('.battery-0').removeClass('held');
-			}
-
-			if (status.batteries[1]) {
-				row.find('.battery-1').addClass('held');
-			} else {
-				row.find('.battery-1').removeClass('held');
-			}
+			row.find('.bottom').text(status.bottomTerritories);
+			row.find('.middle').text(status.middleTerritories);
+			row.find('.top').text(status.topTerritories);
 		}
 	}
 }
@@ -331,7 +340,7 @@ module VideoPlayer {
 			$('#video-list').append(
 				$('<li>').append(thumbnail)
 					.click(changeVideo.bind(null, url))
-			);
+				);
 		});
 	}
 

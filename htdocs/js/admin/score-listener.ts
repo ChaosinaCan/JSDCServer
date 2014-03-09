@@ -29,7 +29,7 @@ class ScoreListener implements EventTarget {
 	get match() { return this._match }
 	set match(item: Match) { this._setMatch(item) }
 
-	constructor (match?: Match, actions?: Action[], fouls?: Foul[]) {
+	constructor(match?: Match, actions?: Action[], fouls?: Foul[]) {
 		var clock = jsdc.clock;
 		bindMemberFunctions(this);
 
@@ -190,7 +190,7 @@ class ScoreListener implements EventTarget {
 	}
 
 	private _onScore(data) {
-		console.log('new score', data);
+		//console.log('new score', data);
 
 		var score = jsdc.score.parseOne(data);
 		this._addScore(score);
@@ -263,7 +263,7 @@ class ScoreList {
 
 	get table() { return this._table }
 
-	constructor (scores: ScoreListener, colors: Color[], allowDelete?: boolean) {
+	constructor(scores: ScoreListener, colors: Color[], allowDelete?: boolean) {
 		bindMemberFunctions(this);
 		this._scores = scores;
 		this._allowDelete = allowDelete;
@@ -281,13 +281,13 @@ class ScoreList {
 			$('<td class=from>'),
 			$('<td class=on>'),
 			$('<td class=status>')
-		);
+			);
 
 		if (allowDelete) {
 			console.log('allow delete');
 			this._template.find('.name').append(
 				$('<button class=delete>').html('&#xf12a;')
-			);
+				);
 			console.log(this._template);
 		}
 	}
