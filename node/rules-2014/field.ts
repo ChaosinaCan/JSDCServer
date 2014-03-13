@@ -39,6 +39,12 @@ export class PowerSource extends BaseEventEmitter {
 		this.territory = territory;
 		this._moveable = !!(moveable || false);
 	}
+
+	on(event: 'territory changed', listener: (source: PowerSource) => void): EventEmitter;
+	on(event: string, listener: Function): EventEmitter;
+	on(event: string, listener: Function): EventEmitter {
+		return super.on(event, listener);
+	}
 }
 
 /** Events:
@@ -189,6 +195,17 @@ export class Territory extends BaseEventEmitter {
 
 	checkPower() {
 		this.field.checkPower();
+	}
+
+	on(event: 'held', listener: (node: Territory) => void): EventEmitter;
+	on(event: 'power changed', listener: (node: Territory) => void): EventEmitter;
+	on(event: 'source changed', listener: (node: Territory) => void): EventEmitter;
+	on(event: 'sync', listener: (node: Territory) => void): EventEmitter;
+	on(event: 'team changed', listener: (node: Territory) => void): EventEmitter;
+	on(event: 'warning', listener: (node: Territory) => void): EventEmitter;
+	on(event: string, listener: Function): EventEmitter;
+	on(event: string, listener: Function): EventEmitter {
+		return super.on(event, listener);
 	}
 
 	// sent when the power value of the territory is changed
@@ -359,8 +376,6 @@ export class Field extends BaseEventEmitter {
 			return;
 		}
 
-		console.log('checking power');
-
 		this.territories.forEach((node) => {
 			node.holdEvents();
 			node.powered = false;
@@ -420,6 +435,17 @@ export class Field extends BaseEventEmitter {
 	stopScoringTimers(): void {
 		this.territories.forEach((node) => node.stopScoringTimer());
 	}
+
+	on(event: 'held', listener: (node: Territory) => void): EventEmitter;
+	on(event: 'power changed', listener: (node: Territory) => void): EventEmitter;
+	on(event: 'source changed', listener: (node: Territory) => void): EventEmitter;
+	on(event: 'sync', listener: (node: Territory) => void): EventEmitter;
+	on(event: 'team changed', listener: (node: Territory) => void): EventEmitter;
+	on(event: 'warning', listener: (node: Territory) => void): EventEmitter;
+	on(event: string, listener: Function): EventEmitter;
+	on(event: string, listener: Function): EventEmitter {
+		return super.on(event, listener);
+	}
 }
 
 export enum RampDirection {
@@ -434,23 +460,65 @@ export enum RampLocation {
 	BottomLeft = 3,
 }
 
-export class Ramp {
+export class Ramp extends BaseEventEmitter {
+	public static DELAY_TIME = 15;
 	private static ICONS = ['<', '^', '>', 'v'];
 
-	public direction: RampDirection;
 	public location: RampLocation;
 	public x: number;
 	public y: number;
-	public hasToggled: boolean;
 
+	public get direction() { return this._direction; }
+	public set direction(newDirection: RampDirection) {
+		if (newDirection != this.direction) {
+			this._direction = newDirection;
+			this.emit('change', this);
+			this._firstToggle = false;
+		}
+	}
+
+	public get firstToggle() { return this._firstToggle; }
 	public get icon() { return this._getIcon(); }
+	public get isTimerRunning() { return this._timer !== null; }
+
+	private _direction: RampDirection;
+	private _firstToggle: boolean;
+	private _timer: number;
 
 	constructor(location: RampLocation, x: number, y: number) {
+		super();
+		jsdc.bindMemberFunctions(this);
+
 		this.x = x;
 		this.y = y;
 		this.location = location;
-		this.direction = RampDirection.Down;
-		this.hasToggled = false;
+
+		this._direction = RampDirection.Down;
+		this._firstToggle = true;
+		this._timer = null;
+	}
+
+	public cancelDelayedRampDown() {
+		clearTimeout(this._timer);
+		this._timer = null;
+		this.emit('cancel warning', this);
+	}
+
+	public triggerDelayedRampDown() {
+		this.cancelDelayedRampDown();
+		this.emit('warning', this);
+		this._timer = setTimeout(() => {
+			this.direction = RampDirection.Down;
+			this._timer = null;
+		}, Ramp.DELAY_TIME * 1000);
+	}
+
+	on(event: 'cancel warning', listener: (ramp: Ramp) => void): EventEmitter;
+	on(event: 'change', listener: (ramp: Ramp) => void): EventEmitter;
+	on(event: 'warning', listener: (ramp: Ramp) => void): EventEmitter;
+	on(event: string, listener: Function): EventEmitter;
+	on(event: string, listener: Function): EventEmitter {
+		return super.on(event, listener);
 	}
 
 	private _getIcon() {

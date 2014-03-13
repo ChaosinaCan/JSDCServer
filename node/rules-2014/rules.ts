@@ -109,8 +109,14 @@ export class GameRules extends jsdc.GameRules {
 				'green': 3.3,
 				'yellow': 3.4,
 			},
-			'stop ramps': 4.1,
-			'start ramps': 4.2,
+			'ramp warning': {
+				'red': 4.1,
+				'blue': 4.2,
+				'green': 4.3,
+				'yellow': 4.4,
+			},
+			'stop ramps': 5.1,
+			'start ramps': 5.2,
 		}
 
 		this.actions = {
@@ -190,7 +196,14 @@ export class GameRules extends jsdc.GameRules {
 		// Called when the game ends for any reason
 		this.audio.play('stop');
 		this.field.stopScoringTimers();
+
+		// stops the ramps
 		this.sendCue('stop ramps');
+		for (var key in this.ramps) {
+			if (this.ramps.hasOwnProperty(key)) {
+				this.ramps[key].cancelDelayedRampDown();
+			}
+		}
 	}
 
 	onGameover() {
@@ -272,10 +285,11 @@ export class GameRules extends jsdc.GameRules {
 			return;
 		}
 
+		// change territory owners
 		var oldOwner = territory.ownerTeam;
 		territory.ownerTeam = team;
 
-		// change territory owners
+		// update territory counts
 		if (this._isBottomTerritory(territory.id)) {
 			this.getTeamStatus(team).bottomTerritories += 1;
 			if (oldOwner) {
@@ -298,17 +312,25 @@ export class GameRules extends jsdc.GameRules {
 		console.log('toggle ramp ', data);
 
 		var ramp = this._getTeamRamp(data.team);
-		ramp.direction = ramp.direction === field.RampDirection.Up ? field.RampDirection.Down : field.RampDirection.Up;
 
-		this._postRampUpdate(ramp);
-
-		if (!ramp.hasToggled) {
-			ramp.hasToggled = true;
+		if (ramp.firstToggle) {
 			this.sendScore('first ramp', data.team, (err) => {
 				if (err) {
 					console.log('Failed to score first ramp toggle for team ' + data.team);
 				}
 			});
+		}
+
+		// If the timer is running to set the ramp to down and it is still
+		// running up, just cancel the timer so the ramp keeps running up.
+		if (ramp.isTimerRunning && ramp.direction === field.RampDirection.Up) {
+			ramp.cancelDelayedRampDown();
+		} else if (ramp.direction === field.RampDirection.Up) {
+			ramp.triggerDelayedRampDown();
+		} else if (ramp.direction === field.RampDirection.Down) {
+			ramp.direction = field.RampDirection.Up;
+		} else {
+			console.error('I have no idea what\'s going on.');
 		}
 	}
 
@@ -400,6 +422,15 @@ export class GameRules extends jsdc.GameRules {
 			);
 		this.field.resumePowerChecks();
 
+		// Get notifications whenever ramp directions change
+		for (var key in this.ramps) {
+			if (this.ramps.hasOwnProperty(key)) {
+				this.ramps[key].on('change', this._onRampChanged);
+				this.ramps[key].on('warning', this._onRampWarning);
+				this.ramps[key].on('cancel warning', this._onRampWarningCancelled);
+			}
+		}
+
 		// Update each field renderer with the proper ramp directions
 		this._postAllRampUpdate();
 	}
@@ -424,6 +455,27 @@ export class GameRules extends jsdc.GameRules {
 
 	private _getFieldStatusArray(): TerritoryStatus[] {
 		return this.field.territories.map(this._getTerritoryStatus).filter((territory) => territory.id != 0);
+	}
+
+	private _onRampChanged(ramp: field.Ramp) {
+		this._postRampUpdate(ramp);
+	}
+
+	private _onRampWarning(ramp: field.Ramp) {
+		this.sendEvent('ramp warning', {
+			x: ramp.x,
+			y: ramp.y
+		});
+
+		var color = this._getRampColor(ramp);
+		this.sendCue('ramp warning.' + color);
+	}
+
+	private _onRampWarningCancelled(ramp: field.Ramp) {
+		this.sendEvent('clear ramp warning', {
+			x: ramp.x,
+			y: ramp.y
+		});
 	}
 
 	private _onTerritoryUpdate(node: field.Territory) {
@@ -481,12 +533,12 @@ export class GameRules extends jsdc.GameRules {
 	private _postAllRampUpdate() {
 		for (var key in this.ramps) {
 			if (this.ramps.hasOwnProperty(key)) {
-				this._postRampUpdate(this.ramps[key], true);
+				this._postRampUpdate(this.ramps[key]);
 			}
 		}
 	}
 
-	private _postRampUpdate(ramp: field.Ramp, immediate?: boolean) {
+	private _postRampUpdate(ramp: field.Ramp) {
 		// Post field changes
 		this.sendEvent('style change', {
 			x: ramp.x,
@@ -494,17 +546,10 @@ export class GameRules extends jsdc.GameRules {
 			style: ramp.icon
 		});
 
-		if (!immediate && ramp.direction == field.RampDirection.Down) {
-			this.sendEvent('ramp warning', {
-				x: ramp.x,
-				y: ramp.y
-			});
-		} else {
-			this.sendEvent('clear ramp warning', {
-				x: ramp.x,
-				y: ramp.y
-			});
-		}
+		this.sendEvent('clear ramp warning', {
+			x: ramp.x,
+			y: ramp.y
+		});
 
 		// Post cues
 		var color = this._getRampColor(ramp);
@@ -537,7 +582,6 @@ export class GameRules extends jsdc.GameRules {
 				this.ramps[key].direction = field.RampDirection.Down;
 			}
 		}
-		this._postAllRampUpdate();
 	}
 }
 

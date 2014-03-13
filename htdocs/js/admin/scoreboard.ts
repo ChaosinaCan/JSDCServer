@@ -41,27 +41,14 @@ module scoreboard {
 		field.addEventListener('game status', onGameStatus);
 		field.addEventListener('load', () => {
 			$('#field').append(field.field.field);
-			field.field.setSize(fieldSize, fieldSize);
-			field.field.repaint();
+			updateFieldSize();
 		});
 
 		$('#change-view-pregame').click(changeView.bind(null, 'pregame'));
 		$('#change-view-scoreboard').click(changeView.bind(null, 'scoreboard'));
 		$('#change-view-videos').click(changeView.bind(null, 'videos'));
 		$('#refresh').click(refreshScores);
-
-		$('#res768').click(() => {
-			$('body').addClass('res768').removeClass('res1080');
-			setFieldSize(580);
-		});
-		$('#res900').click(() => {
-			$('body').removeClass('res768 res1080');
-			setFieldSize(700);
-		});
-		$('#res1080').click(() => {
-			$('body').addClass('res1080').removeClass('res768');
-			setFieldSize(880);
-		});
+		$(window).resize(updateFieldSize);
 
 		$('.view:not(.current)').hide();
 
@@ -88,14 +75,6 @@ module scoreboard {
 		$('.view.current').removeClass('current').fadeOut(500);
 		$('#view-' + view).addClass('current').fadeIn(500);
 		$(document).trigger('viewchange', view);
-	}
-
-	export function setFieldSize(size: number) {
-		fieldSize = size;
-		if (field.field) {
-			field.field.setSize(size, size);
-			field.field.repaint();
-		}
 	}
 
 	export function setMatchNumber(name: string);
@@ -223,6 +202,19 @@ module scoreboard {
 
 	function updateAllGameStatuses(): void {
 		field.currentStatus.teams.forEach(scheduleDisplay.updateGameStatus);
+	}
+
+	function updateFieldSize() {
+		if (field.field) {
+			var topPadding = $(field.field.field).offset().top;
+			var legendMargin = 20;
+			var legendSize = $('#legend').outerHeight() + legendMargin;
+			var bottomPadding = 20;
+			var size = window.innerHeight - topPadding - legendSize - bottomPadding;
+
+			field.field.setSize(size, size);
+			field.field.repaint();
+		}
 	}
 
 	function refreshScores(): void {

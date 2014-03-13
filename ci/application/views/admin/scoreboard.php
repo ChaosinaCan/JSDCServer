@@ -57,9 +57,6 @@
 
 		<hr class="split">
 
-		<button id="res768" class="command" title="1366 × 768">&#xf1fc</button>
-		<button id="res900" class="command" title="1600 × 900">&#xf1fc</button>
-		<button id="res1080" class="command" title="1920 × 1080">&#xf20a</button>
 		<button id="refresh" class="command" title="Refresh">&#xf21c;</button>
 		<button id="fullscreen" class="command" title="Fullscreen">&#xf25e;</button>
 		<button id="restore" class="command" title="Restore">&#xf267;</button>
